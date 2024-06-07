@@ -1,0 +1,37 @@
+{
+  "name": "dxf2geojson",
+  "version": "0.2.0",
+  "private": true,
+  "homepage": "/dxf2geojson",
+  "dependencies": {
+    "@alexander-belokon/dxf": "https://github.com/AlexanderBelokon/dxf",
+    "@turf/turf": "^6.5.0",
+    "immutability-helper": "^2.1.2",
+    "react-measure": "^1.4.6",
+    "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite": "^5.2.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

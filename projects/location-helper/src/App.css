@@ -1,0 +1,9 @@
+/* only show copy button if the copyable text is hovered */
+
+.copiable-container [data-testid='copy-button'] {
+  visibility: hidden;
+}
+
+.copiable-container:hover [data-testid='copy-button'] {
+  visibility: visible;
+}

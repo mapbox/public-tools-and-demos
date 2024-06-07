@@ -1,0 +1,29 @@
+{
+  "name": "mapbox-demo-components",
+  "private": "true",
+  "version": "1.0.0",
+  "description": "Shared components for Mapbox public tools and demos",
+  "author": "Mapbox",
+  "license": "BSD-2-Clause",
+  "main": "src/index.jsx",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
+  },
+  "peerDependencies": {
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.2.1",
+    "@fortawesome/free-brands-svg-icons": "^6.2.1",
+    "@fortawesome/free-solid-svg-icons": "^6.2.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@mapbox/mapbox-gl-geocoder": "^5.0.1",
+    "@mapbox/web-analytics": "^0.9.0",
+    "mapbox-gl": "^2.14.1"
+  }
+}

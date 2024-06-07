@@ -1,0 +1,21 @@
+{
+    "env": {
+        "browser": true,
+        "es2020": true
+    },
+    "extends": [
+        "../../.eslintrc"  // Adjust the path to the top-level .eslintrc file accordingly
+    ],
+    "globals": {
+        "module": "writable",
+        "define": "writable",
+        "exports": "writable"
+    },
+    "ignorePatterns": [
+        "dist"
+    ],
+    "rules": {
+        "react/prop-types": 0
+
+    }
+}

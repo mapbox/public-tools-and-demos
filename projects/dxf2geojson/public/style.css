@@ -1,0 +1,73 @@
+body,
+html {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.attribution {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  z-index: 10;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar {
+  flex-grow: 0;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.map {
+  flex-grow: 1;
+  width: auto;
+}
+
+.header {
+  width: 100%;
+}
+.directions {
+  overflow: auto;
+  width: 100%;
+}
+@media screen and (max-width: 640px) {
+  .container {
+    flex-direction: column;
+  }
+  .sidebar {
+    flex-shrink: 1;
+    height: 33vh;
+    order: 2;
+    width: 100%;
+  }
+  .map {
+    order: 1;
+  }
+}
+
+.rotate {
+  cursor: ns-resize;
+}
+.scaleNWSE {
+  cursor: nwse-resize;
+}
+.scaleNESW {
+  cursor: nesw-resize;
+}
+.grab {
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+.grabbing {
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}

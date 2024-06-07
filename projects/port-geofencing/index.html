@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="icon shortcut"
+      href="https://static-assets.mapbox.com/branding/favicon/v1/favicon.ico"
+      type="image/x-icon"
+    />
+    <meta
+      name="Port Geofencing"
+      content="Explore vector and raster tile addresses and quadkeys."
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      #root {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 0;
+      }
+
+      #legend {
+        position: absolute;
+        bottom: 25px;
+        right: 5px;
+        padding: 5px;
+        background-color: rgba(0, 0, 0, 0.5);
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: x-large;
+        color: #00ff00;
+      }
+
+      ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <title>Port Geofencing | Mapbox Spatial Developer Tools</title>
+  </head>
+
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>

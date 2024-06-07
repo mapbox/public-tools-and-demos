@@ -1,0 +1,24 @@
+{
+    "env": {
+        "browser": true,
+        "es2020": true,
+        "node": true,
+        "amd": true,
+        "commonjs": true
+    },
+    "extends": [
+        "../../.eslintrc"  // Adjust the path to the top-level .eslintrc file accordingly
+    ],
+    "globals": {
+        "module": "writable",
+        "define": "writable",
+        "exports": "writable"
+    },
+    "ignorePatterns": [
+        "dist",
+        "public/js/gridstack-all.js"
+    ],
+    "rules": {
+        "no-extra-semi": "error"
+    }
+}

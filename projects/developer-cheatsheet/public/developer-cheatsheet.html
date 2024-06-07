@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mapbox Developer Cheat Sheet | Mapbox Spatial Developer Tools</title>
+
+    <link rel="stylesheet" href="css/output.css" />
+    <link rel="stylesheet" href="css/gridstack.min.css" />
+    <link rel="stylesheet" href="css/gridstack-extra.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  </head>
+
+  <body>
+    <div class="flex flex-col h-full w-full">
+      <div class="text-white shrink-0 my-4 text-lg px-6">
+        Hover each tile for a brief description of the tool or service and click
+        to learn more.
+      </div>
+      <div class="grow overflow-auto min-h-0 px-5">
+        <div class="grid-stack"></div>
+        <div class="grid-stack" style="display: none"></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/slugify@1.6.5/slugify.min.js"></script>
+    <script src="./js/gridstack-all.js"></script>
+    <script type="module" src="./js/script.js"></script>
+  </body>
+</html>
