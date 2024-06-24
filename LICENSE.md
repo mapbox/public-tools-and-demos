@@ -1,11 +1,6 @@
-Mapbox has made the contents of this repository available under the
-BSD 3-Clause License, the text of which may be found below.
+The following license applies only to the software and files in this repository.
 
-The software in this repository makes use of various dependent projects,
-including other Mapbox projects. These dependencies are licensed separately.
-Nothing about the terms of this repository's license should be taken to
-represent a modification, enhancement, extension, or other change to
-terms under which each dependency is licensed.
+Notwithstanding anything to the contrary, any Mapbox SDKs/libraries referenced or used by the software or files in this repository are licensed under the Mapbox TOS ([Legal information about Terms of Service](https://www.mapbox.com/legal/tos/)).
 
 -------------------------------------------------------------------------------
 
