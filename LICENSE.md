@@ -1,3 +1,9 @@
+The following license applies only to the software and files in this repository.
+
+Notwithstanding anything to the contrary, any Mapbox SDKs/libraries referenced or used by the software or files in this repository are licensed under the Mapbox TOS ([Legal information about Terms of Service](https://www.mapbox.com/legal/tos/)).
+
+-------------------------------------------------------------------------------
+
 BSD 3-Clause License
 
 Copyright (c) 2024, Mapbox
