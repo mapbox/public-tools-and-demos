@@ -163,7 +163,9 @@ function App() {
     <div className='App h-viewport-full'>
       <FullscreenMapLayout
         headerProps={{
-          title: 'Isochrone Intersect Demo'
+          title: 'Isochrone Intersect Demo',
+          githubLink:
+            'https://github.com/mapbox/public-tools-and-demos/tree/main/projects/isochrone-intersect'
         }}
         mapComponent={
           <Map

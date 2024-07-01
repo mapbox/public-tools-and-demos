@@ -112,7 +112,9 @@ function App() {
     <div className='App h-viewport-full'>
       <FullscreenMapLayout
         headerProps={{
-          title: 'Port Geofencing'
+          title: 'Port Geofencing',
+          githubLink:
+            'https://github.com/mapbox/public-tools-and-demos/tree/main/projects/port-geofencing'
         }}
         mapComponent={
           <Map

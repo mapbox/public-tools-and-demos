@@ -226,7 +226,9 @@ function App() {
     <div className='App h-viewport-full'>
       <FullscreenMapLayout
         headerProps={{
-          title: 'What the Tile?'
+          title: 'What the Tile?',
+          githubLink:
+            'https://github.com/mapbox/public-tools-and-demos/tree/main/projects/what-the-tile'
         }}
         mapComponent={
           <Map

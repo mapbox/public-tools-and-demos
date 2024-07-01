@@ -27,20 +27,22 @@ const Header = ({ title, githubLink }) => {
             </div>
           </div>
           <div className='relative flex flex--center-cross'>
-            <div className='flex'>
+            <div className='flex flex--center-cross'>
               {githubLink && (
                 <div className='flex-child-no-shrink'>
                   <div className='flex'>
-                    <button className='block color-white flex cursor-pointer bg-lighten10-on-hover txt-bold px12 py12 txt-s'>
-                      <span className='txt-m'>
-                        <FontAwesomeIcon icon={faGithub} />
-                      </span>
-                    </button>
+                    <div className='px12'>
+                      <ExternalLink to={githubLink}>
+                        <button className='block color-white flex cursor-pointer color-gray-lighter-on-hover'>
+                          <FontAwesomeIcon icon={faGithub} size='lg' />
+                        </button>
+                      </ExternalLink>
+                    </div>
                   </div>
                 </div>
               )}
               <div className='border-l pl12 border--lighten10 flex-child-no-shrink none flex-mm flex--center-cross'>
-                <div>
+                <div style={{ lineHeight: 0 }}>
                   <ExternalLink to='https://account.mapbox.com/auth/signup/'>
                     <button type='button' className='btn txt-s py3 round px12'>
                       Sign up for Mapbox

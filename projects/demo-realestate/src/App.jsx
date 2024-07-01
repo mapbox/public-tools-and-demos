@@ -129,6 +129,12 @@ In this demo, a popup is rendering a custom React Card component. (The same comp
 * [Popup Documentation](https://docs.mapbox.com/mapbox-gl-js/api/markers/#popup)
 `}
           </MapboxTooltip>
+
+          <MapboxTooltip title='Source Code' className={'mr-3'}>
+            {` Want to learn how we built this?
+            
+[Full source code](https://github.com/mapbox/public-tools-and-demos/tree/main/projects/demo-realestate) for this demo is available on Github.`}
+          </MapboxTooltip>
         </div>
         <div className='relative lg:flex grow shrink min-h-0'>
           <div
