@@ -8,7 +8,9 @@ function App() {
     <div className='App h-viewport-full'>
       <FullscreenLayout
         headerProps={{
-          title: 'Mapbox Developer Cheat Sheet'
+          title: 'Mapbox Developer Cheat Sheet',
+          githubLink:
+            'https://github.com/mapbox/public-tools-and-demos/tree/main/projects/developer-cheatsheet'
         }}
       >
         <iframe

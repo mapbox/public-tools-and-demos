@@ -304,7 +304,9 @@ class DXFGeoreferencerContainer extends React.Component {
 
         <FullscreenMapLayout
           headerProps={{
-            title: 'DXF Mapper'
+            title: 'DXF Mapper',
+            githubLink:
+              'https://github.com/mapbox/public-tools-and-demos/tree/main/projects/dxf2geojson'
           }}
           mapComponent={
             <>

@@ -40,10 +40,7 @@ class ModalLayerSelector extends React.Component {
         <div className='flex-child color-white'>
           <h2 className='txt-bold txt-l'>Select layers to import:</h2>
           <div className='w360 hmax480 scroll-auto mb24'>{layers}</div>
-          <div
-            className='flex'
-            style={{ justifyContent: 'space-between' }}
-          >
+          <div className='flex' style={{ justifyContent: 'space-between' }}>
             {finishButton}
             {cancelButton}
           </div>
