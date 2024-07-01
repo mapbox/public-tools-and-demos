@@ -279,7 +279,8 @@ function App() {
     <div className='App h-viewport-full'>
       <FullscreenMapLayout
         headerProps={{
-          title: 'Location Helper'
+          title: 'Location Helper',
+          githubLink: 'https://github.com/mapbox/public-tools-and-demos/tree/main/projects/location-helper'
         }}
         mapComponent={
           <Map
