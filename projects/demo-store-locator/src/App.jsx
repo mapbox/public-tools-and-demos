@@ -139,8 +139,38 @@ In this demo, a popup is rendering a custom React Card component. (The same comp
         <div className='relative lg:flex grow shrink min-h-0'>
           {/* sidebar */}
           <div className='lg:static top-0 p-4 w-full lg:w-96 shadow-xl z-10 overflow-scroll lg:z-30 h-full lg:h-auto bg-white'>
+            <SearchBox
+                  className='w-32'
+                  options={{
+                    proximity: [-75.16805, 39.93298],
+                    types: [
+                      'postcode',
+                      'place',
+                      'locality',
+                      'neighborhood',
+                      'street',
+                      'address'
+                    ]
+                  }}
+                  value={searchValue}
+                  onChange={handleSearchChange}
+                  accessToken={accessToken}
+                  marker
+                  mapboxgl={mapboxgl}
+                  placeholder='Search for an address, city, zip, etc'
+                  map={mapInstanceRef.current}
+                  theme={{
+                    variables: {
+                      fontFamily: '"Open Sans", sans-serif',
+                      fontWeight: 300,
+                      unit: '16px',
+                      borderRadius: '8px',
+                      boxShadow: '0px 2.44px 9.75px 0px rgba(95, 126, 155, 0.2)'
+                    }
+                  }}
+                />
             <div className='text-2xl text-black font-semibold w-full mb-1.5'>
-              Listings in this Area
+              Stores
             </div>
             <div className='mb-4'>
               <div className='font-medium text-gray-500'>
@@ -163,38 +193,7 @@ In this demo, a popup is rendering a custom React Card component. (The same comp
               'z-30': activeMobileView === 'map'
             })}
           >
-            <div className='absolute top-3 left-3 z-10'>
-              <SearchBox
-                className='w-32'
-                options={{
-                  proximity: [-75.16805, 39.93298],
-                  types: [
-                    'postcode',
-                    'place',
-                    'locality',
-                    'neighborhood',
-                    'street',
-                    'address'
-                  ]
-                }}
-                value={searchValue}
-                onChange={handleSearchChange}
-                accessToken={accessToken}
-                marker
-                mapboxgl={mapboxgl}
-                placeholder='Search for an address, city, zip, etc'
-                map={mapInstanceRef.current}
-                theme={{
-                  variables: {
-                    fontFamily: '"Open Sans", sans-serif',
-                    fontWeight: 300,
-                    unit: '16px',
-                    borderRadius: '8px',
-                    boxShadow: '0px 2.44px 9.75px 0px rgba(95, 126, 155, 0.2)'
-                  }
-                }}
-              />
-            </div>
+             
             <Map
               data={currentViewData}
               onLoad={handleMapLoad}

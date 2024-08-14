@@ -61,27 +61,19 @@ const Marker = ({ feature, map, children }) => {
 
   return (
     <div>
-      <div
-        ref={markerEl}
-        className={classNames(
-          'marker px-3 py-3 rounded-full box-content shadow hover:bg-gray-200 border hover:border-gray-400 mapboxgl-marker mapboxgl-marker-anchor-center font-bold text-base hover:cursor-pointer',
-          {
-            'bg-gray-200 border-gray-400': active,
-            'bg-white border-transparent': !active
-          }
-        )}
-        style={{
-          boxShadow: '0px 3px 15px 0px rgba(0, 0, 0, 0.2)'
-        }}
-      >
-        <div
-          style={{
-            lineHeight: '12px'
-          }}
-        >
-          ${numeral(salePrice).format('0a').toUpperCase()}
-        </div>
-      </div>
+       <svg
+    width='20'
+    height='20'
+    viewBox='0 0 20 20'
+    fill='none'
+    xmlns='http://www.w3.org/2000/svg'
+  >
+    <path
+      d='M5 7.71428C5 5.15607 7.19204 3 10 3C12.808 3 15 5.15607 15 7.71428C15 9.11527 14.179 10.8133 12.9489 12.6083C12.0915 13.8594 11.1256 15.0366 10.2524 16.1008C10.1673 16.2045 10.0831 16.3071 10 16.4086C9.91686 16.3071 9.83265 16.2045 9.74757 16.1008C8.8744 15.0366 7.9085 13.8594 7.0511 12.6083C5.82101 10.8133 5 9.11527 5 7.71428Z'
+      stroke='#566000'
+      strokeWidth='2'
+    />
+  </svg>
       <div ref={popupEl}>{children}</div>
     </div>
   )
