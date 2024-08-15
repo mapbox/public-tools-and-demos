@@ -1,7 +1,5 @@
 // Card Layout, used in both Map Popups and in the List view
 import PropTypes from 'prop-types'
-import numeral from 'numeral'
-import classNames from 'classnames'
 
 export const pluralize = (number, word) => {
   return `${number} ${word}${number === 1 ? '' : 's'} `
@@ -24,12 +22,12 @@ const MarkerIcon = () => (
 )
 
 export const PropertyData = ({ feature, large = false }) => {
-  console.log(feature.properties);
   const {
     address,
+    name,
     city,
     phone,
-    store_num,
+    id,
     state
   } = feature.properties
 
@@ -38,7 +36,14 @@ export const PropertyData = ({ feature, large = false }) => {
   const xPaddingClass = large ? 'p-0' : 'p-3'
 
   return (
-        <MarkerIcon />
+    <div className=" bg-slate-200 hover:bg-sky-200 p-4 rounded-md">
+      <div className="flex">
+        <MarkerIcon /> Store # {id}
+      </div>
+      <h3 className="text-lg font-bold">{name}</h3>
+      <address>{address}, {state}</address>
+      <tel>{phone}</tel>
+    </div>
   )
 }
 
@@ -64,25 +69,7 @@ const Card = ({ feature, width = 'auto', shortImage = false, onClick }) => {
 
   return (
     <div className='cursor-pointer' onClick={handleClick}>
-      <div
-        className='bg-white border border-gray-200 rounded-2xl '
-        style={{
-          width,
-          boxShadow: '0px 2px 8px 0px rgba(0, 0, 0, 0.15)'
-        }}
-      >
-        <div
-          className={classNames('bg-cover  m-1.5', {
-            'h-44': shortImage,
-            'h-52': !shortImage
-          })}
-          style={{
-            backgroundImage: `url("${import.meta.env.BASE_URL}/${imageUrl}")`,
-            borderRadius: 11.28
-          }}
-        ></div>
         <PropertyData feature={feature} />
-      </div>
     </div>
   )
 }

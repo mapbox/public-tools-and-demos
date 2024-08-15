@@ -66,9 +66,9 @@ export default function Home() {
         <Modal feature={activeFeature} onClose={handleModalClose} />
       )}
       <main className='flex flex-col h-full'>
-        <div className='flex shrink-0 justify-center h-16 items-center border-b border-gray-200 '>
+        <div className='flex shrink-0 justify-start h-16 items-center border-b border-gray-200 '>
           <div
-            className='bg-contain bg-center bg-no-repeat'
+            className='bg-contain bg-center bg-no-repeat ml-8'
             style={{
               height: 30,
               width: 165,
@@ -165,11 +165,11 @@ In this demo, a popup is rendering a custom React Card component. (The same comp
                       fontWeight: 300,
                       unit: '16px',
                       borderRadius: '8px',
-                      boxShadow: '0px 2.44px 9.75px 0px rgba(95, 126, 155, 0.2)'
+                      boxShadow: 'none',
                     }
                   }}
                 />
-            <div className='text-2xl text-black font-semibold w-full mb-1.5'>
+            <div className='text-2xl text-black font-semibold w-full mb-1.5 mt-8'>
               Stores
             </div>
             <div className='mb-4'>

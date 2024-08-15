@@ -20,8 +20,11 @@ const Map = ({ data, onLoad, onFeatureClick }) => {
   useEffect(() => {
     const map = (mapRef.current = new mapboxgl.Map({
       container: mapContainer.current,
-      center:  [-73.0068096, 44.0574281],
-      zoom: 7
+      center:  [
+        -97.76095065780527,
+        39.15132376255781
+        ],
+      zoom: 4
     }))
 
     map.addControl(new mapboxgl.NavigationControl())
