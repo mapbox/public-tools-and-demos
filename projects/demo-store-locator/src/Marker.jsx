@@ -23,7 +23,8 @@ const Marker = ({ feature, map, children }) => {
 
   useEffect(() => {
     const marker = new mapboxgl.Marker({
-      element: markerEl.current
+      element: markerEl.current,
+      color: "#006241",
     })
       .setLngLat(feature.geometry.coordinates)
       .addTo(map)
