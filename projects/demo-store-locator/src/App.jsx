@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import classNames from 'classnames'
 import { SearchBox } from '@mapbox/search-js-react'
 import mapboxgl from 'mapbox-gl'
@@ -10,14 +10,18 @@ import MapboxTooltip from './MapboxTooltip'
 import Map from './Map'
 import Card from './Card'
 import Modal from './Modal'
+import MarkerIcon from './MarkerIcon';
 import { getFeatures } from './Map/util'
 import housebuyLogo from './img/housebuy-logo.svg'
 
 import './styles.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMap, faList } from '@fortawesome/free-solid-svg-icons'
+import Marker from './Marker'
 
 export default function Home() {
+  // Users location
+  const [userLocation, setUserLocation] = useState(null);
   // the data to be displayed on the map (this is static, but could be updated dynamically as the map view changes)
   const [currentViewData, setCurrentViewData] = useState([])
   // stores the feature that the user is currently viewing (triggers the modal)
@@ -30,10 +34,28 @@ export default function Home() {
   // a ref to hold the Mapbox GL JS Map instance
   const mapInstanceRef = useRef()
 
-  // when the map loads
+  // Use Effect to request Users Location on App mount
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+        }
+      );
+    } else {
+      console.error('Geolocation is not supported by this browser.');
+    }
+  }, []);
+
+  // // when the map loads
   const handleMapLoad = (map) => {
     mapInstanceRef.current = map
-    setCurrentViewData(getFeatures())
   }
 
   // on click, set the active feature
@@ -66,7 +88,7 @@ export default function Home() {
         <Modal feature={activeFeature} onClose={handleModalClose} />
       )}
       <main className='flex flex-col h-full'>
-        <div className='flex shrink-0 justify-start h-16 items-center border-b border-gray-200 '>
+        <div className='flex shrink-0 justify-between h-16 items-center border-b border-gray-200 '>
           <div
             className='bg-contain bg-center bg-no-repeat ml-8'
             style={{
@@ -75,6 +97,18 @@ export default function Home() {
               backgroundImage: `url(${housebuyLogo})`
             }}
           ></div>
+
+          <div>
+          <div className="flex mr-4">
+            {userLocation ? (
+              <p className="flex items-center">
+                <MarkerIcon/> Your location: <pre className=" ml-2 text-sm bg-slate-100 px-2 py-1 rounded border">{userLocation.latitude}, {userLocation.longitude}</pre>
+              </p>
+            ) : (
+              <p>Loading your location...</p>
+            )}
+          </div>
+          </div>
         </div>
         <div className='px-3 flex shrink-0 justify-start h-14 items-center border-b border-gray-200  overflow-scroll'>
           <MapboxTooltip title='Mapbox Search JS' className='mr-3'>
@@ -178,7 +212,7 @@ In this demo, a popup is rendering a custom React Card component. (The same comp
               </div>
             </div>
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4'>
-              {currentViewData.map((feature, i) => {
+              {currentViewData.length > 0 && currentViewData.map((feature, i) => {
                 return (
                   <div key={i} className='mb-1.5'>
                     <Card feature={feature} onClick={handleFeatureClick} />
@@ -196,6 +230,8 @@ In this demo, a popup is rendering a custom React Card component. (The same comp
              
             <Map
               data={currentViewData}
+              setData={setCurrentViewData}
+              userLocation={userLocation}
               onLoad={handleMapLoad}
               onFeatureClick={handleFeatureClick}
             />

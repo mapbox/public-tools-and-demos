@@ -11,7 +11,7 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 export const accessToken = (mapboxgl.accessToken =
   'pk.eyJ1IjoibGFicy1zYW5kYm94IiwiYSI6ImNrMTZuanRmZDA2eGQzYmxqZTlnd21qY3EifQ.Q7DM5HqE5QJzDEnCx8BGFw')
 
-const Map = ({ data, onLoad, onFeatureClick }) => {
+const Map = ({ data, setData, onLoad, onFeatureClick, userLocation }) => {
   const mapContainer = useRef(null)
   const [mapLoaded, setMapLoaded] = useState(false)
 
@@ -20,6 +20,7 @@ const Map = ({ data, onLoad, onFeatureClick }) => {
   useEffect(() => {
     const map = (mapRef.current = new mapboxgl.Map({
       container: mapContainer.current,
+      style: 'mapbox://styles/andrewsepic1/clzws087r005901o1h46j4adt',
       center:  [
         -97.76095065780527,
         39.15132376255781
@@ -33,7 +34,39 @@ const Map = ({ data, onLoad, onFeatureClick }) => {
       onLoad(map)
       setMapLoaded(true)
     })
+
+    map.on('moveend', () => {
+      const features = mapRef.current.queryRenderedFeatures({ layers: ['usa-location-ac9rzv'] });
+      console.log("features", features);
+      setData(features);
+
+      // if (features) {
+      //     const uniqueFeatures = getUniqueFeatures(features, 'iata_code');
+      //     // Populate features for the listing overlay.
+      //     renderListings(uniqueFeatures);
+
+      //     // Clear the input container
+      //     filterEl.value = '';
+
+      //     // Store the current features in sn `airports` variable to
+      //     // later use for filtering on `keyup`.
+      //       airports = uniqueFeatures;
+      //   }
+    });
+
   }, [])
+
+  useEffect(() => {
+    if (userLocation !== null) {
+
+      mapRef.current.flyTo({
+        center: [userLocation.longitude, userLocation.latitude],
+        essential: true, // this animation is considered essential with respect to prefers-reduced-motion
+        zoom: 12
+      });
+    }
+
+  }, [userLocation])
 
   return (
     <>
