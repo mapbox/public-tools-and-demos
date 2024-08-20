@@ -2,8 +2,6 @@
 // Given a point feature and map instance, it handles the creation of a Marker and its associated Popup
 import PropTypes from 'prop-types'
 import { useEffect, useRef, useState } from 'react'
-import classNames from 'classnames'
-import numeral from 'numeral'
 import mapboxgl from 'mapbox-gl'
 
 const Marker = ({ feature, map, children }) => {
@@ -14,6 +12,7 @@ const Marker = ({ feature, map, children }) => {
   const [active, setActive] = useState(false)
 
   const handlePopupOpen = () => {
+    console.log("pops open");
     setActive(true)
   }
 
@@ -22,6 +21,9 @@ const Marker = ({ feature, map, children }) => {
   }
 
   useEffect(() => {
+    // Works here
+    // console.log("feature", feature.geometry.coordinates);
+
     const marker = new mapboxgl.Marker({
       element: markerEl.current,
       color: "#006241",
@@ -58,7 +60,6 @@ const Marker = ({ feature, map, children }) => {
   }, [children])
 
   if (!feature) return null
-  const { sale_price: salePrice } = feature.properties
 
   return (
     <div>

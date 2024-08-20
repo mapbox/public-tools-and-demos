@@ -16,10 +16,6 @@ export const PropertyData = ({ feature, large = false }) => {
     state
   } = feature.properties
 
-  const largerTextClass = large ? 'text-2xl' : 'text-xl'
-  const smallerTextClass = large ? 'text-base' : 'text-sm'
-  const xPaddingClass = large ? 'p-0' : 'p-3'
-
   return (
     <div className=" bg-slate-200 hover:bg-sky-200 p-4 rounded-md">
       <div className="flex">
@@ -27,7 +23,7 @@ export const PropertyData = ({ feature, large = false }) => {
       </div>
       <h3 className="text-lg font-bold">{name}</h3>
       <address>{address}, {state}</address>
-      <tel>{phone}</tel>
+      <a href={`tel:+1${phone}`}>{phone}</a>
     </div>
   )
 }
@@ -45,12 +41,11 @@ PropertyData.propTypes = {
   large: PropTypes.bool
 }
 
-const Card = ({ feature, width = 'auto', shortImage = false, onClick }) => {
+const Card = ({ feature, onClick }) => {
   const handleClick = () => {
+    console.log("clicked in card");
     onClick(feature)
   }
-
-  const { imageUrl } = feature.properties
 
   return (
     <div className='cursor-pointer' onClick={handleClick}>

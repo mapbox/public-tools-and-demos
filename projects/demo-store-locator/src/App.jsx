@@ -84,9 +84,6 @@ export default function Home() {
 
   return (
     <>
-      {activeFeature && (
-        <Modal feature={activeFeature} onClose={handleModalClose} />
-      )}
       <main className='flex flex-col h-full'>
         <div className='flex shrink-0 justify-between h-16 items-center border-b border-gray-200 '>
           <div
@@ -101,9 +98,9 @@ export default function Home() {
           <div>
           <div className="flex mr-4">
             {userLocation ? (
-              <p className="flex items-center">
+              <div className="flex items-center">
                 <MarkerIcon/> Your location: <pre className=" ml-2 text-sm bg-slate-100 px-2 py-1 rounded border">{userLocation.latitude}, {userLocation.longitude}</pre>
-              </p>
+              </div>
             ) : (
               <p>Loading your location...</p>
             )}
@@ -234,6 +231,7 @@ In this demo, a popup is rendering a custom React Card component. (The same comp
               userLocation={userLocation}
               onLoad={handleMapLoad}
               onFeatureClick={handleFeatureClick}
+              activeFeature={activeFeature}
             />
           </div>
         </div>

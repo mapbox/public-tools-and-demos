@@ -11,7 +11,7 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 export const accessToken = (mapboxgl.accessToken =
   'pk.eyJ1IjoibGFicy1zYW5kYm94IiwiYSI6ImNrMTZuanRmZDA2eGQzYmxqZTlnd21qY3EifQ.Q7DM5HqE5QJzDEnCx8BGFw')
 
-const Map = ({ data, setData, onLoad, onFeatureClick, userLocation }) => {
+const Map = ({ data, setData, onLoad, onFeatureClick, userLocation, activeFeature }) => {
   const mapContainer = useRef(null)
   const [mapLoaded, setMapLoaded] = useState(false)
 
@@ -35,25 +35,6 @@ const Map = ({ data, setData, onLoad, onFeatureClick, userLocation }) => {
       setMapLoaded(true)
     })
 
-    map.on('moveend', () => {
-      const features = mapRef.current.queryRenderedFeatures({ layers: ['usa-location-ac9rzv'] });
-      console.log("features", features);
-      setData(features);
-
-      // if (features) {
-      //     const uniqueFeatures = getUniqueFeatures(features, 'iata_code');
-      //     // Populate features for the listing overlay.
-      //     renderListings(uniqueFeatures);
-
-      //     // Clear the input container
-      //     filterEl.value = '';
-
-      //     // Store the current features in sn `airports` variable to
-      //     // later use for filtering on `keyup`.
-      //       airports = uniqueFeatures;
-      //   }
-    });
-
   }, [])
 
   useEffect(() => {
@@ -64,9 +45,30 @@ const Map = ({ data, setData, onLoad, onFeatureClick, userLocation }) => {
         essential: true, // this animation is considered essential with respect to prefers-reduced-motion
         zoom: 12
       });
+
+      mapRef.current.on('moveend', () => {
+        const features = mapRef.current.queryRenderedFeatures({ layers: ['usa-location-ac9rzv'] });
+        setData(features);
+      });
+
     }
 
   }, [userLocation])
+
+  // Move to active feature
+  useEffect(() => {
+   console.log("feature in Map.js", activeFeature);
+   
+   if(!activeFeature) {
+    return;
+   }
+    // const long = activeFeature._geometry.coordinates[0];
+    // const lat = activeFeature._geometry.coordinates
+      mapRef.current.flyTo({
+        center: activeFeature.geometry.coordinates,
+        essential: true, // this animation is considered essential with respect to prefers-reduced-motion
+      });
+  }, [activeFeature])
 
   return (
     <>
@@ -83,7 +85,7 @@ const Map = ({ data, setData, onLoad, onFeatureClick, userLocation }) => {
 }
 
 Map.propTypes = {
-  data: PropTypes.object,
+  data: PropTypes.array,
   onFeatureClick: PropTypes.func,
   onLoad: PropTypes.func
 }
