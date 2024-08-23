@@ -6,7 +6,7 @@ export const pluralize = (number, word) => {
   return `${number} ${word}${number === 1 ? '' : 's'} `
 }
 
-export const PropertyData = ({ feature, large = false }) => {
+export const PropertyData = ({ feature }) => {
   const {
     address,
     name,
@@ -17,7 +17,7 @@ export const PropertyData = ({ feature, large = false }) => {
   } = feature.properties
 
   return (
-    <div className=" bg-slate-200 hover:bg-sky-200 p-4 rounded-md">
+    <div className="bg-white">
       <div className="flex">
         <MarkerIcon /> Store # {id}
       </div>
@@ -42,14 +42,21 @@ PropertyData.propTypes = {
   large: PropTypes.bool
 }
 
-const Card = ({ feature, onClick }) => {
+const Card = ({ feature, onClick, activeFeature }) => {
   const handleClick = () => {
     onClick(feature)
   }
 
+  if(activeFeature) {
+    console.log("this is the active feature", activeFeature);
+  }
+  const isActiveFeature = (feature == activeFeature) ? true : false;
+
   return (
-    <div className='cursor-pointer' onClick={handleClick}>
-        <PropertyData feature={feature} />
+    <div 
+      className={`rounded-md cursor-pointer p-4 ${isActiveFeature ? 'bg-tintgreen border-deepgreen border-2' : 'hover:bg-slate-100'}`} 
+     onClick={handleClick}>
+        <PropertyData feature={feature} activeFeature={activeFeature} />
     </div>
   )
 }

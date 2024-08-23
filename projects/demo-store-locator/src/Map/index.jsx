@@ -3,7 +3,7 @@ import { useRef, useEffect, useState, useMemo } from 'react'
 import mapboxgl from 'mapbox-gl'
 
 import Marker from '../Marker'
-import PropertyData from '../Card'
+import { PropertyData } from '../Card'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
@@ -49,7 +49,6 @@ const Map = ({ setData, onLoad, onFeatureClick, userLocation, activeFeature }) =
 
       mapRef.current.on('zoomend', () => {
         const locationsInView = mapRef.current.queryRenderedFeatures({ layers: ['usa-location-ac9rzv'] });
-        console.log("locationsInView", locationsInView);
         setFeatures(locationsInView)
         setData(locationsInView);
       });
@@ -84,7 +83,7 @@ const Map = ({ setData, onLoad, onFeatureClick, userLocation, activeFeature }) =
             key={i} 
             feature={d}
             map={mapRef.current}>
-            <PropertyData feature={d} />
+            <PropertyData className="bg-white" feature={d} />
           </Marker>
         ))}
     </>

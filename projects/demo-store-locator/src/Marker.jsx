@@ -26,10 +26,23 @@ const Marker = ({ feature, map, children, activeFeature }) => {
       markerRef.current.remove()
     }
 
-    const marker = new mapboxgl.Marker({
-      element: markerEl.current,
-      color: "#006241",
-    })
+    // const el = <div 
+    //             style={{
+    //               //backgroundImage: `url('img/location-marker.svg')`,
+    //               backgroundColor: "red",
+    //               backgroundSize: "cover",
+    //               width: "50px",
+    //               height: "50px",
+    //               borderRadius: "50%",
+    //               cursor: "pointer"
+    //           }}>
+    //         </div>;
+
+    // Need to 'react' this
+    const el = document.createElement('div');
+    el.className = 'marker';
+
+    const marker = new mapboxgl.Marker(el)
       .setLngLat(feature.geometry.coordinates)
       .addTo(map)
 

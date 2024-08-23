@@ -38,3 +38,14 @@ body {
 .react-tooltip {
   pointer-events: auto !important;
 }
+
+.marker {
+  background-image: url('/img/location-marker.svg');
+  background-size: contain;
+  background-position-x: 50%;
+  background-repeat: no-repeat;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+}
