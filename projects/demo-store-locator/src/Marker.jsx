@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 
-const Marker = ({ feature, map, children }) => {
+const Marker = ({ feature, map, children, activeFeature }) => {
   const markerRef = useRef()
   const markerEl = useRef()
   const popupEl = useRef()
@@ -21,8 +21,10 @@ const Marker = ({ feature, map, children }) => {
   }
 
   useEffect(() => {
-    // Works here
-    // console.log("feature", feature.geometry.coordinates);
+    // Remove previous marker if it exists
+    if(markerRef.current) {
+      markerRef.current.remove()
+    }
 
     const marker = new mapboxgl.Marker({
       element: markerEl.current,
@@ -32,52 +34,45 @@ const Marker = ({ feature, map, children }) => {
       .addTo(map)
 
     marker.addTo(map)
-
     markerRef.current = marker
-  }, [feature])
+  
+  }, [])
 
   useEffect(() => {
-    const marker = markerRef.current
-    if (!marker) return
-
-    let popup
-
-    if (children) {
-      popup = new mapboxgl.Popup({
+    // Add popup to active Feature
+    if (feature == activeFeature) {
+      let popup = new mapboxgl.Popup({
         closeButton: false,
         closeOnClick: true,
         closeOnMove: true,
         maxWidth: '300px',
-        offset: 14
+        offset: 30
       })
         .setDOMContent(popupEl.current)
-        .on('open', handlePopupOpen)
-        .on('close', handlePopupClose)
-    }
+        .on('open', handlePopupOpen)  
+  
+      // if popup is undefined, this will remove the popup from the marker
+      markerRef.current.setPopup(popup)
+    
+      // once the map has moved to the 
+      map.on('moveend', () => {
+        markerRef.current.togglePopup();       
+      });
 
-    // if popup is undefined, this will remove the popup from the marker
-    marker.setPopup(popup)
-  }, [children])
+    }
+    
+    // Remove popups of inactive Features
+    if (feature !== activeFeature) {
+      markerRef.current.setPopup(null);
+    }
+  }, [activeFeature])
 
   if (!feature) return null
 
   return (
-    <div>
-       <svg
-    width='20'
-    height='20'
-    viewBox='0 0 20 20'
-    fill='none'
-    xmlns='http://www.w3.org/2000/svg'
-  >
-    <path
-      d='M5 7.71428C5 5.15607 7.19204 3 10 3C12.808 3 15 5.15607 15 7.71428C15 9.11527 14.179 10.8133 12.9489 12.6083C12.0915 13.8594 11.1256 15.0366 10.2524 16.1008C10.1673 16.2045 10.0831 16.3071 10 16.4086C9.91686 16.3071 9.83265 16.2045 9.74757 16.1008C8.8744 15.0366 7.9085 13.8594 7.0511 12.6083C5.82101 10.8133 5 9.11527 5 7.71428Z'
-      stroke='#006241'
-      strokeWidth='2'
-    />
-  </svg>
+    <>
       <div ref={popupEl}>{children}</div>
-    </div>
+    </>
   )
 }
 

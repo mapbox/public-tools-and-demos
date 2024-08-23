@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, useMemo } from 'react'
 import mapboxgl from 'mapbox-gl'
 
 import Marker from '../Marker'
-import Card from '../Card'
+import PropertyData from '../Card'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
@@ -11,9 +11,10 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 export const accessToken = (mapboxgl.accessToken =
   'pk.eyJ1IjoibGFicy1zYW5kYm94IiwiYSI6ImNrMTZuanRmZDA2eGQzYmxqZTlnd21qY3EifQ.Q7DM5HqE5QJzDEnCx8BGFw')
 
-const Map = ({ data, setData, onLoad, onFeatureClick, userLocation, activeFeature }) => {
-  const mapContainer = useRef(null)
-  const [mapLoaded, setMapLoaded] = useState(false)
+const Map = ({ setData, onLoad, onFeatureClick, userLocation, activeFeature }) => {
+  const mapContainer = useRef(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
+  const [features, setFeatures] = useState();
 
   let mapRef = useRef(null)
 
@@ -43,41 +44,47 @@ const Map = ({ data, setData, onLoad, onFeatureClick, userLocation, activeFeatur
       mapRef.current.flyTo({
         center: [userLocation.longitude, userLocation.latitude],
         essential: true, // this animation is considered essential with respect to prefers-reduced-motion
-        zoom: 12
+        zoom: 11
       });
 
-      mapRef.current.on('moveend', () => {
-        const features = mapRef.current.queryRenderedFeatures({ layers: ['usa-location-ac9rzv'] });
-        setData(features);
+      mapRef.current.on('zoomend', () => {
+        const locationsInView = mapRef.current.queryRenderedFeatures({ layers: ['usa-location-ac9rzv'] });
+        console.log("locationsInView", locationsInView);
+        setFeatures(locationsInView)
+        setData(locationsInView);
       });
-
     }
 
   }, [userLocation])
 
   // Move to active feature
   useEffect(() => {
-   console.log("feature in Map.js", activeFeature);
    
    if(!activeFeature) {
     return;
    }
-    // const long = activeFeature._geometry.coordinates[0];
-    // const lat = activeFeature._geometry.coordinates
-      mapRef.current.flyTo({
-        center: activeFeature.geometry.coordinates,
-        essential: true, // this animation is considered essential with respect to prefers-reduced-motion
-      });
+    mapRef.current.easeTo({
+      center: activeFeature.geometry.coordinates,
+      duration: 250,
+      easing(t) {
+          return t;
+      }
+    });
   }, [activeFeature])
 
   return (
     <>
       <div ref={mapContainer} className='h-full w-full' />
       {mapLoaded &&
-        data &&
-        data.map((d, i) => (
-          <Marker key={i} feature={d} map={mapRef.current}>
-            <Card feature={d} width={300} shortImage onClick={onFeatureClick} />
+        features &&
+        features.map((d, i) => (
+          <Marker 
+            activeFeature={activeFeature}
+            setActiveFeature={onFeatureClick}
+            key={i} 
+            feature={d}
+            map={mapRef.current}>
+            <PropertyData feature={d} />
           </Marker>
         ))}
     </>

@@ -22,7 +22,8 @@ export const PropertyData = ({ feature, large = false }) => {
         <MarkerIcon /> Store # {id}
       </div>
       <h3 className="text-lg font-bold">{name}</h3>
-      <address>{address}, {state}</address>
+      <address>{address}</address>
+      <address>{city}, {state}</address>
       <a href={`tel:+1${phone}`}>{phone}</a>
     </div>
   )
@@ -43,7 +44,6 @@ PropertyData.propTypes = {
 
 const Card = ({ feature, onClick }) => {
   const handleClick = () => {
-    console.log("clicked in card");
     onClick(feature)
   }
 
