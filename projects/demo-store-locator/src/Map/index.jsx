@@ -83,7 +83,7 @@ const Map = ({ setData, onLoad, onFeatureClick, userLocation, activeFeature }) =
             key={i} 
             feature={d}
             map={mapRef.current}>
-            <PropertyData className="bg-white" feature={d} />
+            <PropertyData feature={d} />
           </Marker>
         ))}
     </>

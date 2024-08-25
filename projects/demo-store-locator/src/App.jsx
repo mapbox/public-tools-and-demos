@@ -9,9 +9,7 @@ import MapboxTooltip from './MapboxTooltip'
 
 import Map from './Map'
 import Card from './Card'
-import Modal from './Modal'
 import MarkerIcon from './MarkerIcon';
-import { getFeatures } from './Map/util';
 import cafeLogo from './img/cafe-logo.svg';
 
 import './styles.css'
@@ -125,7 +123,7 @@ export default function Home() {
                   value={searchValue}
                   onChange={handleSearchChange}
                   accessToken={accessToken}
-                  marker
+                  marker={false}
                   mapboxgl={mapboxgl}
                   placeholder='Search for an address, city, zip, etc'
                   map={mapInstanceRef.current}
@@ -135,7 +133,7 @@ export default function Home() {
                       fontWeight: 300,
                       unit: '16px',
                       borderRadius: '8px',
-                      boxShadow: 'none',
+                      // boxShadow: 'none',
                     }
                   }}
                 />

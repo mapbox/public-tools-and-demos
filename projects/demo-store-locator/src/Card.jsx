@@ -17,14 +17,14 @@ export const PropertyData = ({ feature }) => {
   } = feature.properties
 
   return (
-    <div className="bg-white">
+    <div>
       <div className="flex">
-        <MarkerIcon /> Store # {id}
+        <MarkerIcon/> Store # {id}
       </div>
       <h3 className="text-lg font-bold">{name}</h3>
       <address>{address}</address>
       <address>{city}, {state}</address>
-      <a href={`tel:+1${phone}`}>{phone}</a>
+      <a className="text-deepgreen font-bold" href={`tel:+1${phone}`}>{phone}</a>
     </div>
   )
 }
@@ -47,9 +47,6 @@ const Card = ({ feature, onClick, activeFeature }) => {
     onClick(feature)
   }
 
-  if(activeFeature) {
-    console.log("this is the active feature", activeFeature);
-  }
   const isActiveFeature = (feature == activeFeature) ? true : false;
 
   return (

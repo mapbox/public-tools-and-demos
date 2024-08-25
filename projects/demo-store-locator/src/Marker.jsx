@@ -6,19 +6,7 @@ import mapboxgl from 'mapbox-gl'
 
 const Marker = ({ feature, map, children, activeFeature }) => {
   const markerRef = useRef()
-  const markerEl = useRef()
   const popupEl = useRef()
-
-  const [active, setActive] = useState(false)
-
-  const handlePopupOpen = () => {
-    console.log("pops open");
-    setActive(true)
-  }
-
-  const handlePopupClose = () => {
-    setActive(false)
-  }
 
   useEffect(() => {
     // Remove previous marker if it exists
@@ -46,7 +34,6 @@ const Marker = ({ feature, map, children, activeFeature }) => {
       .setLngLat(feature.geometry.coordinates)
       .addTo(map)
 
-    marker.addTo(map)
     markerRef.current = marker
   
   }, [])
@@ -60,10 +47,8 @@ const Marker = ({ feature, map, children, activeFeature }) => {
         closeOnMove: true,
         maxWidth: '300px',
         offset: 30
-      })
-        .setDOMContent(popupEl.current)
-        .on('open', handlePopupOpen)  
-  
+      }).setDOMContent(popupEl.current)
+    
       // if popup is undefined, this will remove the popup from the marker
       markerRef.current.setPopup(popup)
     
@@ -84,9 +69,10 @@ const Marker = ({ feature, map, children, activeFeature }) => {
 
   return (
     <>
-      <div ref={popupEl}>{children}</div>
+      <div className={` ${(feature == activeFeature ) ? '' : 'hidden'} bg-white rounded-md cursor-pointer p-4`} ref={popupEl}>{children}</div>
     </>
   )
+
 }
 
 Marker.propTypes = {
