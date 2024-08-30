@@ -1,17 +1,17 @@
 import PropTypes from 'prop-types'
-import { useRef, useEffect, useState, useMemo } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 
 import Marker from '../Marker'
-import { PropertyData } from '../Card'
+import { LocationData } from '../Card'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
 export const accessToken = (mapboxgl.accessToken =
-  'pk.eyJ1IjoibGFicy1zYW5kYm94IiwiYSI6ImNrMTZuanRmZDA2eGQzYmxqZTlnd21qY3EifQ.Q7DM5HqE5QJzDEnCx8BGFw')
+  'pk.eyJ1IjoiZXhhbXBsZXMiLCJhIjoiY2lqbmp1MzNhMDBud3VvbHhqbjY1cnV2cCJ9.uGJJU2wgtXzcBNc62vY4_A')
 
-const Map = ({ setData, onLoad, onFeatureClick, userLocation, activeFeature }) => {
+const Map = ({ setData, onLoad, onFeatureClick, userLocation, activeFeature, searchResult }) => {
   const mapContainer = useRef(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [features, setFeatures] = useState();
@@ -21,7 +21,7 @@ const Map = ({ setData, onLoad, onFeatureClick, userLocation, activeFeature }) =
   useEffect(() => {
     const map = (mapRef.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: 'mapbox://styles/andrewsepic1/clzws087r005901o1h46j4adt',
+      style: 'mapbox://styles/examples/cm0foo08s01tn01qq2dzccr6i',
       center:  [
         -97.76095065780527,
         39.15132376255781
@@ -36,21 +36,21 @@ const Map = ({ setData, onLoad, onFeatureClick, userLocation, activeFeature }) =
       setMapLoaded(true)
     })
 
+    map.on('zoomend', () => {
+      const locationsInView = mapRef.current.queryRenderedFeatures({ layers: ['good-locations-c3utwz'] });
+      console.log("locationsInView", locationsInView);
+      setFeatures(locationsInView)
+      setData(locationsInView);
+    });
+
   }, [])
 
   useEffect(() => {
     if (userLocation !== null) {
-
       mapRef.current.flyTo({
         center: [userLocation.longitude, userLocation.latitude],
         essential: true, // this animation is considered essential with respect to prefers-reduced-motion
         zoom: 11
-      });
-
-      mapRef.current.on('zoomend', () => {
-        const locationsInView = mapRef.current.queryRenderedFeatures({ layers: ['usa-location-ac9rzv'] });
-        setFeatures(locationsInView)
-        setData(locationsInView);
       });
     }
 
@@ -76,16 +76,9 @@ const Map = ({ setData, onLoad, onFeatureClick, userLocation, activeFeature }) =
       <div ref={mapContainer} className='h-full w-full' />
       {mapLoaded &&
         features &&
-        features.map((d, i) => (
-          <Marker 
-            activeFeature={activeFeature}
-            setActiveFeature={onFeatureClick}
-            key={i} 
-            feature={d}
-            map={mapRef.current}>
-            <PropertyData feature={d} />
-          </Marker>
-        ))}
+        <MarkerList 
+          features={features}/>
+      }
     </>
   )
 }

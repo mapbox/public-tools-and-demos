@@ -18,6 +18,7 @@ import { faMap, faList } from '@fortawesome/free-solid-svg-icons'
 
 export default function Home() {
   // Users location
+  const [denyLocation, setDenyLocation ] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   // the data to be displayed on the map (this is static, but could be updated dynamically as the map view changes)
   const [currentViewData, setCurrentViewData] = useState([])
@@ -25,6 +26,8 @@ export default function Home() {
   const [activeFeature, setActiveFeature] = useState()
   // the current search value, used in the controlled mapbox-search-js input
   const [searchValue, setSearchValue] = useState('')
+  // the selected search result, chosen from suggestions
+  const [searchResult, setSearchResult] = useState('')
   // for toggling between map view and card view on small screens
   const [activeMobileView, setActiveMobileView] = useState('map')
 
@@ -43,6 +46,8 @@ export default function Home() {
         },
         (error) => {
           console.error('Error getting location:', error);
+          setDenyLocation(true);
+          
         }
       );
     } else {
@@ -68,6 +73,12 @@ export default function Home() {
   // set the search value as the user types
   const handleSearchChange = (newValue) => {
     setSearchValue(newValue)
+  }
+
+  const handleSearchResult = (value) => {
+    console.log("search result selected");
+    setSearchResult(value)
+    return value
   }
 
   // toggle the map and card view on mobile devices
@@ -99,7 +110,7 @@ export default function Home() {
                 <MarkerIcon/> Your location: <pre className=" ml-2 text-sm bg-slate-100 px-2 py-1 rounded border">{userLocation.latitude}, {userLocation.longitude}</pre>
               </div>
             ) : (
-              <p>Loading your location...</p>
+              <p>{denyLocation ? '' : 'Loading your location...'}</p>
             )}
           </div>
           </div>
@@ -127,6 +138,7 @@ export default function Home() {
                   mapboxgl={mapboxgl}
                   placeholder='Search for an address, city, zip, etc'
                   map={mapInstanceRef.current}
+                  onRetrieve={handleSearchResult}
                   theme={{
                     variables: {
                       fontFamily: '"Open Sans", sans-serif',
@@ -169,6 +181,7 @@ export default function Home() {
               onLoad={handleMapLoad}
               onFeatureClick={handleFeatureClick}
               activeFeature={activeFeature}
+              searchResult={searchResult}
             />
           </div>
         </div>

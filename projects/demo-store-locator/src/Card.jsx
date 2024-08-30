@@ -6,7 +6,7 @@ export const pluralize = (number, word) => {
   return `${number} ${word}${number === 1 ? '' : 's'} `
 }
 
-export const PropertyData = ({ feature }) => {
+export const LocationData = ({ feature }) => {
   const {
     address,
     name,
@@ -29,17 +29,16 @@ export const PropertyData = ({ feature }) => {
   )
 }
 
-PropertyData.propTypes = {
+LocationData.propTypes = {
   feature: PropTypes.shape({
     properties: PropTypes.shape({
-      sale_price: PropTypes.any,
-      number_of_bedrooms: PropTypes.any,
-      number_of_bathrooms: PropTypes.any,
-      total_livable_area: PropTypes.any,
-      location: PropTypes.any
+      address: PropTypes.string,
+      name: PropTypes.string,
+      phone: PropTypes.any,
+      id: PropTypes.string,
+      state: PropTypes.string
     })
-  }),
-  large: PropTypes.bool
+  })
 }
 
 const Card = ({ feature, onClick, activeFeature }) => {
@@ -53,7 +52,7 @@ const Card = ({ feature, onClick, activeFeature }) => {
     <div 
       className={`rounded-md cursor-pointer p-4 ${isActiveFeature ? 'bg-tintgreen border-deepgreen border-2' : 'hover:bg-slate-100'}`} 
      onClick={handleClick}>
-        <PropertyData feature={feature} activeFeature={activeFeature} />
+        <LocationData feature={feature} activeFeature={activeFeature} />
     </div>
   )
 }
