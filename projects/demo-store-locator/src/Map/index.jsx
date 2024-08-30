@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import { useRef, useEffect, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 
-import Marker from '../Marker'
+import MarkerList from '../MarkerList'
 import { LocationData } from '../Card'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -77,7 +77,9 @@ const Map = ({ setData, onLoad, onFeatureClick, userLocation, activeFeature, sea
       {mapLoaded &&
         features &&
         <MarkerList 
-          features={features}/>
+          features={features}
+          map={mapRef.current}
+          searchResult={searchResult}/>
       }
     </>
   )

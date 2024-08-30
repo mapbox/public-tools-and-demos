@@ -7,7 +7,6 @@ import mapboxgl from 'mapbox-gl'
 const Marker = ({ feature, map, children, activeFeature, searchResult }) => {
   const markerRef = useRef()
   const popupEl = useRef()
-  const prevSearchResultRef = useRef();
 
   //console.log("marker renders for", feature.properties.name);
 
@@ -69,22 +68,6 @@ const Marker = ({ feature, map, children, activeFeature, searchResult }) => {
       markerRef.current.setPopup(null);
     }
   }, [activeFeature])
-
-  // Clean up markers on new searchResult
-  useEffect(() => {
-    const prevSearchResult = prevSearchResultRef.current;
-    console.log("searchResult Changes");
-    if (prevSearchResult && prevSearchResult !== searchResult) { 
-      // Remove previous marker if it exists
-      console.log("markers cleared");
-      if(markerRef.current) {
-         console.log("marker removed for", markerRef.current)
-         markerRef.current.remove()
-      }
-    }
-     // Update the ref with the current searchResult after the effect
-     prevSearchResultRef.current = searchResult;
-  }, [searchResult])
 
   if (!feature) return null
 
