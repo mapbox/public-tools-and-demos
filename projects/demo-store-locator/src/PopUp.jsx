@@ -22,9 +22,12 @@ const PopUp = ({ feature, map, markerRef }) => {
         maxWidth: '300px',
         offset: 30
       })
+      .setDOMContent(popupEl.current)
+      // .on('open', handlePopupOpen)
+      // .on('close', handlePopupClose)
     
       // if popup is undefined, this will remove the popup from the marker
-      markerRef.setPopup(popup)
+      markerRef.setPopup(popup);
     
       // once the map has moved to the 
       map.on('moveend', () => {
