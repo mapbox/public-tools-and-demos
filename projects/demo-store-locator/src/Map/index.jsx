@@ -79,7 +79,8 @@ const Map = ({ setData, onLoad, onFeatureClick, userLocation, activeFeature, sea
         <MarkerList 
           features={features}
           map={mapRef.current}
-          searchResult={searchResult}/>
+          searchResult={searchResult}
+          activeFeature={activeFeature}/>
       }
     </>
   )

@@ -1,15 +1,17 @@
 import PropTypes from 'prop-types'
 import { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
+import PopUp from './PopUp';
+import { render } from 'react-dom';
 
-const MarkerList = ({features, map, searchResult}) => {
+const MarkerList = ({features, map, searchResult, activeFeature}) => {
     const renderedMarkersList = useRef([]);
     const renderedFeaturesList = useRef([]);
     const prevSearchResultRef = useRef();
 
     // Function to clear all markers
     function clearMarkers() {
-        for (var i = renderedMarkersList.length - 1; i >= 0; i--) {
+        for (var i = renderedMarkersList.current.length - 1; i >= 0; i--) {
             renderedMarkersList.current[i].remove();
         }
         renderedMarkersList.current = [];
@@ -44,18 +46,27 @@ const MarkerList = ({features, map, searchResult}) => {
     // Remove markers on new SearchBox Query
     useEffect(() => {
         const prevSearchResult = prevSearchResultRef.current;
-        console.log("searchResult Changes");
-        if (prevSearchResult && prevSearchResult !== searchResult) { 
-            console.log("markers cleared");
+        if (searchResult && prevSearchResult !== searchResult) { 
             // Call the function to clear all markers
+            console.log("markers cleared");
             clearMarkers();
         }
         // Update the ref with the current searchResult after the effect
         prevSearchResultRef.current = searchResult;
     }, [searchResult])
 
+    // useEffect(() => {
+    //     if(activeFeature) {
+    //         console.log("active Feature ", activeFeature.properties.name);
+    //     }
+    // }, [activeFeature])
 
+    // Remove popups of inactive Features
+    //  if (feature !== activeFeature) {
+    //     markerRef.current.setPopup(null);
+    //   }
 
+    // 'react' marker?
     // features.map((d, i) => (
     //     <Marker 
     //       activeFeature={activeFeature}
@@ -67,6 +78,27 @@ const MarkerList = ({features, map, searchResult}) => {
     //       <LocationData feature={d} />
     //     </Marker>
     //   ))}
+
+    return (
+        <>
+            {renderedFeaturesList.current && 
+            renderedFeaturesList.current.map((feature, index) => (
+                feature == activeFeature ? 
+                    <PopUp 
+                        feature={feature} 
+                        key={index} 
+                        map={map} 
+                        markerRef={renderedMarkersList.current[index]}/> 
+                    : ''
+            ))}
+        </> 
+    )
 }
 
 export default MarkerList;
+
+MarkerList.propTypes = {
+    features: PropTypes.array,
+    map: PropTypes.any,
+    searchResult: PropTypes.string
+}

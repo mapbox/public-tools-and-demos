@@ -27,7 +27,7 @@ export default function Home() {
   // the current search value, used in the controlled mapbox-search-js input
   const [searchValue, setSearchValue] = useState('')
   // the selected search result, chosen from suggestions
-  const [searchResult, setSearchResult] = useState('')
+  const [searchResult, setSearchResult] = useState(null)
   // for toggling between map view and card view on small screens
   const [activeMobileView, setActiveMobileView] = useState('map')
 
