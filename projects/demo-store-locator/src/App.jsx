@@ -149,15 +149,15 @@ export default function Home() {
                     }
                   }}
                 />
-            <div className='text-2xl text-black font-semibold w-full mb-1.5 mt-8'>
+            <div className='text-2xl text-black font-semibold w-full mb-1.5 mt-8 z-0'>
               Stores
             </div>
-            <div className='mb-4'>
+            <div className='mb-4 z-0'>
               <div className='font-medium text-gray-500'>
                 {currentViewData.length} results
               </div>
             </div>
-            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 z-0'>
               {currentViewData.length > 0 && currentViewData.map((feature, i) => {
                 return (
                   <div key={i} className='mb-1.5'>

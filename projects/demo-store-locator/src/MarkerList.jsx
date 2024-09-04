@@ -17,15 +17,17 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature}) => {
             renderedMarkersList.current[i].remove();
         }
         renderedMarkersList.current = [];
+        renderedFeaturesList.current = [];
     }
 
-    function handlePopupOpen() {
-        console.log("opens")
-      }
+    // For debugging
+    // function handlePopupOpen() {
+    //     console.log("opens")
+    //   }
     
-      function handlePopupClose() {
-        console.log("closes")
-      }
+    //   function handlePopupClose() {
+    //     console.log("closes")
+    //   }
 
     useEffect(() => {
         features.forEach((feature) => {
@@ -40,8 +42,6 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature}) => {
                 const marker = new mapboxgl.Marker(el)
                 .setLngLat(feature.geometry.coordinates)
                 .addTo(mapRef)
-
-                //console.log("Marker added for", feature.properties.name);
                 
                 // Add marker objects to list for removal later
                 renderedMarkersList.current.push(marker);
@@ -68,8 +68,6 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature}) => {
     // Add popup to active Feature
     useEffect(() => {
 
-        console.log("useEffect runs");
-
         if(!activeFeature) {
             return;
         }
@@ -94,8 +92,8 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature}) => {
                 offset: 30
             })
             .setDOMContent(popupEl.current)
-            .on('open', handlePopupOpen)
-            .on('close', handlePopupClose)
+            // .on('open', handlePopupOpen)
+            // .on('close', handlePopupClose)
             
             // if popup is undefined, this will remove the popup from the marker
             renderedMarkersList.current[matchingIndex].setPopup(popup);
@@ -108,17 +106,12 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature}) => {
             console.log('Cant find the active Feature in renderedFeatures');
         }
 
-        return () => {
-        // Nuke the PopUp from the DOM on component unmount
-        };
-
     },[activeFeature])
 
     useEffect(() => {
         if (activeMarker) {
             // once the map has moved
             mapRef.on('moveend', () => {
-              console.log("map finishes move");
               activeMarker.togglePopup();       
           });
         }
@@ -140,5 +133,5 @@ export default MarkerList;
 MarkerList.propTypes = {
     features: PropTypes.array,
     mapRef: PropTypes.any,
-    searchResult: PropTypes.string
+    searchResult: PropTypes.object
 }
