@@ -19,9 +19,16 @@ const MarkerList = ({features, map, searchResult, activeFeature}) => {
 
     useEffect(() => {
         features.forEach((feature) => {
-            
+
+            console.log("rendered FeaturesList", renderedFeaturesList.current);
+            // console.log(typeof renderedFeaturesList.current);
+            console.log("feature", feature);
+            //console.log(typeof feature);
+
             // Check to see if marker has already been added for this feature
-            if(!renderedFeaturesList.current.includes(feature)) {
+            if (!renderedFeaturesList.current.some(f => f.properties.address === feature.properties.address)) {
+
+                console.log("marker hasn't been added for", feature.properties.name);
                 
                 // Need to 'reactify' this
                 const el = document.createElement('div');
