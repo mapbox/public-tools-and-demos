@@ -8,6 +8,8 @@ const MarkerList = ({features, map, searchResult, activeFeature}) => {
     const renderedMarkersList = useRef([]);
     const renderedFeaturesList = useRef([]);
     const prevSearchResultRef = useRef();
+    const popupEl = useRef();
+    const activeMarkerRef = useRef();
 
     // Function to clear all markers
     function clearMarkers() {
@@ -17,18 +19,19 @@ const MarkerList = ({features, map, searchResult, activeFeature}) => {
         renderedMarkersList.current = [];
     }
 
+    function handlePopupOpen() {
+        console.log("opens")
+      }
+    
+      function handlePopupClose() {
+        console.log("closes")
+      }
+
     useEffect(() => {
         features.forEach((feature) => {
 
-            console.log("rendered FeaturesList", renderedFeaturesList.current);
-            // console.log(typeof renderedFeaturesList.current);
-            console.log("feature", feature);
-            //console.log(typeof feature);
-
             // Check to see if marker has already been added for this feature
             if (!renderedFeaturesList.current.some(f => f.properties.address === feature.properties.address)) {
-
-                console.log("marker hasn't been added for", feature.properties.name);
                 
                 // Need to 'reactify' this
                 const el = document.createElement('div');
@@ -38,7 +41,7 @@ const MarkerList = ({features, map, searchResult, activeFeature}) => {
                 .setLngLat(feature.geometry.coordinates)
                 .addTo(map)
 
-                console.log("Marker added for", feature.properties.name);
+                //console.log("Marker added for", feature.properties.name);
                 
                 // Add marker objects to list for removal later
                 renderedMarkersList.current.push(marker);
@@ -62,42 +65,60 @@ const MarkerList = ({features, map, searchResult, activeFeature}) => {
         prevSearchResultRef.current = searchResult;
     }, [searchResult])
 
-    // useEffect(() => {
-    //     if(activeFeature) {
-    //         console.log("active Feature ", activeFeature.properties.name);
-    //     }
-    // }, [activeFeature])
+    // Add popup to active Feature
+    useEffect(() => {
 
-    // Remove popups of inactive Features
-    //  if (feature !== activeFeature) {
-    //     markerRef.current.setPopup(null);
-    //   }
+        if(!activeFeature) {
+            return;
+        }
+        
+        // Remove popUp from previous active Marker
+        // if(activeMarkerRef.current) {
+        //     activeMarkerRef.current.setPopup(null);
+        // }
 
-    // 'react' marker?
-    // features.map((d, i) => (
-    //     <Marker 
-    //       activeFeature={activeFeature}
-    //       setActiveFeature={onFeatureClick}
-    //       key={i} 
-    //       feature={d}
-    //       map={mapRef.current}
-    //       searchResult={searchResult}>
-    //       <LocationData feature={d} />
-    //     </Marker>
-    //   ))}
+        const matchingIndex = renderedFeaturesList.current.findIndex(
+            (feature) => feature.properties.address === activeFeature.properties.address
+        );
+
+        if (matchingIndex !== -1) {
+            console.log('Found feature:', matchingIndex);
+             
+            let popup = new mapboxgl.Popup({
+                closeButton: false,
+                closeOnClick: true,
+                closeOnMove: true,
+                maxWidth: '300px',
+                offset: 30
+            })
+            .setDOMContent(popupEl.current)
+            .on('open', handlePopupOpen)
+            .on('close', handlePopupClose)
+            
+            // if popup is undefined, this will remove the popup from the marker
+            renderedMarkersList.current[matchingIndex].setPopup(popup);
+
+            // once the map has moved to the 
+            map.on('moveend', () => {
+                console.log("map finishes move");
+                renderedMarkersList.current[matchingIndex].togglePopup();       
+            });
+
+            // activeMarkerRef.current = renderedMarkersList.current[matchingIndex];
+
+        } else {
+            console.log('Cant find the active Feature in renderedFeatures');
+        }
+
+        return () => {
+        // Nuke the PopUp from the DOM on component unmount
+        };
+
+    },[activeFeature])
 
     return (
         <>
-            {renderedFeaturesList.current && 
-            renderedFeaturesList.current.map((feature, index) => (
-                feature == activeFeature ? 
-                    <PopUp 
-                        feature={feature} 
-                        key={index} 
-                        map={map} 
-                        markerRef={renderedMarkersList.current[index]}/> 
-                    : ''
-            ))}
+            <div ref={popupEl} className={`bg-white rounded-md cursor-pointer p-4`}>Hello!</div>
         </> 
     )
 }
