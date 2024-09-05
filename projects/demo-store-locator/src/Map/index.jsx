@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, useContext } from 'react'
 import mapboxgl from 'mapbox-gl'
 
 import MarkerList from '../MarkerList'
-import { LocationData } from '../Card'
+import { LocationContext } from '../Context/LocationContext';
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
@@ -11,10 +11,11 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 export const accessToken = (mapboxgl.accessToken =
   'pk.eyJ1IjoiZXhhbXBsZXMiLCJhIjoiY2lqbmp1MzNhMDBud3VvbHhqbjY1cnV2cCJ9.uGJJU2wgtXzcBNc62vY4_A')
 
-const Map = ({ setData, onLoad, onFeatureClick, userLocation, activeFeature, searchResult }) => {
+const Map = ({ setData, onLoad, onFeatureClick, activeFeature, searchResult }) => {
   const mapContainer = useRef(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [features, setFeatures] = useState();
+  const { activeLocation } = useContext(LocationContext);
 
   let mapRef = useRef(null)
 
@@ -46,15 +47,15 @@ const Map = ({ setData, onLoad, onFeatureClick, userLocation, activeFeature, sea
   }, [])
 
   useEffect(() => {
-    if (userLocation !== null) {
+    if (activeLocation !== null) {
       mapRef.current.flyTo({
-        center: [userLocation.longitude, userLocation.latitude],
+        center: [activeLocation[0], activeLocation[1]],
         essential: true, // this animation is considered essential with respect to prefers-reduced-motion
         zoom: 11
       });
     }
 
-  }, [userLocation])
+  }, [activeLocation])
 
   // Move to active feature
   useEffect(() => {

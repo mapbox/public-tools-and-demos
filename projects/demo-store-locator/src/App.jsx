@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useContext } from 'react'
 import classNames from 'classnames'
 import { SearchBox } from '@mapbox/search-js-react'
 import mapboxgl from 'mapbox-gl'
 import { accessToken } from './Map'
 import MapboxTooltip from './MapboxTooltip'
+import { LocationContext } from './Context/LocationContext';
 
 import Map from './Map'
 import Card from './Card'
@@ -17,19 +18,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMap, faList } from '@fortawesome/free-solid-svg-icons'
 
 export default function Home() {
-  // Users location
+  // Allow location info
   const [denyLocation, setDenyLocation ] = useState(null);
-  const [userLocation, setUserLocation] = useState(null);
   // the data to be displayed on the map (this is static, but could be updated dynamically as the map view changes)
   const [currentViewData, setCurrentViewData] = useState([])
-  // stores the feature that the user is currently viewing (triggers the modal)
+  // stores the feature that the user is currently viewing (triggers the popup)
   const [activeFeature, setActiveFeature] = useState()
   // the current search value, used in the controlled mapbox-search-js input
   const [searchValue, setSearchValue] = useState('')
   // the selected search result, chosen from suggestions
   const [searchResult, setSearchResult] = useState(null)
   // for toggling between map view and card view on small screens
+  // TODO add Mobile features to store locator
   const [activeMobileView, setActiveMobileView] = useState('map')
+
+  // Location context to store/set activeMap location across App
+  const { activeLocation, setActiveLocation } = useContext(LocationContext);
 
   // a ref to hold the Mapbox GL JS Map instance
   const mapInstanceRef = useRef()
@@ -39,10 +43,10 @@ export default function Home() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setUserLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
+          setActiveLocation([
+            position.coords.longitude,
+            position.coords.latitude
+          ]);
         },
         (error) => {
           console.error('Error getting location:', error);
@@ -77,6 +81,8 @@ export default function Home() {
 
   const handleSearchResult = (value) => {
     console.log("search result selected");
+    console.log("search result value", value);
+    setActiveLocation(value.features[0].geometry.coordinates);
     setSearchResult(value)
     return value
   }
@@ -105,13 +111,13 @@ export default function Home() {
 
           <div>
           <div className="flex mr-4">
-            {userLocation ? (
+          {/* shows marker icon if user is sharing location */}
+          <p>{denyLocation ? '' :  <MarkerIcon/> }</p>
+            {activeLocation ? (
               <div className="flex items-center">
-                <MarkerIcon/> Your location: <pre className=" ml-2 text-sm bg-slate-100 px-2 py-1 rounded border">{userLocation.latitude}, {userLocation.longitude}</pre>
+                Map Center: <pre className=" ml-2 text-sm bg-slate-100 px-2 py-1 rounded border">{activeLocation[0]}, {activeLocation[1]}</pre>
               </div>
-            ) : (
-              <p>{denyLocation ? '' : 'Loading your location...'}</p>
-            )}
+            ) : ''}
           </div>
           </div>
         </div>
@@ -161,7 +167,7 @@ export default function Home() {
               {currentViewData.length > 0 && currentViewData.map((feature, i) => {
                 return (
                   <div key={i} className='mb-1.5'>
-                    <Card feature={feature} onClick={handleFeatureClick} activeFeature={activeFeature} />
+                    <Card feature={feature} onClick={handleFeatureClick} activeFeature={activeFeature}/>
                   </div>
                 )
               })}
@@ -177,7 +183,6 @@ export default function Home() {
             <Map
               data={currentViewData}
               setData={setCurrentViewData}
-              userLocation={userLocation}
               onLoad={handleMapLoad}
               onFeatureClick={handleFeatureClick}
               activeFeature={activeFeature}
