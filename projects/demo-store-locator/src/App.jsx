@@ -69,11 +69,6 @@ export default function Home() {
     setActiveFeature(feature)
   }
 
-  // when the modal is closed, clear the active feature
-  const handleModalClose = () => {
-    setActiveFeature(undefined)
-  }
-
   // set the search value as the user types
   const handleSearchChange = (newValue) => {
     setSearchValue(newValue)
