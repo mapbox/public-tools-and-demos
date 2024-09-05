@@ -106,13 +106,8 @@ export default function Home() {
 
           <div>
           <div className="flex mr-4">
-          {/* shows marker icon if user is sharing location */}
-          <p>{denyLocation ? '' :  <MarkerIcon/> }</p>
-            {activeLocation ? (
-              <div className="flex items-center">
-                Map Center: <pre className=" ml-2 text-sm bg-slate-100 px-2 py-1 rounded border">{activeLocation[0]}, {activeLocation[1]}</pre>
-              </div>
-            ) : ''}
+            {/* shows marker icon if user is sharing location */}
+            <p>{denyLocation ? '' :  <MarkerIcon/> }</p>
           </div>
           </div>
         </div>
@@ -155,7 +150,7 @@ export default function Home() {
             </div>
             <div className='mb-4 z-0'>
               <div className='font-medium text-gray-500'>
-                {currentViewData.length} results
+                {currentViewData.length} Stores nearby
               </div>
             </div>
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 z-0'>
