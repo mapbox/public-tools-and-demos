@@ -30,8 +30,8 @@ export const LocationData = ({ feature }) => {
 
 
   return (
-    <div className="flex justify-between">
-      <div>
+    <div className="flex justify-between w-full">
+      <div className="grow">
         <div className="flex">
           <MarkerIcon/> Store # {id}
         </div>
@@ -40,7 +40,7 @@ export const LocationData = ({ feature }) => {
         <address>{city}, {state}</address>
         <a className="text-deepgreen font-bold" href={`tel:+1${phone}`}>{phone}</a>
       </div>      
-      <div className="text-slate-400">
+      <div className="text-slate-400 min-w-12">
         {activeLocation ? `${getDistance(coordinates, activeLocation)} mi`: ''}
       </div>
     </div>
