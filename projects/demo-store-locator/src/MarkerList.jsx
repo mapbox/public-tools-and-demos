@@ -119,11 +119,12 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature}) => {
 
     return (
         <>
+          { /* Return a Popup only for the activeFeature */
+          activeFeature && 
             <div ref={popupEl} className={`bg-white rounded-md cursor-pointer p-4`}>
-                { activeFeature && 
                     <LocationData feature={activeFeature}/>
-                }
             </div>
+          }
         </> 
     )
 }

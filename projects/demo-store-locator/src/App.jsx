@@ -113,9 +113,9 @@ export default function Home() {
         </div>
         <div className='relative lg:flex grow shrink min-h-0'>
           {/* sidebar */}
-          <div className='lg:static top-0 p-4 w-full lg:w-96 shadow-xl z-10 overflow-scroll lg:z-30 h-full lg:h-auto bg-white'>
+          <div className='lg:static top-0 p-4 w-full lg:w-96 shadow-xl z-10 lg:z-30 h-full lg:h-auto bg-white'>
             <SearchBox
-                  className='w-32'
+                  className='w-32 sticky'
                   options={{
                     proximity: [-75.16805, 39.93298],
                     types: [
@@ -145,15 +145,15 @@ export default function Home() {
                     }
                   }}
                 />
-            <div className='text-2xl text-black font-semibold w-full mb-1.5 mt-8 z-0'>
+            <div className='text-2xl text-black font-semibold w-full mb-1.5 mt-6 z-0'>
               Stores
             </div>
             <div className='mb-4 z-0'>
               <div className='font-medium text-gray-500'>
-                {currentViewData.length} Stores nearby
+                <span className="text-deepgreen font-bold">{currentViewData.length}</span> Stores nearby
               </div>
             </div>
-            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 z-0'>
+            <div className='overflow-y-auto h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 z-0'>
               {currentViewData.length > 0 && currentViewData.map((feature, i) => {
                 return (
                   <div key={i} className='mb-1.5'>
