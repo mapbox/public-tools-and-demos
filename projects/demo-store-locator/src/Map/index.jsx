@@ -38,6 +38,7 @@ const Map = ({ setData, onLoad, onFeatureClick, activeFeature, searchResult }) =
     })
 
     map.on('zoomend', () => {
+      console.log("zoomend happens");
       const locationsInView = mapRef.current.queryRenderedFeatures({ layers: ['good-locations-c3utwz'] });
       console.log("locationsInView", locationsInView);
       setFeatures(locationsInView)
@@ -46,16 +47,16 @@ const Map = ({ setData, onLoad, onFeatureClick, activeFeature, searchResult }) =
 
   }, [])
 
-  useEffect(() => {
-    if (activeLocation !== null) {
-      mapRef.current.flyTo({
-        center: [activeLocation[0], activeLocation[1]],
-        essential: true, // this animation is considered essential with respect to prefers-reduced-motion
-        zoom: 11
-      });
-    }
+  // useEffect(() => {
+  //   if (activeLocation !== null) {
+  //     mapRef.current.flyTo({
+  //       center: [activeLocation[0], activeLocation[1]],
+  //       essential: true, // this animation is considered essential with respect to prefers-reduced-motion
+  //       zoom: 11
+  //     });
+  //   }
 
-  }, [activeLocation])
+  // }, [activeLocation])
 
   // Move to active feature
   useEffect(() => {
