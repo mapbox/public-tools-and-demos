@@ -1,4 +1,5 @@
 // Card Layout, used in both Map Popups and in the List view
+import React, { useState } from 'react';
 import PropTypes from 'prop-types'
 import MarkerIcon from './MarkerIcon';
 import { distance } from "@turf/distance";
@@ -27,7 +28,6 @@ export const LocationData = ({ feature }) => {
     var distanceTo = distance(location, feature, options).toFixed(1);
     return distanceTo;
   }
-
 
   return (
     <div className="flex justify-between w-full">
@@ -60,8 +60,14 @@ LocationData.propTypes = {
 }
 
 const Card = ({ feature, onClick, activeFeature, userLocation }) => {
+  const { setHoveredFeature } = useContext(LocationContext);
+
   const handleClick = () => {
     onClick(feature)
+  }
+
+  function handleHover() {
+    setHoveredFeature(feature)
   }
 
   const isActiveFeature = (feature == activeFeature) ? true : false;
@@ -69,7 +75,8 @@ const Card = ({ feature, onClick, activeFeature, userLocation }) => {
   return (
     <div 
       className={`rounded-md cursor-pointer p-4 ${isActiveFeature ? 'bg-tintgreen border-deepgreen border-2' : 'hover:bg-slate-100'}`} 
-     onClick={handleClick}>
+      onClick={handleClick}
+      onMouseOver={handleHover}>
         <LocationData feature={feature} activeFeature={activeFeature}/>
     </div>
   )

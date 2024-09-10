@@ -11,7 +11,7 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 export const accessToken = (mapboxgl.accessToken =
   'pk.eyJ1IjoiZXhhbXBsZXMiLCJhIjoiY2lqbmp1MzNhMDBud3VvbHhqbjY1cnV2cCJ9.uGJJU2wgtXzcBNc62vY4_A')
 
-const Map = ({ setData, onLoad, onFeatureClick, activeFeature, searchResult }) => {
+const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult }) => {
   const mapContainer = useRef(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [features, setFeatures] = useState();
@@ -81,6 +81,7 @@ const Map = ({ setData, onLoad, onFeatureClick, activeFeature, searchResult }) =
           features={features}
           mapRef={mapRef.current}
           searchResult={searchResult}
+          setActiveFeature={setActiveFeature}
           activeFeature={activeFeature}/>
       }
     </>

@@ -1,15 +1,18 @@
 import PropTypes from 'prop-types'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useContext } from 'react'
 import mapboxgl from 'mapbox-gl'
 import { LocationData } from './Card'
+import { LocationContext } from './Context/LocationContext'
 
-const MarkerList = ({features, mapRef, searchResult, activeFeature}) => {
+const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFeature}) => {
     const renderedMarkersList = useRef([]);
     const renderedFeaturesList = useRef([]);
     const prevSearchResultRef = useRef();
     const popupEl = useRef();
     const activeMarkerRef = useRef();
     const [ activeMarker, setActiveMarker ] = useState();
+    const { hoveredFeature } = useContext(LocationContext);
+
 
     // Function to clear all markers
     function clearMarkers() {
@@ -30,6 +33,20 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature}) => {
     //   }
 
     useEffect(() => {
+        if(!hoveredFeature) {
+            return
+        }
+        console.log('hoveredFeature', hoveredFeature)
+
+        const index = renderedFeaturesList.current.findIndex(
+            (feature) => hoveredFeature.properties.address === feature.properties.address);
+        
+        console.log("you are hovering", renderedMarkersList.current[index]);
+        renderedMarkersList.current[index].addClassName('hovered')
+
+    }, [hoveredFeature])
+
+    useEffect(() => {
         features.forEach((feature) => {
 
             // Check to see if marker has already been added for this feature
@@ -38,6 +55,15 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature}) => {
                 // Need to 'reactify' this
                 const el = document.createElement('div');
                 el.className = 'marker';
+
+                 // Attach the click event listener
+                el.addEventListener('click', () => {
+                    setActiveFeature(feature);  // Update the state with the clicked feature
+                });
+
+                // el.addEventListener('mouseOver', () => {
+                //     setHoveredFeature(feature);
+                // } )
 
                 const marker = new mapboxgl.Marker(el)
                 .setLngLat(feature.geometry.coordinates)

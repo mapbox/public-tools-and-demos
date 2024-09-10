@@ -31,9 +31,8 @@ export default function Home() {
   // for toggling between map view and card view on small screens
   // TODO add Mobile features to store locator
   const [activeMobileView, setActiveMobileView] = useState('map')
-
   // Location context to store/set activeMap location across App
-  const { activeLocation, setActiveLocation } = useContext(LocationContext);
+  const { setActiveLocation } = useContext(LocationContext);
 
   // a ref to hold the Mapbox GL JS Map instance
   const mapInstanceRef = useRef()
@@ -175,6 +174,7 @@ export default function Home() {
               setData={setCurrentViewData}
               onLoad={handleMapLoad}
               onFeatureClick={handleFeatureClick}
+              setActiveFeature={setActiveFeature}
               activeFeature={activeFeature}
               searchResult={searchResult}
             />
