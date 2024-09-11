@@ -48,9 +48,14 @@ body {
   height: 50px;
   border-radius: 50%;
   cursor: pointer;
+  transition-property: width, height; 
+  transition-duration: .1s; 
+  transition-timing-function: linear; 
 }
 
 .marker.hovered {
   width: 60px;
-  height: 60px;
+  height: 60px;  
+  background-image: url('/img/marker-highlight.svg');
+  z-index: 100;
 }

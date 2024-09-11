@@ -10,6 +10,7 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFea
     const prevSearchResultRef = useRef();
     const popupEl = useRef();
     const activeMarkerRef = useRef();
+    const hoveredMarkerRef = useRef();
     const [ activeMarker, setActiveMarker ] = useState();
     const { hoveredFeature } = useContext(LocationContext);
 
@@ -33,16 +34,22 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFea
     //   }
 
     useEffect(() => {
-        if(!hoveredFeature) {
-            return
+        
+        if (!hoveredFeature) {
+            if (hoveredMarkerRef.current) {
+                hoveredMarkerRef.current.removeClassName('hovered');
+                hoveredMarkerRef.current = null; // Reset the reference
+            }
+            return; // Prevent further code from executing when no feature is hovered
         }
-        console.log('hoveredFeature', hoveredFeature)
 
         const index = renderedFeaturesList.current.findIndex(
             (feature) => hoveredFeature.properties.address === feature.properties.address);
         
         console.log("you are hovering", renderedMarkersList.current[index]);
+        
         renderedMarkersList.current[index].addClassName('hovered')
+        hoveredMarkerRef.current = renderedMarkersList.current[index];
 
     }, [hoveredFeature])
 

@@ -66,8 +66,11 @@ const Card = ({ feature, onClick, activeFeature, userLocation }) => {
     onClick(feature)
   }
 
-  function handleHover() {
+  function handleMouseEnter() {
     setHoveredFeature(feature)
+  }
+  function handleMouseLeave() {
+    setHoveredFeature('')
   }
 
   const isActiveFeature = (feature == activeFeature) ? true : false;
@@ -76,7 +79,8 @@ const Card = ({ feature, onClick, activeFeature, userLocation }) => {
     <div 
       className={`rounded-md cursor-pointer p-4 ${isActiveFeature ? 'bg-tintgreen border-deepgreen border-2' : 'hover:bg-slate-100'}`} 
       onClick={handleClick}
-      onMouseOver={handleHover}>
+      onMouseOver={handleMouseEnter}
+      onMouseOut={handleMouseLeave}>
         <LocationData feature={feature} activeFeature={activeFeature}/>
     </div>
   )
