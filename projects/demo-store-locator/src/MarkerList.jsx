@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import { useEffect, useRef, useState, useContext } from 'react'
 import mapboxgl from 'mapbox-gl'
 import { LocationData } from './Card'
-import { LocationContext } from './Context/LocationContext'
+import { AppContext } from './Context/AppContext'
 
 const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFeature}) => {
     const renderedMarkersList = useRef([]);
@@ -11,8 +11,7 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFea
     const popupEl = useRef();
     const activeMarkerRef = useRef();
     const [ activeMarker, setActiveMarker ] = useState();
-    const { hoveredFeature, setHoveredFeature } = useContext(LocationContext);
-
+    const { hoveredFeature, setHoveredFeature } = useContext(AppContext);
 
     // Function to clear all markers
     function clearMarkers() {
@@ -23,15 +22,6 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFea
         renderedFeaturesList.current = [];
     }
 
-    // For debugging
-    // function handlePopupOpen() {
-    //     console.log("opens")
-    //   }
-    
-    //   function handlePopupClose() {
-    //     console.log("closes")
-    //   }
-
     useEffect(() => {
         // Remove any hovered class on all markers
         renderedMarkersList.current.forEach((marker) => marker.removeClassName('hovered'))
@@ -40,7 +30,7 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFea
   
         // When hoveredFeature is set to null or is not set 
         if (!hoveredFeature) {
-            return; // Prevent further code from executing when no feature is hovered
+            return;
         }
         
         // Add hovered class to corresponding marker ref (gl js marker in the DOM)     
@@ -53,7 +43,6 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFea
 
     useEffect(() => {
         features.forEach((feature) => {
-
             // Check to see if marker has already been added for this feature
             if (!renderedFeaturesList.current.some(f => f.properties.address === feature.properties.address)) {
                 
@@ -79,14 +68,12 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFea
                 .setLngLat(feature.geometry.coordinates)
                 .addTo(mapRef)
                 
-                // Add marker objects to list for removal later
+                // Add marker objects to refs list for removal later
                 renderedMarkersList.current.push(marker);
-                // Add feature objects to list for checking to avoid duplicates
+                // Add feature objects to refs list for checking later
                 renderedFeaturesList.current.push(feature);
-            }
-           
+            }  
         })
-        
     }, [features])
 
     // Remove markers on new SearchBox Query
@@ -170,5 +157,7 @@ export default MarkerList;
 MarkerList.propTypes = {
     features: PropTypes.array,
     mapRef: PropTypes.any,
-    searchResult: PropTypes.object
+    searchResult: PropTypes.object,
+    activeFeature: PropTypes.object,
+    setActiveFeature: PropTypes.any
 }

@@ -3,7 +3,7 @@ import { useRef, useEffect, useState, useContext } from 'react'
 import mapboxgl from 'mapbox-gl'
 
 import MarkerList from '../MarkerList'
-import { LocationContext } from '../Context/LocationContext';
+import { AppContext } from '../Context/AppContext';
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
@@ -15,7 +15,7 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult })
   const mapContainer = useRef(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [features, setFeatures] = useState();
-  const { activeLocation } = useContext(LocationContext);
+  const { activeLocation } = useContext(AppContext);
 
   let mapRef = useRef(null)
 
@@ -48,8 +48,9 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult })
 
   useEffect(() => {
     if (activeLocation !== null) {
+      console.log("activeLocation", activeLocation);
       mapRef.current.flyTo({
-        center: [activeLocation[0], activeLocation[1]],
+        center: activeLocation.coords,
         essential: true, // this animation is considered essential with respect to prefers-reduced-motion
         zoom: 11
       });

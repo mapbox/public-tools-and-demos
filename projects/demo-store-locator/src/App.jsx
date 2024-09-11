@@ -6,7 +6,7 @@ import { SearchBox } from '@mapbox/search-js-react'
 import mapboxgl from 'mapbox-gl'
 import { accessToken } from './Map'
 import MapboxTooltip from './MapboxTooltip'
-import { LocationContext } from './Context/LocationContext';
+import { AppContext } from './Context/AppContext';
 
 import Map from './Map'
 import Card from './Card'
@@ -32,7 +32,7 @@ export default function Home() {
   // TODO add Mobile features to store locator
   const [activeMobileView, setActiveMobileView] = useState('map')
   // Location context to store/set activeMap location across App
-  const { setActiveLocation } = useContext(LocationContext);
+  const { setActiveLocation } = useContext(AppContext);
 
   // a ref to hold the Mapbox GL JS Map instance
   const mapInstanceRef = useRef()
@@ -42,10 +42,10 @@ export default function Home() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setActiveLocation([
-            position.coords.longitude,
-            position.coords.latitude
-          ]);
+          setActiveLocation({
+            coords: [ position.coords.longitude, position.coords.latitude ],
+            type: 'user'
+          });
         },
         (error) => {
           console.error('Error getting location:', error);
@@ -76,7 +76,10 @@ export default function Home() {
   const handleSearchResult = (value) => {
     console.log("search result selected");
     console.log("search result value", value);
-    setActiveLocation(value.features[0].geometry.coordinates);
+    setActiveLocation({
+      coords: value.features[0].geometry.coordinates,
+      type: 'search'
+    });
     setSearchResult(value)
     return value
   }

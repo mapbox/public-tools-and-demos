@@ -2,10 +2,10 @@ import React, { createContext, useState, useMemo } from 'react';
 
 // Create context to store the Maps active location across the app. This is dependent
 // on whether userLocation is allowed through navigator.geolocation & usage of the Searchbox
-export const LocationContext = createContext();
+export const AppContext = createContext();
 
 // Create a provider component
-export const LocationProvider = ({ children }) => {
+export const AppContextProvider = ({ children }) => {
   const [ activeLocation, setActiveLocation ] = useState(null);
   const [ hoveredFeature, setHoveredFeature ] = useState(null);
 
@@ -17,8 +17,8 @@ export const LocationProvider = ({ children }) => {
   }), [activeLocation, hoveredFeature]);
 
   return (
-    <LocationContext.Provider value={value}>
+    <AppContext.Provider value={value}>
       {children}
-    </LocationContext.Provider>
+    </AppContext.Provider>
   );
 };

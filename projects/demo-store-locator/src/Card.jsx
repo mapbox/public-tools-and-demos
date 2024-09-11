@@ -1,10 +1,10 @@
 // Card Layout, used in both Map Popups and in the List view
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types'
 import MarkerIcon from './MarkerIcon';
 import { distance } from "@turf/distance";
 import { useContext } from 'react';
-import { LocationContext } from './Context/LocationContext';
+import { AppContext } from './Context/AppContext';
 
 export const pluralize = (number, word) => {
   return `${number} ${word}${number === 1 ? '' : 's'} `
@@ -12,7 +12,7 @@ export const pluralize = (number, word) => {
 
 export const LocationData = ({ feature }) => {
   const { coordinates } = feature.geometry;
-  const { activeLocation } = useContext(LocationContext);
+  const { activeLocation } = useContext(AppContext);
   const {
     address,
     name,
@@ -41,7 +41,7 @@ export const LocationData = ({ feature }) => {
         <a className="text-deepgreen font-bold" href={`tel:+1${phone}`}>{phone}</a>
       </div>      
       <div className="text-slate-400 min-w-12">
-        {activeLocation ? `${getDistance(coordinates, activeLocation)} mi`: ''}
+        {activeLocation ? `${getDistance(coordinates, activeLocation.coords)} mi`: ''}
       </div>
     </div>
   )
@@ -59,8 +59,8 @@ LocationData.propTypes = {
   })
 }
 
-const Card = ({ feature, onClick, activeFeature, userLocation }) => {
-  const { setHoveredFeature } = useContext(LocationContext);
+const Card = ({ feature, onClick, activeFeature }) => {
+  const { hoveredFeature, setHoveredFeature } = useContext(AppContext);
 
   const handleClick = () => {
     onClick(feature)
@@ -74,10 +74,24 @@ const Card = ({ feature, onClick, activeFeature, userLocation }) => {
   }
 
   const isActiveFeature = (feature == activeFeature) ? true : false;
+  let isMarkerHovered;
+  if(hoveredFeature) {
+    isMarkerHovered = (feature.properties.address == hoveredFeature.properties.address) ? true : false;
+  }
+
+  useEffect(() => {
+    console.log("isMarkerHovered", isMarkerHovered);
+    console.log("Feature is", feature);
+    console.log("marker is", hoveredFeature);
+
+  },[hoveredFeature])
 
   return (
     <div 
-      className={`rounded-md cursor-pointer p-4 ${isActiveFeature ? 'bg-tintgreen border-deepgreen border-2' : 'hover:bg-slate-100'}`} 
+      className={
+          `rounded-md cursor-pointer p-4 
+          ${isActiveFeature ? 'bg-tintgreen border-deepgreen border-2' : 'hover:bg-slate-100'}
+          ${isMarkerHovered ? 'bg-slate-100' : ''}`} 
       onClick={handleClick}
       onMouseOver={handleMouseEnter}
       onMouseOut={handleMouseLeave}>
