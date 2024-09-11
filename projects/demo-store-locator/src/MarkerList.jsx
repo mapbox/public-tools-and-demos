@@ -10,9 +10,8 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFea
     const prevSearchResultRef = useRef();
     const popupEl = useRef();
     const activeMarkerRef = useRef();
-    const hoveredMarkerRef = useRef();
     const [ activeMarker, setActiveMarker ] = useState();
-    const { hoveredFeature } = useContext(LocationContext);
+    const { hoveredFeature, setHoveredFeature } = useContext(LocationContext);
 
 
     // Function to clear all markers
@@ -34,22 +33,21 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFea
     //   }
 
     useEffect(() => {
-        
+        // Remove any hovered class on all markers
+        renderedMarkersList.current.forEach((marker) => marker.removeClassName('hovered'))
+
+        console.log("hoveredFeature", hoveredFeature);
+  
+        // When hoveredFeature is set to null or is not set 
         if (!hoveredFeature) {
-            if (hoveredMarkerRef.current) {
-                hoveredMarkerRef.current.removeClassName('hovered');
-                hoveredMarkerRef.current = null; // Reset the reference
-            }
             return; // Prevent further code from executing when no feature is hovered
         }
-
+        
+        // Add hovered class to corresponding marker ref (gl js marker in the DOM)     
         const index = renderedFeaturesList.current.findIndex(
             (feature) => hoveredFeature.properties.address === feature.properties.address);
-        
-        console.log("you are hovering", renderedMarkersList.current[index]);
-        
+                
         renderedMarkersList.current[index].addClassName('hovered')
-        hoveredMarkerRef.current = renderedMarkersList.current[index];
 
     }, [hoveredFeature])
 
@@ -63,15 +61,20 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFea
                 const el = document.createElement('div');
                 el.className = 'marker';
 
-                 // Attach the click event listener
+                 // Attach the click event listener to set activeFeature state on click
                 el.addEventListener('click', () => {
-                    setActiveFeature(feature);  // Update the state with the clicked feature
+                    setActiveFeature(feature);  
                 });
 
-                // el.addEventListener('mouseOver', () => {
-                //     setHoveredFeature(feature);
-                // } )
+                // Attach the mouse event listeners to set hovered state in UI
+                el.addEventListener('mouseenter', () => {
+                    setHoveredFeature(feature);
+                })
+                el.addEventListener('mouseleave', () => {
+                    setHoveredFeature('');
+                })
 
+                // Add marker to the map 
                 const marker = new mapboxgl.Marker(el)
                 .setLngLat(feature.geometry.coordinates)
                 .addTo(mapRef)

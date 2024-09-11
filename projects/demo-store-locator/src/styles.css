@@ -57,5 +57,5 @@ body {
   width: 60px;
   height: 60px;  
   background-image: url('/img/marker-highlight.svg');
-  z-index: 100;
+  z-index: 10;
 }
