@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
 import { useRef, useEffect, useState, useContext } from 'react'
 import mapboxgl from 'mapbox-gl'
-
 import MarkerList from '../MarkerList'
 import { AppContext } from '../Context/AppContext';
+import { addUserLocationPulse } from './pulse';
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
@@ -17,7 +17,8 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult })
   const [features, setFeatures] = useState();
   const { activeLocation } = useContext(AppContext);
 
-  let mapRef = useRef(null)
+  let mapRef = useRef(null);
+  const pulseRef = useRef(null);
 
   useEffect(() => {
     const map = (mapRef.current = new mapboxgl.Map({
@@ -29,6 +30,10 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult })
         ],
       zoom: 4
     }))
+
+    map.on('style.load', () => {  
+      map.setConfigProperty('basemap', 'color', 'monochrome');    
+    });
 
     map.addControl(new mapboxgl.NavigationControl())
 
@@ -48,7 +53,13 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult })
 
   useEffect(() => {
     if (activeLocation !== null) {
-      console.log("activeLocation", activeLocation);
+
+      // if the activeLocation is userbased and we haven't added the pulse yet - Add it
+      if (activeLocation.type == 'user' && pulseRef.current == null) {
+        addUserLocationPulse(mapRef, pulseRef, activeLocation);
+      }
+
+      // Fly to the activeLocation
       mapRef.current.flyTo({
         center: activeLocation.coords,
         essential: true, // this animation is considered essential with respect to prefers-reduced-motion
@@ -58,7 +69,7 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult })
 
   }, [activeLocation])
 
-  // Move to active feature
+  // Pan to active feature
   useEffect(() => {
    
    if(!activeFeature) {

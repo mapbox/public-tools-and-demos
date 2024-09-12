@@ -70,6 +70,7 @@ export default function Home() {
 
   // set the search value as the user types
   const handleSearchChange = (newValue) => {
+    setCurrentViewData('');
     setSearchValue(newValue)
   }
 

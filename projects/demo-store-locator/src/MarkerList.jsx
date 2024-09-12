@@ -25,8 +25,6 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFea
     useEffect(() => {
         // Remove any hovered class on all markers
         renderedMarkersList.current.forEach((marker) => marker.removeClassName('hovered'))
-
-        console.log("hoveredFeature", hoveredFeature);
   
         // When hoveredFeature is set to null or is not set 
         if (!hoveredFeature) {

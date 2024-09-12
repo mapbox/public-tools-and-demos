@@ -1,5 +1,5 @@
 // Card Layout, used in both Map Popups and in the List view
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types'
 import MarkerIcon from './MarkerIcon';
 import { distance } from "@turf/distance";
@@ -75,16 +75,10 @@ const Card = ({ feature, onClick, activeFeature }) => {
 
   const isActiveFeature = (feature == activeFeature) ? true : false;
   let isMarkerHovered;
+
   if(hoveredFeature) {
     isMarkerHovered = (feature.properties.address == hoveredFeature.properties.address) ? true : false;
   }
-
-  useEffect(() => {
-    console.log("isMarkerHovered", isMarkerHovered);
-    console.log("Feature is", feature);
-    console.log("marker is", hoveredFeature);
-
-  },[hoveredFeature])
 
   return (
     <div 
