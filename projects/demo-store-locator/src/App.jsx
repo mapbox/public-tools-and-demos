@@ -32,7 +32,7 @@ export default function Home() {
   // TODO add Mobile features to store locator
   const [activeMobileView, setActiveMobileView] = useState('map')
   // Location context to store/set activeMap location across App
-  const { setActiveLocation } = useContext(AppContext);
+  const { activeLocation, setActiveLocation } = useContext(AppContext);
 
   // a ref to hold the Mapbox GL JS Map instance
   const mapInstanceRef = useRef()
@@ -130,12 +130,12 @@ export default function Home() {
                       'address'
                     ]
                   }}
-                  value={searchValue}
+                  value={searchValue || activeLocation?.type =='user' ? 'Your Location' : ''}
                   onChange={handleSearchChange}
                   accessToken={accessToken}
-                  marker={false}
+                  //marker={false}
                   mapboxgl={mapboxgl}
-                  placeholder='Search for an address, city, zip, etc'
+                  placeholder="Search for an address, city, zip, etc"
                   map={mapInstanceRef.current}
                   onRetrieve={handleSearchResult}
                   theme={{
@@ -156,7 +156,7 @@ export default function Home() {
                 <span className="text-deepgreen font-bold">{currentViewData.length}</span> Stores nearby
               </div>
             </div>
-            <div className='overflow-y-auto grow grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 z-0'>
+            <div className='overflow-y-auto grow flex flex-col justify-start grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 z-0'>
               {currentViewData.length > 0 && currentViewData.map((feature, i) => {
                 return (
                   <div key={i} className='mb-1.5'>

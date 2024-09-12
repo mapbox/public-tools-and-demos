@@ -40,7 +40,7 @@ export const LocationData = ({ feature }) => {
         <address>{city}, {state}</address>
         <a className="text-deepgreen font-bold" href={`tel:+1${phone}`}>{phone}</a>
       </div>      
-      <div className="text-slate-400 min-w-12">
+      <div className="text-slate-400 min-w-16 text-right">
         {activeLocation ? `${getDistance(coordinates, activeLocation.coords)} mi`: ''}
       </div>
     </div>

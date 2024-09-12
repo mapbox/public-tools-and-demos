@@ -1,3 +1,5 @@
+// See a standalone example of this pulsing dot 
+// at https://docs.mapbox.com/mapbox-gl-js/example/add-image-animated/
 
 export const addUserLocationPulse = (mapRef, pulseRef, activeLocation) => {
     const size = 150;
