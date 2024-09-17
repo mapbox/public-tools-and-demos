@@ -5,7 +5,7 @@ import { Tooltip } from 'react-tooltip'
 import Markdown from 'react-markdown'
 import classNames from 'classnames'
 
-const LogoSVG = () => (
+export const LogoSVG = () => (
   <svg
     width='14'
     height='14'
@@ -25,6 +25,7 @@ const LogoSVG = () => (
 )
 
 const Content = ({ markdownString }) => {
+
   return (
     <Markdown
       components={{
@@ -90,7 +91,7 @@ const MapboxTooltip = ({ className, title, children }) => {
           <Tooltip
             id={`tooltip-${title}`}
             content={<Content markdownString={children} />}
-            events={['click']}
+            openOnClick
             className='z-50 w-96 bg-white text-sm font-normal px-4 py-3 rounded-lg !opacity-100'
             disableStyleInjection
             style={{

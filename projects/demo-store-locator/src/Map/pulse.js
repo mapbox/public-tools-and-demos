@@ -52,8 +52,7 @@ export const addUserLocationPulse = (mapRef, pulseRef, activeLocation) => {
       }
     };
 
-    mapRef.current.on('load', () => {
-        console.log("map load runs");
+    mapRef.current.on('style.load', () => {
       mapRef.current.addImage('pulsing-dot', pulseRef.current, { pixelRatio: 2 });
 
       mapRef.current.addSource('dot-point', {

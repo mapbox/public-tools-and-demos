@@ -5,20 +5,22 @@ import classNames from 'classnames'
 import { SearchBox } from '@mapbox/search-js-react'
 import mapboxgl from 'mapbox-gl'
 import { accessToken } from './Map'
-import MapboxTooltip from './MapboxTooltip'
-import { AppContext } from './Context/AppContext';
+import MapboxTooltips from './MapboxTooltips'
+import { AppContext } from './Context/AppContext'
+import UseMyLocation from './UseMyLocation'
 
 import Map from './Map'
 import Card from './Card'
-import MarkerIcon from './MarkerIcon';
-import cafeLogo from './img/cafe-logo.svg';
+import getUserLocation from './utils'
+import cafeLogo from './img/cafe-logo.svg'
 
 import './styles.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMap, faList } from '@fortawesome/free-solid-svg-icons'
+import {faList } from '@fortawesome/free-solid-svg-icons'
 
 export default function Home() {
-  // Allow location info
+  
+  // Allow/Deny location sharing
   const [denyLocation, setDenyLocation ] = useState(null);
   // the data to be displayed on the map (this is static, but could be updated dynamically as the map view changes)
   const [currentViewData, setCurrentViewData] = useState([])
@@ -39,23 +41,7 @@ export default function Home() {
 
   // Use Effect to request Users Location on App mount
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setActiveLocation({
-            coords: [ position.coords.longitude, position.coords.latitude ],
-            type: 'user'
-          });
-        },
-        (error) => {
-          console.error('Error getting location:', error);
-          setDenyLocation(true);
-          
-        }
-      );
-    } else {
-      console.error('Geolocation is not supported by this browser.');
-    }
+    getUserLocation(setActiveLocation, setDenyLocation);
   }, []);
 
   // // when the map loads
@@ -75,8 +61,6 @@ export default function Home() {
   }
 
   const handleSearchResult = (value) => {
-    console.log("search result selected");
-    console.log("search result value", value);
     setActiveLocation({
       coords: value.features[0].geometry.coordinates,
       type: 'search'
@@ -97,7 +81,7 @@ export default function Home() {
   return (
     <>
       <main className='flex flex-col h-full'>
-        <div className='flex shrink-0 justify-between h-16 py-12 items-center border-b border-gray-200 '>
+        <div className='flex shrink-0 justify-between h-16 py-12 items-center border-b border-gray-200 bg-white z-40 '>
           <div
             className='bg-contain bg-center bg-no-repeat ml-8'
             style={{
@@ -108,15 +92,14 @@ export default function Home() {
           ></div>
 
           <div>
-          <div className="flex mr-4">
-            {/* shows marker icon if user is sharing location */}
-            <p>{denyLocation ? '' :  <MarkerIcon/> }</p>
-          </div>
-          </div>
+        </div>
         </div>
         <div className='relative lg:flex grow shrink min-h-0'>
           {/* sidebar */}
           <div className='lg:flex flex-col top-0 p-4 w-full lg:w-96 shadow-xl z-10 lg:z-30 h-full lg:h-auto bg-white'>
+
+          <UseMyLocation denyLocation={denyLocation} setSearchValue={setSearchValue}/>
+
             <SearchBox
                   className='w-32 sticky'
                   options={{
@@ -130,12 +113,12 @@ export default function Home() {
                       'address'
                     ]
                   }}
-                  value={searchValue || activeLocation?.type =='user' ? 'Your Location' : ''}
+                  value={searchValue}
                   onChange={handleSearchChange}
                   accessToken={accessToken}
                   //marker={false}
                   mapboxgl={mapboxgl}
-                  placeholder="Search for an address, city, zip, etc"
+                  placeholder={activeLocation?.type =='user' ? 'Your Location ' : 'Search for an address, city, zip, etc'}
                   map={mapInstanceRef.current}
                   onRetrieve={handleSearchResult}
                   theme={{
@@ -148,6 +131,7 @@ export default function Home() {
                     }
                   }}
                 />
+               
             <div className='text-2xl text-black font-semibold w-full mb-1.5 mt-6 z-0'>
               Stores
             </div>
@@ -172,6 +156,7 @@ export default function Home() {
               'z-30': activeMobileView === 'map'
             })}
           >
+            <MapboxTooltips/>
              
             <Map
               data={currentViewData}
@@ -181,6 +166,7 @@ export default function Home() {
               setActiveFeature={setActiveFeature}
               activeFeature={activeFeature}
               searchResult={searchResult}
+              denyLocation={denyLocation}
             />
           </div>
         </div>

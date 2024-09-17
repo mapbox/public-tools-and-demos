@@ -59,3 +59,9 @@ body {
   background-image: url('/img/marker-highlight.svg');
   z-index: 10;
 }
+
+/* Toggle for Mapbox tooltips */
+.info {
+  bottom: -40px;
+  right: 5%;
+}

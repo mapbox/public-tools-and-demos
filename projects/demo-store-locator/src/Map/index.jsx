@@ -11,7 +11,7 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 export const accessToken = (mapboxgl.accessToken =
   'pk.eyJ1IjoiZXhhbXBsZXMiLCJhIjoiY2lqbmp1MzNhMDBud3VvbHhqbjY1cnV2cCJ9.uGJJU2wgtXzcBNc62vY4_A')
 
-const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult }) => {
+const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, denyLocation }) => {
   const mapContainer = useRef(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [features, setFeatures] = useState();
@@ -32,7 +32,8 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult })
     }))
 
     map.on('style.load', () => {  
-      map.setConfigProperty('basemap', 'color', 'monochrome');    
+      map.setConfigProperty('basemap', 'theme', 'monochrome'); 
+      //map.setConfigProperty('basemap', 'lightPreset', 'dusk');   
     });
 
     map.addControl(new mapboxgl.NavigationControl())
@@ -51,6 +52,7 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult })
 
   }, [])
 
+  // Move Map to searched location or User's location
   useEffect(() => {
     if (activeLocation !== null) {
 
@@ -68,6 +70,18 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult })
     }
 
   }, [activeLocation])
+
+  // If user does not share location 
+  useEffect(() => {
+  if(denyLocation) {
+    // Fly to Demo City (Sacramento)
+    mapRef.current.flyTo({
+      center: [-121.50217, 38.57987],
+      essential: true, // this animation is considered essential with respect to prefers-reduced-motion
+      zoom: 11
+    });
+  } 
+  }, [denyLocation])
 
   // Pan to active feature
   useEffect(() => {
