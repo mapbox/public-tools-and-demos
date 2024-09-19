@@ -117,7 +117,7 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
 }
 
 Map.propTypes = {
-  data: PropTypes.array,
+  data: PropTypes.any,
   onFeatureClick: PropTypes.func,
   onLoad: PropTypes.func
 }
