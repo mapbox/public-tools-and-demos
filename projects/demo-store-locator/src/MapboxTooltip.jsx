@@ -43,7 +43,7 @@ const Content = ({ markdownString }) => {
           const { ...rest } = props
           return (
             <a
-              className='text-deepgreen hover:text-tintgreen'
+              className='text-deepgreen font-bold hover:text-greenhover'
               target='_blank'
               {...rest}
             />

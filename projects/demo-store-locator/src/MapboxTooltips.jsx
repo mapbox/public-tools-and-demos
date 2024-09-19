@@ -11,9 +11,8 @@ const MapboxTooltips = () => {
       }
 
     return (
-        <div className="relative z-50 ">
-{/* transition-transform duration-300 px-3 flex flex-wrap justify-start h-auto py-2 items-center bg-deepgreen overflow-visible */}
-    <div className={`${isToggled ? 'shown' : 'hidden'} px-3 flex flex-wrap justify-start h-auto py-2 items-center bg-deepgreen overflow-visible`}>
+
+    <div className={`${isToggled ? 'relative' : '-translate-y-full absolute'} transition-transform px-3 flex flex-wrap justify-start w-full h-auto py-2 items-center bg-deepgreen overflow-visible z-50`}>
     
         <MapboxTooltip title='Mapbox GL JS' className={'mr-3 my-1'}>
         {`
@@ -75,10 +74,8 @@ In this demo, a popup is rendering a custom React Card component. (The same comp
 [Full source code](https://github.com/mapbox/public-tools-and-demos/tree/main/projects/demo-realestate) for this demo is available on Github.`}
         </MapboxTooltip>
 
-    </div>
-
         <div 
-            className='transition-all info flex items-center absolute block bg-deepgreen rounded-b-md px-4 py-2 text-white cursor-pointer'
+            className='transition-all info flex items-center absolute block bg-deepgreen rounded-b-md md:px-4 md:py-2 px-2.5 py-1.5 text-white md:text-base text-sm cursor-pointer'
             onClick={handleClick}>
                 <div className="mr-2">
                     <LogoSVG fillColor="white" />
@@ -87,6 +84,8 @@ In this demo, a popup is rendering a custom React Card component. (The same comp
             <FontAwesomeIcon className={`transition ml-2 ${isToggled ? '' : 'rotate-180'}`}icon={faChevronUp} />
         </div>
     </div>
+
+
             
     
     )

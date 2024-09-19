@@ -71,6 +71,18 @@ body {
   bottom: -47px;
 }
 
+@media (max-width: 640px) {
+  .info {
+    bottom: -30px;
+    right: 5%;
+  }
+  
+  .info:hover {
+    padding-top: 1rem;
+    bottom: -37px;
+  }
+ }
+
 .shown {
   transform: translateY(0);
 }

@@ -162,7 +162,7 @@ export default function Home() {
             })}
           >
             {/* SearchBox for small screens */}
-            <div className="lg:hidden w-1/4 absolute top-4 left-4 z-10">
+            <div className="lg:hidden md:w-1/3 w-1/2 absolute top-4 left-4 z-10">
               <SearchBox
                     className='w-32 sticky'
                     options={{
