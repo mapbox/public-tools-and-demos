@@ -57,11 +57,24 @@ body {
   width: 60px;
   height: 60px;  
   background-image: url('/img/marker-highlight.svg');
-  z-index: 10;
+  z-index: 5;
 }
 
 /* Toggle for Mapbox tooltips */
 .info {
   bottom: -40px;
   right: 5%;
+}
+
+.info:hover {
+  padding-top: 1rem;
+  bottom: -47px;
+}
+
+.shown {
+  transform: translateY(0);
+}
+
+.hidden {
+  transform: translateY(-100%);
 }

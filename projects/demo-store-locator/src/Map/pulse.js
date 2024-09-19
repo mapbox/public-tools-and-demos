@@ -52,32 +52,40 @@ export const addUserLocationPulse = (mapRef, pulseRef, activeLocation) => {
       }
     };
 
-    mapRef.current.on('style.load', () => {
-      mapRef.current.addImage('pulsing-dot', pulseRef.current, { pixelRatio: 2 });
+    mapRef.current.on('idle', () => {
+      
+      // Check to see if we've added the user location marker
+      const alreadyAdded = mapRef.current.getSource('dot-point');
 
-      mapRef.current.addSource('dot-point', {
-        type: 'geojson',
-        data: {
-          type: 'FeatureCollection',
-          features: [
-            {
-              type: 'Feature',
-              geometry: {
-                type: 'Point',
-                coordinates: activeLocation.coords
+      if(!alreadyAdded) {
+        mapRef.current.addImage('pulsing-dot', pulseRef.current, { pixelRatio: 2 });
+
+        mapRef.current.addSource('dot-point', {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features: [
+              {
+                type: 'Feature',
+                geometry: {
+                  type: 'Point',
+                  coordinates: activeLocation.coords
+                }
               }
-            }
-          ]
-        }
-      });
+            ]
+          }
+        });
+  
+        mapRef.current.addLayer({
+          id: 'layer-with-pulsing-dot',
+          type: 'symbol',
+          source: 'dot-point',
+          layout: {
+            'icon-image': 'pulsing-dot'
+          }
+        });
 
-      mapRef.current.addLayer({
-        id: 'layer-with-pulsing-dot',
-        type: 'symbol',
-        source: 'dot-point',
-        layout: {
-          'icon-image': 'pulsing-dot'
-        }
-      });
+      }
+     
     });
 }

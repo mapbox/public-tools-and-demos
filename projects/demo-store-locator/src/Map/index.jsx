@@ -32,7 +32,9 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
     }))
 
     map.on('style.load', () => {  
+      // This is not working
       map.setConfigProperty('basemap', 'theme', 'monochrome'); 
+      // This works :point-down
       //map.setConfigProperty('basemap', 'lightPreset', 'dusk');   
     });
 
@@ -74,9 +76,9 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
   // If user does not share location 
   useEffect(() => {
   if(denyLocation) {
-    // Fly to Demo City (Sacramento)
+    // Fly to Demo City (Seattle)
     mapRef.current.flyTo({
-      center: [-121.50217, 38.57987],
+      center: [-122.33935, 47.60774],
       essential: true, // this animation is considered essential with respect to prefers-reduced-motion
       zoom: 11
     });

@@ -7,16 +7,15 @@ const MapboxTooltips = () => {
     const [ isToggled, setIsToggled ] = useState(false);
 
     function handleClick() {
-        setIsToggled((prevState) => (
-            !prevState
-        ))
-    }
+        setIsToggled(prevState => !prevState);
+      }
 
     return (
-        <>
-    <div className={` ${isToggled ? '' : '-mt-[56px]'} transition-all px-3 flex shrink-0 justify-start h-14 items-center border-b border-gray-200 overflow-visible relative`}>
+        <div className="relative z-50 ">
+{/* transition-transform duration-300 px-3 flex flex-wrap justify-start h-auto py-2 items-center bg-deepgreen overflow-visible */}
+    <div className={`${isToggled ? 'shown' : 'hidden'} px-3 flex flex-wrap justify-start h-auto py-2 items-center bg-deepgreen overflow-visible`}>
     
-        <MapboxTooltip title='Mapbox GL JS' className={'mr-3'}>
+        <MapboxTooltip title='Mapbox GL JS' className={'mr-3 my-1'}>
         {`
 [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/guides) is a client-side JavaScript library for building web maps and web applications with Mapbox's modern mapping technology. You can use Mapbox GL JS to display Mapbox maps in a web browser or client, add user interactivity, and customize the map experience in your application.
 
@@ -27,7 +26,7 @@ In this demo, Mapbox GL JS is used via a custom React component. Once the map is
     `}
         </MapboxTooltip>
 
-        <MapboxTooltip title='Mapbox Search JS' className='mr-3'>
+        <MapboxTooltip title='Mapbox Search JS' className='mr-3 my-1'>
         {`
 [Mapbox Search JS](https://docs.mapbox.com/mapbox-search-js/guides/) is a set of client-side JavaScript libraries for building interactive search experiences using the [Mapbox Search Service](https://docs.mapbox.com/api/search/).
 
@@ -37,7 +36,7 @@ Implementation is available via [React components](https://docs.mapbox.com/mapbo
         `}
         </MapboxTooltip>
 
-        <MapboxTooltip title='Mapbox Standard Style' className={'mr-3'}>
+        <MapboxTooltip title='Mapbox Standard Style' className={'mr-3 my-1'}>
         {`
 [Mapbox Standard](https://www.mapbox.com/blog/standard-core-style) is the default style used by Mapbox maps. Styles include all of the data and complex symbology for the map, including colors, labels, fonts, atmosphere, etc. Styles are highly customizable, but Mapbox Standard provides a professionally-designed general purpose map style to add your own data to. 
 
@@ -48,7 +47,7 @@ Mapbox Standard enables a highly performant and elegant 3D mapping experience wi
     `}
         </MapboxTooltip>
 
-        <MapboxTooltip title='Map Markers' className={'mr-3'}>
+        <MapboxTooltip title='Map Markers' className={'mr-3 my-1'}>
         {`
 A [Mapbox GL JS Marker](https://docs.mapbox.com/mapbox-gl-js/api/markers/#marker) displays an html element at a specific geographic location which stays fixed to the map as the user pans and zooms.
 
@@ -59,7 +58,7 @@ A [Mapbox GL JS Marker](https://docs.mapbox.com/mapbox-gl-js/api/markers/#marker
     `}
         </MapboxTooltip>
 
-        <MapboxTooltip title='Popups' className={'mr-3'}>
+        <MapboxTooltip title='Popups' className={'mr-3 my-1'}>
         {`
 A [Mapbox GL JS Popup](https://docs.mapbox.com/mapbox-gl-js/api/markers/#popup) displays text or html fixed to a geographic location on the map. Popups are often combined with markers to show more information when the marker is clicked.
 
@@ -70,25 +69,26 @@ In this demo, a popup is rendering a custom React Card component. (The same comp
     `}
         </MapboxTooltip>
 
-        <MapboxTooltip title='Source Code' className={'mr-3'}>
+        <MapboxTooltip title='Source Code' className={'mr-3 my-1'}>
         {` Want to learn how we built this?
         
 [Full source code](https://github.com/mapbox/public-tools-and-demos/tree/main/projects/demo-realestate) for this demo is available on Github.`}
         </MapboxTooltip>
-        
-        <div 
-            className='info flex items-center absolute block bg-white hover:bg-slate-200 rounded-b-md z-10 px-4 py-2 text-slate-500 cursor-pointer'
-            onClick={handleClick}>
-                <div className="mr-2">
-                    <LogoSVG />
-                </div>
-             Learn Mapbox
-            <FontAwesomeIcon className={`transition ml-2 ${isToggled ? '' : 'rotate-180'}`}icon={faChevronUp} />
-        </div>
 
     </div>
+
+        <div 
+            className='transition-all info flex items-center absolute block bg-deepgreen rounded-b-md px-4 py-2 text-white cursor-pointer'
+            onClick={handleClick}>
+                <div className="mr-2">
+                    <LogoSVG fillColor="white" />
+                </div>
+                Learn Mapbox
+            <FontAwesomeIcon className={`transition ml-2 ${isToggled ? '' : 'rotate-180'}`}icon={faChevronUp} />
+        </div>
+    </div>
+            
     
-</>
     )
 
 }

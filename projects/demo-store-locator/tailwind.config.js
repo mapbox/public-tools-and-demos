@@ -11,7 +11,8 @@ module.exports = {
       },
       colors: {
         tintgreen: 'rgba(0, 98, 65, 0.1)',
-        deepgreen: '#006241'
+        deepgreen: '#006241',
+        greenhover: '#378269'
       }
     },
     fontFamily: {

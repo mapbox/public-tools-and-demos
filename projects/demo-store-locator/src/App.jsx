@@ -16,7 +16,7 @@ import cafeLogo from './img/cafe-logo.svg'
 
 import './styles.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faList } from '@fortawesome/free-solid-svg-icons'
+import {faList, faMap} from '@fortawesome/free-solid-svg-icons'
 
 export default function Home() {
   
@@ -80,7 +80,8 @@ export default function Home() {
 
   return (
     <>
-      <main className='flex flex-col h-full'>
+      <main className='flex flex-col h-full relative'>
+        <MapboxTooltips/>
         <div className='flex shrink-0 justify-between h-16 py-12 items-center border-b border-gray-200 bg-white z-40 '>
           <div
             className='bg-contain bg-center bg-no-repeat ml-8'
@@ -96,41 +97,45 @@ export default function Home() {
         </div>
         <div className='relative lg:flex grow shrink min-h-0'>
           {/* sidebar */}
-          <div className='lg:flex flex-col top-0 p-4 w-full lg:w-96 shadow-xl z-10 lg:z-30 h-full lg:h-auto bg-white'>
+          <div className='absolute lg:static flex flex-col top-0 p-4 w-full lg:w-96 lg:min-w-96 z-20 lg:z-30 h-full lg:h-auto bg-white'>
 
           <UseMyLocation denyLocation={denyLocation} setSearchValue={setSearchValue}/>
 
-            <SearchBox
-                  className='w-32 sticky'
-                  options={{
-                    proximity: [-75.16805, 39.93298],
-                    types: [
-                      'postcode',
-                      'place',
-                      'locality',
-                      'neighborhood',
-                      'street',
-                      'address'
-                    ]
-                  }}
-                  value={searchValue}
-                  onChange={handleSearchChange}
-                  accessToken={accessToken}
-                  //marker={false}
-                  mapboxgl={mapboxgl}
-                  placeholder={activeLocation?.type =='user' ? 'Your Location ' : 'Search for an address, city, zip, etc'}
-                  map={mapInstanceRef.current}
-                  onRetrieve={handleSearchResult}
-                  theme={{
-                    variables: {
-                      fontFamily: '"Open Sans", sans-serif',
-                      fontWeight: 300,
-                      unit: '16px',
-                      borderRadius: '8px',
-                      // boxShadow: 'none',
-                    }
-                  }}
-                />
+            {/* Searchbox for Large screens */}
+            <div className="sm:hidden md:hidden lg:block">
+              <SearchBox
+                    className='w-32 sticky'
+                    options={{
+                      proximity: [-75.16805, 39.93298],
+                      types: [
+                        'postcode',
+                        'place',
+                        'locality',
+                        'neighborhood',
+                        'street',
+                        'address'
+                      ]
+                    }}
+                    value={searchValue}
+                    onChange={handleSearchChange}
+                    accessToken={accessToken}
+                    //marker={false}
+                    mapboxgl={mapboxgl}
+                    placeholder={activeLocation?.type =='user' ? 'Your Location ' : 'Search for an address, city, zip, etc'}
+                    map={mapInstanceRef.current}
+                    onRetrieve={handleSearchResult}
+                    theme={{
+                      variables: {
+                        fontFamily: '"Open Sans", sans-serif',
+                        fontWeight: 300,
+                        unit: '16px',
+                        borderRadius: '8px',
+                        // boxShadow: 'none',
+                      }
+                    }}
+                  />
+            </div>
+            
                
             <div className='text-2xl text-black font-semibold w-full mb-1.5 mt-6 z-0'>
               Stores
@@ -140,7 +145,7 @@ export default function Home() {
                 <span className="text-deepgreen font-bold">{currentViewData.length}</span> Stores nearby
               </div>
             </div>
-            <div className='overflow-y-auto grow flex flex-col justify-start grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 z-0'>
+            <div className='overflow-y-auto flex-grow flex flex-col justify-start grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 z-0'>
               {currentViewData.length > 0 && currentViewData.map((feature, i) => {
                 return (
                   <div key={i} className='mb-1.5'>
@@ -156,7 +161,42 @@ export default function Home() {
               'z-30': activeMobileView === 'map'
             })}
           >
-            <MapboxTooltips/>
+            {/* SearchBox for small screens */}
+            <div className="lg:hidden w-1/4 absolute top-4 left-4 z-10">
+              <SearchBox
+                    className='w-32 sticky'
+                    options={{
+                      proximity: [-75.16805, 39.93298],
+                      types: [
+                        'postcode',
+                        'place',
+                        'locality',
+                        'neighborhood',
+                        'street',
+                        'address'
+                      ]
+                    }}
+                    value={searchValue}
+                    onChange={handleSearchChange}
+                    accessToken={accessToken}
+                    //marker={false}
+                    mapboxgl={mapboxgl}
+                    placeholder={activeLocation?.type =='user' ? 'Your Location ' : 'Search for an address, city, zip, etc'}
+                    map={mapInstanceRef.current}
+                    onRetrieve={handleSearchResult}
+                    theme={{
+                      variables: {
+                        fontFamily: '"Open Sans", sans-serif',
+                        fontWeight: 300,
+                        unit: '16px',
+                        borderRadius: '8px',
+                        // boxShadow: 'none',
+                      }
+                    }}
+                  />
+
+            </div>
+           
              
             <Map
               data={currentViewData}
@@ -175,7 +215,7 @@ export default function Home() {
         className='absolute z-30 bottom-5 left-1/2 transform -translate-x-1/2 lg:hidden'
         onClick={handleActiveMobileClick}
       >
-        <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>
+        <button className='bg-deepgreen hover:bg-greenhover text-white font-bold py-2 px-4 rounded'>
           <FontAwesomeIcon
             icon={activeMobileView === 'map' ? faList : faMap}
             className='mr-2'

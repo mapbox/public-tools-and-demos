@@ -16,7 +16,7 @@ const UseMyLocation = ({ denyLocation, setSearchValue }) => {
 
     return ( 
         denyLocation ? (
-            <div className="mb-6 text-slate-400 text-sm">                
+            <div className="mb-4 ml-2 text-slate-400 text-sm">                
                 <FontAwesomeIcon
                 icon={faLocationArrow}
                 className='mr-2'
