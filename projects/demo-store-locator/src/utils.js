@@ -11,8 +11,8 @@ export default function getUserLocation(setActiveLocation, setIsLoading, setDeny
           },
           (error) => {
             console.error('Error getting location:', error);
-            setDenyLocation(true);
             setIsLoading(false);
+            setDenyLocation(true);
           }
         );
       

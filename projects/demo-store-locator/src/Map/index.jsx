@@ -44,7 +44,7 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
       [-68.52300, 70.17738] // Northeast coordinates
     ]);
 
-    map.on('zoomend', () => {
+    map.on('moveend', () => {
       const zoom = map.getZoom();
       console.log("zoom:", zoom.toFixed(2));
       // Set minimum zoom to query & render locations
@@ -56,6 +56,17 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
         setData(locationsInView);
       }
     });
+
+    // Add a click event listener to the map
+    map.on('click', function(e) {
+      // Query the features under the clicked point
+      var feature = map.queryRenderedFeatures(e.point);
+
+    // If there is a feature under the clicked point, set the ActiveFeature
+    if (feature.length) {
+        setActiveFeature(feature[0]);
+    }
+  });
 
   }, [])
 
@@ -93,21 +104,6 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
       }, 2000)
     } 
   }, [denyLocation])
-
-  // Pan to active feature
-  useEffect(() => {
-   
-   if(!activeFeature) {
-    return;
-   }
-    mapRef.current.easeTo({
-      center: activeFeature.geometry.coordinates,
-      duration: 250,
-      easing(t) {
-          return t;
-      }
-    });
-  }, [activeFeature])
 
   return (
     <>
