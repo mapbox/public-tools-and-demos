@@ -29,7 +29,6 @@ export default function Home() {
   // the selected search result, chosen from suggestions
   const [searchResult, setSearchResult] = useState(null)
   // for toggling between map view and card view on small screens
-  // TODO add Mobile features to store locator
   const [activeMobileView, setActiveMobileView] = useState('map')
   // Location context to store/set activeMap location across App
   const { activeLocation, setActiveLocation } = useContext(AppContext);

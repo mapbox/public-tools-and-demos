@@ -35,6 +35,18 @@ Implementation is available via [React components](https://docs.mapbox.com/mapbo
         `}
         </MapboxTooltip>
 
+
+        <MapboxTooltip title='MTS Clustering' className={'mr-3 my-1'}>
+        {`
+[MTS Clustering](https://docs.mapbox.com/mapbox-tiling-service) allows you to cluster source data using MTS recipes for high point count, low zoom level data visualizations.
+
+Cluster tiled data directly via the Mapbox Tiling Service (MTS) using recipe features. You no longer need to pre-cluster source data before sending it to MTS, nor are you forced to use legacy tools like Tippecanoe if you want to use clustered tilesets with Mapbox. Instead, now you can directly cluster data within MTS, saving time and potentially costs.
+        
+* [MTS Clustering Documentation](https://docs.mapbox.com/mapbox-tiling-service)
+
+    `}
+        </MapboxTooltip>
+
         <MapboxTooltip title='Mapbox Standard Style' className={'mr-3 my-1'}>
         {`
 [Mapbox Standard](https://www.mapbox.com/blog/standard-core-style) is the default style used by Mapbox maps. Styles include all of the data and complex symbology for the map, including colors, labels, fonts, atmosphere, etc. Styles are highly customizable, but Mapbox Standard provides a professionally-designed general purpose map style to add your own data to. 

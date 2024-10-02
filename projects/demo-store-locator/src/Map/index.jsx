@@ -23,8 +23,7 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
   useEffect(() => {
     const map = (mapRef.current = new mapboxgl.Map({
       container: mapContainer.current,
- //     style: 'mapbox://styles/examples/cm1qimluf00il01pdhpbcf5wg', Mapbox streets
-      style: 'mapbox://styles/examples/cm0foo08s01tn01qq2dzccr6i', // Standard 
+      style: 'mapbox://styles/examples/cm0foo08s01tn01qq2dzccr6i', 
       center:  [
         -97.76095065780527,
         39.15132376255781
@@ -45,61 +44,9 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
       [-68.52300, 70.17738] // Northeast coordinates
     ]);
 
-    map.on('style.load', () => {
-
-      // This source loads a custom tileset utliizing MTS Clustering to group 
-      // locations by region
-      map.addSource('clustered-locations', {
-        type: 'vector',
-        url: 'mapbox://examples.store-locations-clustering'
-      });
-
-      // We style these clustered points with opacity & radius to show larger
-      // circles where more density of locations exist see or example of styling
-      // clustered data here https://docs.mapbox.com/mapbox-gl-js/example/cluster/
-      map.addLayer({
-        id: "clusters",
-        type: "circle",
-        source: "clustered-locations",
-        "source-layer": "store-locations-clustered",
-        filter: ["has", "count"],
-        maxzoom: 6,
-        paint: {
-          "circle-color": "#006241",
-          "circle-opacity": [
-            "step",
-            ["get", "count"],
-            1,
-            10,
-            .75,
-            30,
-            .5,
-          ],
-          "circle-radius": ["step", ["get", "count"], 20, 10, 30, 50, 40],
-        },
-      });
-      
-      map.addLayer({
-        id: "cluster-count",
-        type: "symbol",
-        source: "clustered-locations",
-        "source-layer": "store-locations-clustered",
-        filter: ["has", "count"],
-        maxzoom: 6,
-        layout: {
-          "text-field": ["get", "count"],
-          "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
-          "text-size": 16,
-        },
-        paint: {
-          "text-color": "#FFFFFF"
-        }
-      });
-    });
-
     map.on('zoomend', () => {
       const zoom = map.getZoom();
-
+      console.log("zoom:", zoom.toFixed(2));
       // Set minimum zoom to query & render locations
       if (Math.round(zoom) >= 10 ) {
 
