@@ -2,9 +2,7 @@
 
 import { useState, useRef, useEffect, useContext } from 'react'
 import classNames from 'classnames'
-import { SearchBox } from '@mapbox/search-js-react'
-import mapboxgl from 'mapbox-gl'
-import { accessToken } from './Map'
+import SearchBoxWrapper from './SearchBoxWrapper.jsx'
 import MapboxTooltips from './MapboxTooltips'
 import { AppContext } from './Context/AppContext'
 import UseMyLocation from './UseMyLocation'
@@ -99,41 +97,18 @@ export default function Home() {
           {/* sidebar */}
           <div className='absolute lg:static flex flex-col top-0 p-4 w-full lg:w-96 lg:min-w-96 z-20 lg:z-30 h-full lg:h-auto bg-white'>
 
-          <UseMyLocation denyLocation={denyLocation} setSearchValue={setSearchValue}/>
 
             {/* Searchbox for Large screens */}
             <div className="sm:hidden md:hidden lg:block">
-              <SearchBox
-                    className='w-32 sticky'
-                    options={{
-                      proximity: [-75.16805, 39.93298],
-                      types: [
-                        'postcode',
-                        'place',
-                        'locality',
-                        'neighborhood',
-                        'street',
-                        'address'
-                      ]
-                    }}
-                    value={searchValue}
-                    onChange={handleSearchChange}
-                    accessToken={accessToken}
-                    //marker={false}
-                    mapboxgl={mapboxgl}
-                    placeholder={activeLocation?.type =='user' ? 'Your Location ' : 'Search for an address, city, zip, etc'}
-                    map={mapInstanceRef.current}
-                    onRetrieve={handleSearchResult}
-                    theme={{
-                      variables: {
-                        fontFamily: '"Open Sans", sans-serif',
-                        fontWeight: 300,
-                        unit: '16px',
-                        borderRadius: '8px',
-                        // boxShadow: 'none',
-                      }
-                    }}
-                  />
+              <UseMyLocation denyLocation={denyLocation} setDenyLocation={setDenyLocation} setSearchValue={setSearchValue}/>
+              
+              <SearchBoxWrapper
+                searchValue={searchValue}
+                handleSearchChange={handleSearchChange}
+                handleSearchResult={handleSearchResult}
+                activeLocation={activeLocation}
+                mapInstanceRef={mapInstanceRef}
+              />
             </div>
             
                
@@ -162,42 +137,19 @@ export default function Home() {
             })}
           >
             {/* SearchBox for small screens */}
-            <div className="lg:hidden md:w-1/3 w-1/2 absolute top-4 left-4 z-10">
-              <SearchBox
-                    className='w-32 sticky'
-                    options={{
-                      proximity: [-75.16805, 39.93298],
-                      types: [
-                        'postcode',
-                        'place',
-                        'locality',
-                        'neighborhood',
-                        'street',
-                        'address'
-                      ]
-                    }}
-                    value={searchValue}
-                    onChange={handleSearchChange}
-                    accessToken={accessToken}
-                    //marker={false}
-                    mapboxgl={mapboxgl}
-                    placeholder={activeLocation?.type =='user' ? 'Your Location ' : 'Search for an address, city, zip, etc'}
-                    map={mapInstanceRef.current}
-                    onRetrieve={handleSearchResult}
-                    theme={{
-                      variables: {
-                        fontFamily: '"Open Sans", sans-serif',
-                        fontWeight: 300,
-                        unit: '16px',
-                        borderRadius: '8px',
-                        // boxShadow: 'none',
-                      }
-                    }}
-                  />
+            <div className="lg:hidden md:w-1/3 w-4/5 absolute top-4 left-4 z-10">
 
+            <UseMyLocation denyLocation={denyLocation} setDenyLocation={setDenyLocation} setSearchValue={setSearchValue}/>
+
+              <SearchBoxWrapper
+                searchValue={searchValue}
+                handleSearchChange={handleSearchChange}
+                handleSearchResult={handleSearchResult}
+                activeLocation={activeLocation}
+                mapInstanceRef={mapInstanceRef}
+              />
             </div>
            
-             
             <Map
               data={currentViewData}
               setData={setCurrentViewData}

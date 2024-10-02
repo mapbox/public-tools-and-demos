@@ -44,8 +44,8 @@ body {
   background-size: contain;
   background-position-x: 50%;
   background-repeat: no-repeat;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   cursor: pointer;
   transition-property: width, height; 
@@ -54,8 +54,8 @@ body {
 }
 
 .marker.hovered {
-  width: 60px;
-  height: 60px;  
+  width: 50px;
+  height: 50px;  
   background-image: url('/img/marker-highlight.svg');
   z-index: 5;
 }

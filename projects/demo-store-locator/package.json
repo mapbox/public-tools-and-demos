@@ -19,7 +19,7 @@
     "@turf/bbox": "^6.5.0",
     "@turf/distance": "^7.1.0",
     "classnames": "^2.5.1",
-    "mapbox-gl": "^3.3.0",
+    "mapbox-gl": "^3.6.0",
     "mapbox-gl-geocoder": "^2.0.1",
     "numeral": "^2.0.6",
     "react": "^18",

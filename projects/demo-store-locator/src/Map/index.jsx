@@ -23,20 +23,14 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
   useEffect(() => {
     const map = (mapRef.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: 'mapbox://styles/examples/cm0foo08s01tn01qq2dzccr6i',
+ //     style: 'mapbox://styles/examples/cm1qimluf00il01pdhpbcf5wg', Mapbox streets
+      style: 'mapbox://styles/examples/cm0foo08s01tn01qq2dzccr6i', // Standard 
       center:  [
         -97.76095065780527,
         39.15132376255781
         ],
       zoom: 4
     }))
-
-    map.on('style.load', () => {  
-      // This is not working
-      map.setConfigProperty('basemap', 'theme', 'monochrome'); 
-      // This works :point-down
-      //map.setConfigProperty('basemap', 'lightPreset', 'dusk');   
-    });
 
     map.addControl(new mapboxgl.NavigationControl())
 
@@ -45,11 +39,75 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
       setMapLoaded(true)
     })
 
+    // Set the max bounds of the map to the extent of your dataset
+    map.setMaxBounds([
+      [-164.00944, 24.83458], // SouthWest coordinates
+      [-68.52300, 70.17738] // Northeast coordinates
+    ]);
+
+    map.on('style.load', () => {
+
+      // This source loads a custom tileset utliizing MTS Clustering to group 
+      // locations by region
+      map.addSource('clustered-locations', {
+        type: 'vector',
+        url: 'mapbox://examples.store-locations-clustering'
+      });
+
+      // We style these clustered points with opacity & radius to show larger
+      // circles where more density of locations exist see or example of styling
+      // clustered data here https://docs.mapbox.com/mapbox-gl-js/example/cluster/
+      map.addLayer({
+        id: "clusters",
+        type: "circle",
+        source: "clustered-locations",
+        "source-layer": "store-locations-clustered",
+        filter: ["has", "count"],
+        maxzoom: 6,
+        paint: {
+          "circle-color": "#006241",
+          "circle-opacity": [
+            "step",
+            ["get", "count"],
+            1,
+            10,
+            .75,
+            30,
+            .5,
+          ],
+          "circle-radius": ["step", ["get", "count"], 20, 10, 30, 50, 40],
+        },
+      });
+      
+      map.addLayer({
+        id: "cluster-count",
+        type: "symbol",
+        source: "clustered-locations",
+        "source-layer": "store-locations-clustered",
+        filter: ["has", "count"],
+        maxzoom: 6,
+        layout: {
+          "text-field": ["get", "count"],
+          "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+          "text-size": 16,
+        },
+        paint: {
+          "text-color": "#FFFFFF"
+        }
+      });
+    });
+
     map.on('zoomend', () => {
-      const locationsInView = mapRef.current.queryRenderedFeatures({ layers: ['good-locations-c3utwz'] });
-      console.log("locationsInView", locationsInView);
-      setFeatures(locationsInView)
-      setData(locationsInView);
+      const zoom = map.getZoom();
+
+      // Set minimum zoom to query & render locations
+      if (Math.round(zoom) >= 10 ) {
+
+        // This query requests features from the unclustered layer in our tileset
+        const locationsInView = mapRef.current.queryRenderedFeatures({ layers: ['store-locations'] });
+        setFeatures(locationsInView)
+        setData(locationsInView);
+      }
     });
 
   }, [])
@@ -66,7 +124,7 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
       // Fly to the activeLocation
       mapRef.current.flyTo({
         center: activeLocation.coords,
-        essential: true, // this animation is considered essential with respect to prefers-reduced-motion
+        essential: true,
         zoom: 11
       });
     }
@@ -75,14 +133,18 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
 
   // If user does not share location 
   useEffect(() => {
-  if(denyLocation) {
-    // Fly to Demo City (Seattle)
-    mapRef.current.flyTo({
-      center: [-122.33935, 47.60774],
-      essential: true, // this animation is considered essential with respect to prefers-reduced-motion
-      zoom: 11
-    });
-  } 
+    if(denyLocation) {
+
+      setTimeout(() => {
+        // Fly to Demo City (Seattle)
+        mapRef.current.flyTo({
+          center: [-122.33935, 47.60774],
+          essential: true, // this animation is considered essential with respect to prefers-reduced-motion
+          zoom: 11
+        });
+
+      }, 2000)
+    } 
   }, [denyLocation])
 
   // Pan to active feature

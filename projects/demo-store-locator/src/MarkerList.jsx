@@ -79,7 +79,6 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFea
         const prevSearchResult = prevSearchResultRef.current;
         if (searchResult && prevSearchResult !== searchResult) { 
             // Call the function to clear all markers
-            console.log("markers cleared");
             clearMarkers();
         }
         // Update the ref with the current searchResult after the effect
@@ -113,8 +112,6 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFea
                 offset: 30
             })
             .setDOMContent(popupEl.current)
-            // .on('open', handlePopupOpen)
-            // .on('close', handlePopupClose)
             
             // if popup is undefined, this will remove the popup from the marker
             renderedMarkersList.current[matchingIndex].setPopup(popup);
