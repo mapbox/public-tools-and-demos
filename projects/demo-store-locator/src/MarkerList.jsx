@@ -15,11 +15,10 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFea
 
     // Function to clear all markers
     function clearMarkers() {
-        // for (var i = renderedMarkersList.current.length - 1; i >= 0; i--) {
-        //     renderedMarkersList.current[i].remove();
-        // }
-        // renderedMarkersList.current = [];
-        // renderedFeaturesList.current = [];
+            // Remove previous activeMarker
+              if(activeMarkerRef.current) {
+                activeMarkerRef.current.remove();
+            }
     }
 
     useEffect(() => {
@@ -47,11 +46,6 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFea
             //     // Need to 'reactify' this
             //     const el = document.createElement('div');
             //     el.className = 'marker';
-
-            //      // Attach the click event listener to set activeFeature state on click
-            //     el.addEventListener('click', () => {
-            //         setActiveFeature(feature);  
-            //     });
 
             //     // Attach the mouse event listeners to set hovered state in UI
             //     el.addEventListener('mouseenter', () => {
@@ -100,7 +94,7 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFea
         console.log("activeFeature is", activeFeature);
         // Need to 'reactify' this
         const el = document.createElement('div');
-        el.className = 'marker';
+        el.className = 'marker marker-pop';
 
         // Add marker to the map 
         activeMarkerRef.current = new mapboxgl.Marker(el, {
@@ -151,12 +145,7 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFea
 
     return (
         <>
-          { /* Return a Popup only for the activeFeature */
-          activeFeature && 
-            <div ref={popupEl} className={`bg-white rounded-md cursor-pointer p-4`}>
-                    {/* <LocationData feature={activeFeature}/> */}
-            </div>
-          }
+      
         </> 
     )
 }
@@ -170,3 +159,10 @@ MarkerList.propTypes = {
     activeFeature: PropTypes.object,
     setActiveFeature: PropTypes.any
 }
+
+{ /* Return a Popup only for the activeFeature */
+    // activeFeature && 
+      //<div ref={popupEl} className={`bg-white rounded-md cursor-pointer p-4`}>
+              {/*<LocationData feature={activeFeature}/> */}
+      //</div> 
+    }

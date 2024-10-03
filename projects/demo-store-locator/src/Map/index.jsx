@@ -44,6 +44,16 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
       [-68.52300, 70.17738] // Northeast coordinates
     ]);
 
+    // Change the cursor to a pointer when the mouse is over the layer.  
+    map.on('mouseenter', 'store-locations', () => {  
+      map.getCanvas().style.cursor = 'pointer';  
+    });  
+
+    // Change it back to a pointer when it leaves.  
+    map.on('mouseleave', 'store-locations', () => {  
+      map.getCanvas().style.cursor = '';  
+    });
+
     map.on('moveend', () => {
       const zoom = map.getZoom();
       console.log("zoom:", zoom.toFixed(2));
@@ -54,6 +64,14 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
         const locationsInView = mapRef.current.queryRenderedFeatures({ layers: ['store-locations'] });
         setFeatures(locationsInView)
         setData(locationsInView);
+      }
+    });
+
+    map.on('zoomend', () => {
+      const zoom = map.getZoom();
+      // Set minimum zoom to query & render locations
+      if (Math.round(zoom) <= 10 ) {
+        setData([]);
       }
     });
 

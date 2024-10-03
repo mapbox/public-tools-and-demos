@@ -44,13 +44,54 @@ body {
   background-size: contain;
   background-position-x: 50%;
   background-repeat: no-repeat;
-  width: 40px;
-  height: 40px;
   border-radius: 50%;
   cursor: pointer;
   transition-property: width, height; 
   transition-duration: .1s; 
   transition-timing-function: linear; 
+  /* Define Animate */
+  animation: pop-in 0.3s ease forwards; /* 0.3s pop animation */
+}
+
+.marker::before {
+  content: '';
+  width: 0; 
+  height: 0; 
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 7px solid #006241;
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%)
+}
+
+/* Keyframe animation for pop-in with wobble */
+/* Keyframe animation for pop-in with wobble */
+@keyframes pop-in {
+  0% {
+    width: 0px;
+    height: 0px;
+    opacity: 0;
+    box-shadow: none;
+  }
+  70% {
+    width: 55px;
+    height: 55px;
+    opacity: 1;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.4);  /* Add a subtle shadow */
+  }
+  85% {
+    width: 48px;
+    height: 48px;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.3);  /* Shrink shadow with wobble */
+  }
+  100% {
+    width: 50px;
+    height: 50px;
+    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);  /* Final shadow size */
+  }
 }
 
 .marker.hovered {

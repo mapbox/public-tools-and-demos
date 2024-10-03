@@ -6,9 +6,9 @@ import SearchBoxWrapper from './SearchBoxWrapper.jsx'
 import MapboxTooltips from './MapboxTooltips'
 import { AppContext } from './Context/AppContext'
 import UseMyLocation from './UseMyLocation'
+import LocationListing from './LocationListing.jsx'
 
 import Map from './Map'
-import Card from './Card'
 import getUserLocation from './utils'
 import cafeLogo from './img/cafe-logo.svg'
 
@@ -96,7 +96,6 @@ export default function Home() {
           {/* sidebar */}
           <div className='absolute lg:static flex flex-col top-0 p-4 w-full lg:w-96 lg:min-w-96 z-20 lg:z-30 h-full lg:h-auto bg-white'>
 
-
             {/* Searchbox for Large screens */}
             <div className="sm:hidden md:hidden lg:block">
               <UseMyLocation denyLocation={denyLocation} setDenyLocation={setDenyLocation} setSearchValue={setSearchValue}/>
@@ -119,15 +118,13 @@ export default function Home() {
                 <span className="text-deepgreen font-bold">{currentViewData.length}</span> Stores nearby
               </div>
             </div>
-            <div className='overflow-y-auto flex-grow flex flex-col justify-start grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 z-0'>
-              {currentViewData.length > 0 && currentViewData.map((feature, i) => {
-                return (
-                  <div key={i} className='mb-1.5'>
-                    <Card feature={feature} onClick={handleFeatureClick} activeFeature={activeFeature}/>
-                  </div>
-                )
-              })}
-            </div>
+            
+            <LocationListing 
+              currentViewData={currentViewData} 
+              activeFeature={activeFeature} 
+              handleFeatureClick={handleFeatureClick} 
+            />
+
           </div>
           {/* end sidebar */}
           <div

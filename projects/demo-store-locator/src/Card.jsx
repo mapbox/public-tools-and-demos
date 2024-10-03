@@ -62,6 +62,7 @@ LocationData.propTypes = {
 const Card = ({ feature, onClick, activeFeature }) => {
   const { hoveredFeature, setHoveredFeature } = useContext(AppContext);
 
+  // console.log("activeFeature is", activeFeature);
   const handleClick = () => {
     onClick(feature)
   }
@@ -73,9 +74,10 @@ const Card = ({ feature, onClick, activeFeature }) => {
     setHoveredFeature('')
   }
 
-  const isActiveFeature = (feature == activeFeature) ? true : false;
+  const isActiveFeature = (feature.properties.name == activeFeature?.properties.name) ? true : false;
+  
   let isMarkerHovered;
-
+  
   if(hoveredFeature) {
     isMarkerHovered = (feature.properties.address == hoveredFeature.properties.address) ? true : false;
   }
