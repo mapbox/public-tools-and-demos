@@ -9,6 +9,7 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFea
     // const renderedFeaturesList = useRef([]);
     const prevSearchResultRef = useRef();
     const popupEl = useRef();
+    const markerElRef = useRef();
     const activeMarkerRef = useRef();
     const [ activeMarker, setActiveMarker ] = useState();
     const { hoveredFeature, setHoveredFeature } = useContext(AppContext);
@@ -83,16 +84,23 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFea
             activeMarkerRef.current.remove();
         }
 
-        console.log("activeFeature is", activeFeature);
-        // Need to 'reactify' this
-        const el = document.createElement('div');
-        el.className = 'marker marker-pop';
+        // Reactify this? ie: no document
+
+        //  Here we add an inner DIV element to the marker in order
+        // to use css transform animations
+        // const el = document.createElement('div');
+        // const innerEl = document.createElement('div');
+        // innerEl.className = 'marker marker-pop';
+        // el.appendChild(innerEl);
 
         // Add marker to the map 
-        activeMarkerRef.current = new mapboxgl.Marker(el, {
+        const marker = new mapboxgl.Marker({
+            element: markerElRef.current,
             offset: [0,-10]
         }).setLngLat(activeFeature.geometry.coordinates)
           .addTo(mapRef)
+
+        activeMarkerRef.current = marker;
                 
         
         // // Remove popUp from previous active Marker
@@ -136,9 +144,11 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFea
     })
 
     return (
-        <>
-      
-        </> 
+        <div ref={markerElRef}>
+            {/* We create an inner DIV in our marker element so we can apply css animations via transform */}
+            <div className="marker marker-pop">
+            </div>
+        </div>
     )
 }
 

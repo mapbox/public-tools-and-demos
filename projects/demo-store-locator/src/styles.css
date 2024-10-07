@@ -50,7 +50,8 @@ body {
   transition-duration: .1s; 
   transition-timing-function: linear; 
   /* Define Animate */
-  animation: pop-in 0.3s ease forwards; /* 0.3s pop animation */
+  animation: pop-in 0.3s ease-out forwards, wobble 1.5s ease-in-out 0.3s forwards; 
+  transform-origin: bottom center;
 }
 
 .marker::before {
@@ -67,8 +68,7 @@ body {
   transform: translateX(-50%)
 }
 
-/* Keyframe animation for pop-in with wobble */
-/* Keyframe animation for pop-in with wobble */
+/* Keyframe animation for pop-in */
 @keyframes pop-in {
   0% {
     width: 0px;
@@ -93,6 +93,33 @@ body {
     box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);  /* Final shadow size */
   }
 }
+
+/* Keyframe animation for slow wobble after pop-in */
+@keyframes wobble {
+  0% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(2.5deg);
+  }
+  50% {
+    transform: rotate(-2deg);
+  }
+  65% {
+    transform: rotate(1deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+/* Element styling */
+.element {
+  transform-origin: bottom center;
+  /* Run pop-in fast, followed by the slow wobble */
+}
+
+
 
 .marker.hovered {
   width: 50px;
