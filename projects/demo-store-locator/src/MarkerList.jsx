@@ -47,14 +47,6 @@ const MarkerList = ({features, mapRef, searchResult, activeFeature, setActiveFea
             //     const el = document.createElement('div');
             //     el.className = 'marker';
 
-            //     // Attach the mouse event listeners to set hovered state in UI
-            //     el.addEventListener('mouseenter', () => {
-            //         setHoveredFeature(feature);
-            //     })
-            //     el.addEventListener('mouseleave', () => {
-            //         setHoveredFeature('');
-            //     })
-
             //     // Add marker to the map 
             //     const marker = new mapboxgl.Marker(el)
             //     .setLngLat(feature.geometry.coordinates)

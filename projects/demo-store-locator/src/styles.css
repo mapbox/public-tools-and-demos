@@ -62,7 +62,7 @@ body {
   border-top: 7px solid #006241;
   display: block;
   position: absolute;
-  bottom: 0;
+  bottom: -5px;
   left: 50%;
   transform: translateX(-50%)
 }

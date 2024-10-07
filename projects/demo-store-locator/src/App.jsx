@@ -31,14 +31,15 @@ export default function Home() {
   // for toggling between map view and card view on small screens
   const [activeMobileView, setActiveMobileView] = useState('map')
   // Location context to store/set activeMap location across App
-  const { activeLocation, setActiveLocation } = useContext(AppContext);
+  const { activeLocation, setActiveLocation, setLoadingUserLocation } = useContext(AppContext);
 
   // a ref to hold the Mapbox GL JS Map instance
   const mapInstanceRef = useRef()
 
   // Use Effect to request Users Location on App mount
   useEffect(() => {
-    getUserLocation(setActiveLocation, setDenyLocation);
+    setLoadingUserLocation(true);
+    getUserLocation(setActiveLocation, setLoadingUserLocation, setDenyLocation);
   }, []);
 
   // // when the map loads

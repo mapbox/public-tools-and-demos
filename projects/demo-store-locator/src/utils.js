@@ -1,4 +1,4 @@
-export default function getUserLocation(setActiveLocation, setIsLoading, setDenyLocation) {
+export default function getUserLocation(setActiveLocation, setLoadingUserLocation, setDenyLocation) {
 
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -7,11 +7,11 @@ export default function getUserLocation(setActiveLocation, setIsLoading, setDeny
               coords: [ position.coords.longitude, position.coords.latitude ],
               type: 'user'
             });
-            setIsLoading(false);
+            setLoadingUserLocation(false);
           },
           (error) => {
             console.error('Error getting location:', error);
-            setIsLoading(false);
+            setLoadingUserLocation(false);
             setDenyLocation(true);
           }
         );

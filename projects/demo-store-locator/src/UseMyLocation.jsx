@@ -6,12 +6,11 @@ import { AppContext } from './Context/AppContext'
 
 const UseMyLocation = ({ denyLocation, setDenyLocation, setSearchValue }) => {
     
-    const { setActiveLocation } = useContext(AppContext);
-    const [ isLoading, setIsLoading ] = useState(false);
+    const { setActiveLocation, loadingUserLocation, setLoadingUserLocation} = useContext(AppContext);
 
     function handleClick() {
-        setIsLoading(true);
-        getUserLocation(setActiveLocation, setIsLoading, setDenyLocation);
+        setLoadingUserLocation(true);
+        getUserLocation(setActiveLocation, setLoadingUserLocation, setDenyLocation);
         // empty search input
         setSearchValue('');
     }
@@ -36,7 +35,7 @@ const UseMyLocation = ({ denyLocation, setDenyLocation, setSearchValue }) => {
                     style={{color: "#006241"}}
                     /> Use My Location 
                     
-                    {isLoading &&       
+                    {loadingUserLocation &&       
                         <FontAwesomeIcon
                             icon={faSpinner}
                             className="ml-2 animate-spin"

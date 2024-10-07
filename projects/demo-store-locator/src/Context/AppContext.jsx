@@ -8,13 +8,16 @@ export const AppContext = createContext();
 export const AppContextProvider = ({ children }) => {
   const [ activeLocation, setActiveLocation ] = useState(null);
   const [ hoveredFeature, setHoveredFeature ] = useState(null);
+  const [ loadingUserLocation, setLoadingUserLocation ] = useState(false);
 
   const value = useMemo(() => ({
     activeLocation,
     setActiveLocation,
     hoveredFeature,
-    setHoveredFeature
-  }), [activeLocation, hoveredFeature]);
+    setHoveredFeature,
+    loadingUserLocation,
+    setLoadingUserLocation
+  }), [activeLocation, hoveredFeature, loadingUserLocation]);
 
   return (
     <AppContext.Provider value={value}>
