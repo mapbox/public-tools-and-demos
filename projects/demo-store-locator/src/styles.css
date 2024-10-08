@@ -39,6 +39,21 @@ body {
   pointer-events: auto !important;
 }
 
+.hover-marker {
+  background-color: #006241;
+  border: 2px solid white;
+  height: 17px;
+  width: 17px;
+  background-position-x: 50%;
+  border-radius: 50%;
+  transition-property: width, height; 
+  transition-duration: .1s; 
+  transition-timing-function: linear; 
+  /* Define Animate */
+  animation: hover-in 0.3s ease-in-out;
+  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);
+}
+
 .marker {
   background-image: url('/img/location-marker.svg');
   background-size: contain;
@@ -113,19 +128,26 @@ body {
   }
 }
 
-/* Element styling */
-.element {
-  transform-origin: bottom center;
-  /* Run pop-in fast, followed by the slow wobble */
-}
-
-
-
-.marker.hovered {
-  width: 50px;
-  height: 50px;  
-  background-image: url('/img/marker-highlight.svg');
-  z-index: 5;
+/* Keyframe animation for pop-in */
+@keyframes hover-in {
+  0% {
+    width: 0px;
+    height: 0px;
+    opacity: 0;
+  }
+  70% {
+    width: 22px;
+    height: 22px;
+    opacity: 1;
+  }
+  85% {
+    width: 15px;
+    height: 15px;
+  }
+  100% {
+    width: 17px;
+    height: 17px;
+  }
 }
 
 /* Toggle for Mapbox tooltips */

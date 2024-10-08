@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import { useRef, useEffect, useState, useContext } from 'react'
 import mapboxgl from 'mapbox-gl'
-import MarkerList from '../MarkerList'
+import Markers from '../Markers'
 import { AppContext } from '../Context/AppContext';
 import { addUserLocationPulse } from './pulse';
 
@@ -56,7 +56,7 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
 
     map.on('moveend', () => {
       const zoom = map.getZoom();
-      console.log("zoom:", zoom.toFixed(2));
+
       // Set minimum zoom to query & render locations
       if (Math.round(zoom) >= 10 ) {
 
@@ -80,11 +80,11 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
       // Query the features under the clicked point
       var feature = map.queryRenderedFeatures(e.point);
 
-    // If there is a feature under the clicked point, set the ActiveFeature
-    if (feature.length) {
-        setActiveFeature(feature[0]);
-    }
-  });
+      // If there is a feature under the clicked point, set the ActiveFeature
+      if (feature.length) {
+          setActiveFeature(feature[0]);
+      }
+    });
 
   }, [])
 
@@ -128,11 +128,9 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
       <div ref={mapContainer} className='h-full w-full' />
       {mapLoaded &&
         features &&
-        <MarkerList 
-          features={features}
+        <Markers 
           mapRef={mapRef.current}
           searchResult={searchResult}
-          setActiveFeature={setActiveFeature}
           activeFeature={activeFeature}/>
       }
     </>

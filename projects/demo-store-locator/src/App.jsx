@@ -31,7 +31,7 @@ export default function Home() {
   // for toggling between map view and card view on small screens
   const [activeMobileView, setActiveMobileView] = useState('map')
   // Location context to store/set activeMap location across App
-  const { activeLocation, setActiveLocation, setLoadingUserLocation } = useContext(AppContext);
+  const { activeLocation, setActiveLocation, setLoadingUserLocation, isMobile } = useContext(AppContext);
 
   // a ref to hold the Mapbox GL JS Map instance
   const mapInstanceRef = useRef()
@@ -65,15 +65,6 @@ export default function Home() {
     });
     setSearchResult(value)
     return value
-  }
-
-  // toggle the map and card view on mobile devices
-  const handleActiveMobileClick = () => {
-    if (activeMobileView === 'map') {
-      setActiveMobileView('cards')
-    } else {
-      setActiveMobileView('map')
-    }
   }
 
   return (
@@ -163,18 +154,6 @@ export default function Home() {
           </div>
         </div>
       </main>
-      <div
-        className='absolute z-30 bottom-5 left-1/2 transform -translate-x-1/2 lg:hidden'
-        onClick={handleActiveMobileClick}
-      >
-        <button className='bg-deepgreen hover:bg-greenhover text-white font-bold py-2 px-4 rounded'>
-          <FontAwesomeIcon
-            icon={activeMobileView === 'map' ? faList : faMap}
-            className='mr-2'
-          />
-          {activeMobileView === 'map' ? 'Cards' : 'Map'}
-        </button>
-      </div>
     </>
   )
 }
