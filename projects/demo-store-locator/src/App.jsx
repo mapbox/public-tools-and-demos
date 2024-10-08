@@ -13,8 +13,6 @@ import getUserLocation from './utils'
 import cafeLogo from './img/cafe-logo.svg'
 
 import './styles.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faList, faMap} from '@fortawesome/free-solid-svg-icons'
 
 export default function Home() {
   
@@ -28,18 +26,24 @@ export default function Home() {
   const [searchValue, setSearchValue] = useState('')
   // the selected search result, chosen from suggestions
   const [searchResult, setSearchResult] = useState(null)
-  // for toggling between map view and card view on small screens
-  const [activeMobileView, setActiveMobileView] = useState('map')
+  // set state based on screen size for responsive component rendering
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   // Location context to store/set activeMap location across App
   const { activeLocation, setActiveLocation, setLoadingUserLocation } = useContext(AppContext);
 
   // a ref to hold the Mapbox GL JS Map instance
   const mapInstanceRef = useRef()
 
-  // Use Effect to request Users Location on App mount
+  // Use Effect to request Users Location and setup Mobile event listener on Mount
   useEffect(() => {
     setLoadingUserLocation(true);
     getUserLocation(setActiveLocation, setLoadingUserLocation, setDenyLocation);
+
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  
   }, []);
 
   // // when the map loads
@@ -67,15 +71,6 @@ export default function Home() {
     return value
   }
 
-  // toggle the map and card view on mobile devices
-  const handleActiveMobileClick = () => {
-    if (activeMobileView === 'map') {
-      setActiveMobileView('cards')
-    } else {
-      setActiveMobileView('map')
-    }
-  }
-
   return (
     <>
       <main className='flex flex-col h-full relative'>
@@ -94,45 +89,49 @@ export default function Home() {
         </div>
         </div>
         <div className='relative lg:flex grow shrink min-h-0'>
-          {/* sidebar */}
-          <div className='absolute lg:static flex flex-col top-0 p-4 w-full lg:w-96 lg:min-w-96 z-20 lg:z-30 h-full lg:h-auto bg-white'>
+          
+          {/* sidebar large screen only */}
 
-            {/* Searchbox for Large screens */}
-            <div className="sm:hidden md:hidden lg:block">
-              <UseMyLocation denyLocation={denyLocation} setDenyLocation={setDenyLocation} setSearchValue={setSearchValue}/>
-              
-              <SearchBoxWrapper
-                searchValue={searchValue}
-                handleSearchChange={handleSearchChange}
-                handleSearchResult={handleSearchResult}
-                activeLocation={activeLocation}
-                mapInstanceRef={mapInstanceRef}
-              />
-            </div>
-            
-               
-            <div className='text-2xl text-black font-semibold w-full mb-1.5 mt-6 z-0'>
-              Stores
-            </div>
-            <div className='mb-4 z-0'>
-              <div className='font-medium text-gray-500'>
-                <span className="text-deepgreen font-bold">{currentViewData.length}</span> Stores nearby
+          { !isMobile && (
+            <div className='flex absolute lg:static flex-col top-0 p-4 w-full lg:w-96 lg:min-w-96 z-20 lg:z-30 h-full lg:h-auto bg-white'>
+
+              {/* Searchbox for Large screens */}
+              <div className="sm:hidden md:hidden lg:block">
+                <UseMyLocation denyLocation={denyLocation} setDenyLocation={setDenyLocation} setSearchValue={setSearchValue}/>
+                
+                <SearchBoxWrapper
+                  searchValue={searchValue}
+                  handleSearchChange={handleSearchChange}
+                  handleSearchResult={handleSearchResult}
+                  activeLocation={activeLocation}
+                  mapInstanceRef={mapInstanceRef}
+                />
               </div>
-            </div>
-            
-            <LocationListing 
-              currentViewData={currentViewData} 
-              activeFeature={activeFeature} 
-              handleFeatureClick={handleFeatureClick} 
-            />
+              
+                
+              <div className='text-2xl text-black font-semibold w-full mb-1.5 mt-6 z-0'>
+                Stores
+              </div>
+              <div className='mb-4 z-0'>
+                <div className='font-medium text-gray-500'>
+                  <span className="text-deepgreen font-bold">{currentViewData.length}</span> Stores nearby
+                </div>
+              </div>
+              
+              <LocationListing 
+                currentViewData={currentViewData} 
+                activeFeature={activeFeature} 
+                handleFeatureClick={handleFeatureClick} 
+              />
 
-          </div>
+            </div>
+
+            )
+          }
           {/* end sidebar */}
+
           <div
-            className={classNames('grow shrink-0 relative h-full lg:h-auto', {
-              'z-30': activeMobileView === 'map'
-            })}
-          >
+            className={classNames('grow shrink-0 relative h-full lg:h-auto')}>
             {/* SearchBox for small screens */}
             <div className="lg:hidden md:w-1/3 w-4/5 absolute top-4 left-4 z-10">
 
@@ -160,18 +159,6 @@ export default function Home() {
           </div>
         </div>
       </main>
-      <div
-        className='absolute z-30 bottom-5 left-1/2 transform -translate-x-1/2 lg:hidden'
-        onClick={handleActiveMobileClick}
-      >
-        <button className='bg-deepgreen hover:bg-greenhover text-white font-bold py-2 px-4 rounded'>
-          <FontAwesomeIcon
-            icon={activeMobileView === 'map' ? faList : faMap}
-            className='mr-2'
-          />
-          {activeMobileView === 'map' ? 'Cards' : 'Map'}
-        </button>
-      </div>
     </>
   )
 }
