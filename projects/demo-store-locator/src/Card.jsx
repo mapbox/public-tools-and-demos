@@ -62,7 +62,6 @@ LocationData.propTypes = {
 const Card = ({ feature, onClick, activeFeature }) => {
   const { hoveredFeature, setHoveredFeature } = useContext(AppContext);
 
-  // console.log("activeFeature is", activeFeature);
   const handleClick = () => {
     onClick(feature)
   }
