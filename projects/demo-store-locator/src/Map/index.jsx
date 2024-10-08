@@ -16,7 +16,6 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
   const [mapLoaded, setMapLoaded] = useState(false);
   const [features, setFeatures] = useState();
   const { activeLocation } = useContext(AppContext);
-  let hoveredFeatureId = null;
 
   let mapRef = useRef(null);
   const pulseRef = useRef(null);
@@ -37,89 +36,6 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
     map.on('load', () => {
       onLoad(map)
       setMapLoaded(true)
-      // Add circles to all store-locations
-      map.addSource('stores', {
-        type: 'vector',
-        url: 'mapbox://examples.store-locations-clustering'
-      });
-
-
-      map.addLayer({
-        id: 'store-locations',
-        source: 'stores',
-        'source-layer': 'store-locations',
-        type: 'circle',
-        paint: {
-          'circle-color': "#006241",
-          'circle-radius': [  
-            'case',  
-            ['boolean', ['feature-state', 'hover'], true],  
-            6,  
-            9
-          ],
-          'circle-stroke-color': "#FFFFFF",
-          'circle-stroke-width': [
-            'case',  
-            ['boolean', ['feature-state', 'hover'], true],  
-            2,  
-            3
-
-          ],
-          "circle-radius-transition": {
-            "duration": 300,
-            "delay": 0
-          },
-          "circle-stroke-width-transition": {
-            "duration": 300,
-            "delay": 0
-          }
-        },
-      });
-
-      // When the user moves their mouse over the 'store-locations' layer, update the
-      // feature state for the feature under the mouse
-      map.on('mousemove', 'store-locations', function(e) {
-        console.log("mouse moves over feature");
-        if (e.features.length > 0) {
-            if (hoveredFeatureId) {
-                map.setFeatureState(
-                    { 
-                      source: 'stores',
-                      sourceLayer: 'store-locations',
-                      id: hoveredFeatureId 
-                    },
-                    { hover: true }
-                );
-            }
-            hoveredFeatureId = e.features[0].id;
-            map.setFeatureState(
-              { 
-                source: 'stores',
-                sourceLayer: 'store-locations',
-                id: hoveredFeatureId 
-              },
-                { hover: false }
-            );
-        }
-      });
-
-      // When the mouse leaves the 'store-locations' layer, update the feature state of the
-      // previously hovered feature
-      map.on('mouseleave', 'store-locations', function() {
-        console.log("mouse leaves feature");
-
-        if (hoveredFeatureId) {
-            map.setFeatureState(
-              { 
-                source: 'stores',
-                sourceLayer: 'store-locations',
-                id: hoveredFeatureId 
-              },
-                { hover: true }
-            );
-        }
-        hoveredFeatureId = null;
-      });
     })
 
     // Set the max bounds of the map to the extent of your dataset
@@ -128,9 +44,7 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
       [-68.52300, 70.17738] // Northeast coordinates
     ]);
 
-    
-
-    // Change the cursor to a pointer when the mouse is over a feature layer.  
+    // Change the cursor to a pointer when the mouse is over the layer.  
     map.on('mouseenter', 'store-locations', () => {  
       map.getCanvas().style.cursor = 'pointer';  
     });  
@@ -142,6 +56,7 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
 
     map.on('moveend', () => {
       const zoom = map.getZoom();
+      console.log("zoom:", zoom.toFixed(2));
       // Set minimum zoom to query & render locations
       if (Math.round(zoom) >= 10 ) {
 
