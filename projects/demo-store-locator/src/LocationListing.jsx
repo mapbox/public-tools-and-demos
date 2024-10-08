@@ -20,7 +20,7 @@ const LocationListing = ({currentViewData, handleFeatureClick, activeFeature}) =
     }, [activeFeature]);
 
     return (
-        <div className='overflow-y-auto flex-grow flex flex-col justify-start grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 z-0'>
+        <div className='overflow-y-auto flex-grow flex flex-col justify-start grid grid-cols-1 gap-4 z-0'>
               {currentViewData.length > 0 && currentViewData.map((feature, i) => {
                 return (
                   <div 

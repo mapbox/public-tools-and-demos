@@ -17,7 +17,7 @@ const UseMyLocation = ({ denyLocation, setDenyLocation, setSearchValue }) => {
 
     return ( 
         denyLocation ? (
-            <div className="mb-4 ml-2 text-slate-400 text-sm">                
+            <div className="mb-2 text-slate-400 text-sm inline-block bg-transwhite px-2 py-2 rounded-md">                
                 <FontAwesomeIcon
                 icon={faLocationArrow}
                 className='mr-2'
@@ -27,7 +27,7 @@ const UseMyLocation = ({ denyLocation, setDenyLocation, setSearchValue }) => {
         ) : (
             <div>
                 <div 
-                className="mb-2 md:mb-6  cursor-pointer bg-slate-100 rounded py-1 px-2 flex-none inline-block text-sm text-slate-500 hover:bg-slate-200 transition"
+                className="mb-2 md:mb-4  cursor-pointer bg-slate-100 rounded py-1 px-2 flex-none inline-block text-sm text-slate-500 hover:bg-slate-200 transition"
                 onClick={handleClick}>                
                     <FontAwesomeIcon
                     icon={faLocationArrow}

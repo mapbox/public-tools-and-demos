@@ -93,10 +93,10 @@ export default function Home() {
           {/* sidebar large screen only */}
 
           { !isMobile && (
-            <div className='flex absolute lg:static flex-col top-0 p-4 w-full lg:w-96 lg:min-w-96 z-20 lg:z-30 h-full lg:h-auto bg-white'>
+            <div className='flex absolute lg:static flex-col top-0 p-4 lg:w-96 lg:min-w-96 z-20 lg:z-30 h-full lg:h-auto bg-white'>
 
               {/* Searchbox for Large screens */}
-              <div className="sm:hidden md:hidden lg:block">
+              <div>
                 <UseMyLocation denyLocation={denyLocation} setDenyLocation={setDenyLocation} setSearchValue={setSearchValue}/>
                 
                 <SearchBoxWrapper
