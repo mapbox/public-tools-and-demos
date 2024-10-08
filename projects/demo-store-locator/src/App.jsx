@@ -13,8 +13,6 @@ import getUserLocation from './utils'
 import cafeLogo from './img/cafe-logo.svg'
 
 import './styles.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faList, faMap} from '@fortawesome/free-solid-svg-icons'
 
 export default function Home() {
   

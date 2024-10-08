@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { useEffect, useRef, useState, useContext } from 'react'
+import { useEffect, useRef, useContext } from 'react'
 import mapboxgl from 'mapbox-gl'
 import { LocationData } from './Card'
 import { AppContext } from './Context/AppContext'
@@ -10,24 +10,16 @@ const Markers = ({ mapRef, searchResult, activeFeature}) => {
     const markerElRef = useRef();
     const activeMarkerRef = useRef();
     const hoveredMarker = useRef();
-    const [ activeMarker, setActiveMarker ] = useState();
     const { hoveredFeature, isMobile } = useContext(AppContext);
 
-    // Function to clear all markers
-    function clearMarkers() {
-            // Remove previous activeMarker
-              if(activeMarkerRef.current) {
-                activeMarkerRef.current.remove();
-            }
-    }
-
+    // This creates a hover marker on the map when the corresponding
+    // feature is hovered in LocationListing.jsx
     useEffect(() => {
         // Remove previous marker if it exists
         if (hoveredMarker.current) {
           hoveredMarker.current.remove();
         }
       
-        // If no feature is hovered, just return
         if (!hoveredFeature) return;
       
         // Create marker for the hover state
@@ -42,30 +34,23 @@ const Markers = ({ mapRef, searchResult, activeFeature}) => {
       }, [hoveredFeature]);
       
 
-    // Remove markers on new SearchBox Query
+    // Remove marker on new SearchBox Query
     useEffect(() => {
         const prevSearchResult = prevSearchResultRef.current;
         if (searchResult && prevSearchResult !== searchResult) { 
-            // Call the function to clear all markers
-            clearMarkers();
+            if(activeMarkerRef.current) {
+                activeMarkerRef.current.remove();
+            }
         }
         // Update the ref with the current searchResult after the effect
         prevSearchResultRef.current = searchResult;
     }, [searchResult])
 
-    // Add popup to active Feature
+    // Adds Marker & Popup (if mobile) to active Feature
     useEffect(() => {
 
         if(!activeFeature) {
             return;
-        }
-        
-        // Remove previous activeMarker
-        if(activeMarkerRef.current) {
-            activeMarkerRef.current.remove(); 
-            if (activeMarkerRef.current.getPopup()) {
-                activeMarkerRef.current.setPopup(null);
-            }
         }
 
         // Add marker to the map 
@@ -79,7 +64,6 @@ const Markers = ({ mapRef, searchResult, activeFeature}) => {
                 
         // Generate pop up only on Mobile
         if (isMobile) {
-             
             let popup = new mapboxgl.Popup({
                 closeButton: false,
                 closeOnClick: true,
@@ -95,7 +79,6 @@ const Markers = ({ mapRef, searchResult, activeFeature}) => {
         }
 
         return () => {
-            // This runs when the component unmounts or before the next effect runs
              // Cleanup popup and marker
              if (activeMarkerRef.current) {
                 activeMarkerRef.current.setPopup(null);
@@ -113,8 +96,8 @@ const Markers = ({ mapRef, searchResult, activeFeature}) => {
                 <div className="marker marker-pop">
                 </div>
             </div>
-            { isMobile && activeFeature &&
-                <div ref={popupEl} className={`bg-white rounded-md cursor-pointer p-4`}>
+            { activeFeature &&
+                <div ref={popupEl} className={`${isMobile ? '' : 'hidden'} bg-white rounded-md cursor-pointer p-4`}>
                     <LocationData feature={activeFeature}/> 
                 </div> 
             }
@@ -129,10 +112,3 @@ Markers.propTypes = {
     searchResult: PropTypes.object,
     activeFeature: PropTypes.object,
 }
-
-{ /* Return a Popup only for the activeFeature */
-    // activeFeature && 
-      //<div ref={popupEl} className={`bg-white rounded-md cursor-pointer p-4`}>
-              {/*<LocationData feature={activeFeature}/> */}
-      //</div> 
-    }

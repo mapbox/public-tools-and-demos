@@ -9,7 +9,7 @@ const LocationListing = ({currentViewData, handleFeatureClick, activeFeature}) =
       locationRefs.current = []; // Clear the refs array when new locations are populated
     }, [currentViewData]);
 
-      // Scroll to the active location when it changes
+    // Scroll to the active location when it changes
     useEffect(() => {
         if (activeFeature && locationRefs.current[activeFeature.properties.id]) {
         locationRefs.current[activeFeature.properties.id].scrollIntoView({

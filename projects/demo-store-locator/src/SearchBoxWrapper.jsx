@@ -13,7 +13,6 @@ export default function SearchBoxWrapper({
     <SearchBox
       className='w-32 sticky'
       options={{
-        // proximity: [-75.16805, 39.93298],
         types: ['postcode', 'place', 'locality', 'neighborhood', 'street', 'address'],
         country: 'US'
       }}

@@ -44,7 +44,7 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
       [-68.52300, 70.17738] // Northeast coordinates
     ]);
 
-    // Change the cursor to a pointer when the mouse is over the layer.  
+    // Change the cursor to a pointer when the mouse is over a feature in the layer.  
     map.on('mouseenter', 'store-locations', () => {  
       map.getCanvas().style.cursor = 'pointer';  
     });  

@@ -1,4 +1,4 @@
-import React, { useState, useContext }from 'react';
+import React, { useContext }from 'react';
 import getUserLocation from './utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLocationArrow, faSpinner } from '@fortawesome/free-solid-svg-icons'
