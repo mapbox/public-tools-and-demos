@@ -1,14 +1,28 @@
+import React, { useContext } from 'react'
 import { SearchBox } from '@mapbox/search-js-react'
 import mapboxgl from 'mapbox-gl'
 import { accessToken } from './Map'
+import { AppContext } from './Context/AppContext'
 
-export default function SearchBoxWrapper({
-  searchValue,
-  handleSearchChange,
-  handleSearchResult,
-  activeLocation,
-  mapInstanceRef
-}) {
+const SearchBoxWrapper = ({ mapInstanceRef }) => {
+
+    const { searchValue, setSearchValue, setSearchResult, activeLocation, setActiveLocation, setFeatures } = useContext(AppContext);
+
+   // set the search value as the user types
+   const handleSearchChange = (newValue) => {
+    setSearchValue(newValue)
+  }
+
+  const handleSearchResult = (value) => {
+    setFeatures('');
+    setActiveLocation({
+      coords: value.features[0].geometry.coordinates,
+      type: 'search'
+    });
+    setSearchResult(value)
+    return value
+  }
+
   return (
     <SearchBox
       className='w-32 sticky'
@@ -34,3 +48,5 @@ export default function SearchBoxWrapper({
     />
   )
 }
+
+export default SearchBoxWrapper;

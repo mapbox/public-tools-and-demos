@@ -11,11 +11,16 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 export const accessToken = (mapboxgl.accessToken =
   'pk.eyJ1IjoiZXhhbXBsZXMiLCJhIjoiY2lqbmp1MzNhMDBud3VvbHhqbjY1cnV2cCJ9.uGJJU2wgtXzcBNc62vY4_A')
 
-const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, denyLocation }) => {
+const Map = ({ onLoad }) => {
   const mapContainer = useRef(null);
   const [mapLoaded, setMapLoaded] = useState(false);
-  const [features, setFeatures] = useState();
-  const { activeLocation } = useContext(AppContext);
+  const { 
+    setActiveFeature, 
+    activeLocation,
+    features,
+    setFeatures, 
+    denyLocation
+  } = useContext(AppContext);
 
   let mapRef = useRef(null);
   const pulseRef = useRef(null);
@@ -63,7 +68,6 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
         // This query requests features from the unclustered layer in our tileset
         const locationsInView = mapRef.current.queryRenderedFeatures({ layers: ['store-locations'] });
         setFeatures(locationsInView)
-        setData(locationsInView);
       }
     });
 
@@ -71,7 +75,7 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
       const zoom = map.getZoom();
       // Set minimum zoom to query & render locations
       if (Math.round(zoom) <= 10 ) {
-        setData([]);
+        setFeatures([]);
       }
     });
 
@@ -128,18 +132,13 @@ const Map = ({ setData, onLoad, activeFeature, setActiveFeature, searchResult, d
       <div ref={mapContainer} className='h-full w-full' />
       {mapLoaded &&
         features &&
-        <Markers 
-          mapRef={mapRef.current}
-          searchResult={searchResult}
-          activeFeature={activeFeature}/>
+        <Markers mapRef={mapRef.current} />
       }
     </>
   )
 }
 
 Map.propTypes = {
-  data: PropTypes.any,
-  onFeatureClick: PropTypes.func,
   onLoad: PropTypes.func
 }
 

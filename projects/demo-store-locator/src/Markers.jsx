@@ -4,15 +4,16 @@ import mapboxgl from 'mapbox-gl'
 import { LocationData } from './Card'
 import { AppContext } from './Context/AppContext'
 
-const Markers = ({ mapRef, searchResult, activeFeature}) => {
+const Markers = ({ mapRef }) => {
     const prevSearchResultRef = useRef();
     const popupEl = useRef();
     const markerElRef = useRef();
     const activeMarkerRef = useRef();
     const hoveredMarker = useRef();
-    const { hoveredFeature, isMobile } = useContext(AppContext);
+    const { hoveredFeature, isMobile, searchResult, activeFeature } = useContext(AppContext);
+    console.log("Markers runs");
 
-    // This creates a hover marker on the map when the corresponding
+    // This creates a 'hover' marker on the map when the corresponding
     // feature is hovered in LocationListing.jsx
     useEffect(() => {
         // Remove previous marker if it exists
@@ -38,6 +39,7 @@ const Markers = ({ mapRef, searchResult, activeFeature}) => {
     useEffect(() => {
         const prevSearchResult = prevSearchResultRef.current;
         if (searchResult && prevSearchResult !== searchResult) { 
+            console.log("activeMarkerRef", activeMarkerRef);
             if(activeMarkerRef.current) {
                 activeMarkerRef.current.remove();
             }
@@ -48,22 +50,29 @@ const Markers = ({ mapRef, searchResult, activeFeature}) => {
 
     // Adds Marker & Popup (if mobile) to active Feature
     useEffect(() => {
+        console.log("Active Feature changes");
 
         if(!activeFeature) {
             return;
         }
+        
+        // Create the marker element
+        const markerEl = document.createElement('div');
+        const markerInner = document.createElement('div');
+        markerInner.className = 'marker marker-pop';
+        markerEl.appendChild(markerInner);
 
         // Add marker to the map 
-        const marker = new mapboxgl.Marker({
-            element: markerElRef.current,
+        const marker  = new mapboxgl.Marker(markerEl, {
             offset: [0,-10]
         }).setLngLat(activeFeature.geometry.coordinates)
-          .addTo(mapRef)
-
+          .addTo(mapRef)  
+          
         activeMarkerRef.current = marker;
-                
+
         // Generate pop up only on Mobile
         if (isMobile) {
+            console.log("runs");
             let popup = new mapboxgl.Popup({
                 closeButton: false,
                 closeOnClick: true,
@@ -91,16 +100,11 @@ const Markers = ({ mapRef, searchResult, activeFeature}) => {
 
     return (
         <>
-            <div ref={markerElRef}>
-                {/* We create an inner DIV in our marker element so we can apply css animations via transform */}
-                <div className="marker marker-pop">
-                </div>
-            </div>
-            { activeFeature &&
+            {/* { activeFeature &&
                 <div ref={popupEl} className={`${isMobile ? '' : 'hidden'} bg-white rounded-md cursor-pointer p-4`}>
                     <LocationData feature={activeFeature}/> 
                 </div> 
-            }
+            } */}
         </>
     )
 }
@@ -108,7 +112,5 @@ const Markers = ({ mapRef, searchResult, activeFeature}) => {
 export default Markers;
 
 Markers.propTypes = {
-    mapRef: PropTypes.any,
-    searchResult: PropTypes.object,
-    activeFeature: PropTypes.object,
+    mapRef: PropTypes.any
 }
