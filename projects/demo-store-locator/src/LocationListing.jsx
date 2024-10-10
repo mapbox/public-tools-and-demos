@@ -27,7 +27,7 @@ const LocationListing = () => {
     }, [activeFeature]);
 
     return (
-        <div className='overflow-y-auto flex-grow flex flex-col justify-start grid grid-cols-1 gap-4 z-0'>
+        <div className='overflow-y-auto'>
               {features.length > 0 && features.map((feature, i) => {
                 return (
                   <div 

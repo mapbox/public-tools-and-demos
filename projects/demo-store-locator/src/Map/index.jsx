@@ -128,7 +128,7 @@ const Map = ({ onLoad }) => {
 
   return (
     <>
-      <div ref={mapContainer} className='h-full w-full' />
+      <div ref={mapContainer} className='grow' />
       {mapLoaded &&
         features &&
         <Markers mapRef={mapRef.current} />

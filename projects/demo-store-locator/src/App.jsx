@@ -1,7 +1,6 @@
 'use client'
 
 import { useRef, useEffect, useContext } from 'react'
-import classNames from 'classnames'
 import SearchBoxWrapper from './SearchBoxWrapper.jsx'
 import { AppContext } from './Context/AppContext'
 import Navbar from './Navbar.jsx'
@@ -40,19 +39,20 @@ export default function Home() {
 
   return (
     <>
-      <main className='flex flex-col h-full relative'>
+      <main className='flex flex-col h-screen relative'>
         
         <Navbar/>
         
         {/* Main Content Wrapper */}
-        <div className='relative lg:flex grow shrink min-h-0'>
+        <div 
+          /* Manually set the height of sidebar minus header to enable proper flex height & overflow scrolling */
+          style={{ height: `calc(100vh - 6rem)`}}
+          className='flex grow'>
           
           <Sidebar mapInstanceRef={mapInstanceRef} />
           
-          <div
-            className={classNames('grow shrink-0 relative h-full lg:h-auto')}
-          >
-            {/* SearchBox for small screens */}
+          
+            {/* SearchBox for small screens
             <div className="lg:hidden md:w-1/3 w-4/5 absolute top-4 left-4 z-10">
 
             <UseMyLocation denyLocation={denyLocation} setDenyLocation={setDenyLocation} setSearchValue={setSearchValue}/>
@@ -60,10 +60,10 @@ export default function Home() {
               <SearchBoxWrapper
                 mapInstanceRef={mapInstanceRef}
               />
-            </div>
+            </div> */}
            
             <Map onLoad={handleMapLoad} />
-          </div>
+          
         </div>
       </main>
     </>
