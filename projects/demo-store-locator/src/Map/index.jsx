@@ -82,8 +82,7 @@ const Map = ({ onLoad }) => {
     // Add a click event listener to the map
     map.on('click', function(e) {
       // Query the features under the clicked point
-      var feature = map.queryRenderedFeatures(e.point);
-
+      var feature = map.queryRenderedFeatures(e.point, {layers: ['store-locations']});
       // If there is a feature under the clicked point, set the ActiveFeature
       if (feature.length) {
           setActiveFeature(feature[0]);

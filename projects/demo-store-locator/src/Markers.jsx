@@ -11,7 +11,6 @@ const Markers = ({ mapRef }) => {
     const activeMarkerRef = useRef();
     const hoveredMarker = useRef();
     const { hoveredFeature, isMobile, searchResult, activeFeature } = useContext(AppContext);
-    console.log("Markers runs");
 
     // This creates a 'hover' marker on the map when the corresponding
     // feature is hovered in LocationListing.jsx
@@ -50,12 +49,11 @@ const Markers = ({ mapRef }) => {
 
     // Adds Marker & Popup (if mobile) to active Feature
     useEffect(() => {
-        console.log("Active Feature changes");
 
         if(!activeFeature) {
             return;
         }
-        
+
         // Create the marker element
         const markerEl = document.createElement('div');
         const markerInner = document.createElement('div');
@@ -64,21 +62,25 @@ const Markers = ({ mapRef }) => {
 
         // Add marker to the map 
         const marker  = new mapboxgl.Marker(markerEl, {
-            offset: [0,-10]
+            offset: [0,-33]
         }).setLngLat(activeFeature.geometry.coordinates)
           .addTo(mapRef)  
           
         activeMarkerRef.current = marker;
 
+        // Remove green dot when marker takes it's place
+        // This is not working.
+        mapRef.setFilter('store-locations', ['!=', 'id', activeFeature.id]);
+        
+
         // Generate pop up only on Mobile
         if (isMobile) {
-            console.log("runs");
             let popup = new mapboxgl.Popup({
                 closeButton: false,
                 closeOnClick: true,
                 closeOnMove: true,
                 maxWidth: '300px',
-                offset: 30
+                offset: 57
             })
             .setDOMContent(popupEl.current)
             
@@ -100,11 +102,11 @@ const Markers = ({ mapRef }) => {
 
     return (
         <>
-            {/* { activeFeature &&
+            { activeFeature &&
                 <div ref={popupEl} className={`${isMobile ? '' : 'hidden'} bg-white rounded-md cursor-pointer p-4`}>
                     <LocationData feature={activeFeature}/> 
                 </div> 
-            } */}
+            }
         </>
     )
 }
