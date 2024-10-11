@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import MapboxTooltip, { LogoSVG } from "./MapboxTooltip";
+import { MapboxTooltip, LogoSVG } from 'mapbox-demo-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronUp} from '@fortawesome/free-solid-svg-icons'
 

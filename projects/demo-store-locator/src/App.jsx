@@ -3,7 +3,7 @@
 import { useRef, useEffect, useContext } from 'react'
 import SearchBoxWrapper from './SearchBoxWrapper.jsx'
 import { AppContext } from './Context/AppContext'
-import Navbar from './Navbar.jsx'
+import Header from './Header.jsx'
 import UseMyLocation from './UseMyLocation'
 import Sidebar from './Sidebar.jsx'
 
@@ -17,9 +17,7 @@ export default function Home() {
   // All Top level App state is stored in AppContext
   const { 
     setActiveLocation,
-    denyLocation,
     setDenyLocation,
-    setSearchValue,
     setLoadingUserLocation, 
   } = useContext(AppContext);
 
@@ -41,7 +39,7 @@ export default function Home() {
     <>
       <main className='flex flex-col h-screen relative'>
         
-        <Navbar/>
+        <Header/>
         
         {/* Main Content Wrapper */}
         <div className='flex grow relative'>

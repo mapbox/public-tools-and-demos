@@ -4,7 +4,7 @@ import React from 'react'
 import MapboxTooltips from './MapboxTooltips'
 import cafeLogo from './img/cafe-logo.svg'
 
-const Navbar = () => {
+const Header = () => {
 
     return (
         <>
@@ -22,4 +22,4 @@ const Navbar = () => {
     )
 }
 
-export default Navbar;
+export default Header;
