@@ -3,7 +3,7 @@
 import { useRef, useEffect, useContext } from 'react'
 import SearchBoxWrapper from './SearchBoxWrapper.jsx'
 import { AppContext } from './Context/AppContext'
-import Header from './Header.jsx'
+import Navbar from './Navbar.jsx'
 import UseMyLocation from './UseMyLocation'
 import Sidebar from './Sidebar.jsx'
 
@@ -39,7 +39,7 @@ export default function Home() {
     <>
       <main className='flex flex-col h-screen relative'>
         
-        <Header/>
+        <Navbar/>
         
         {/* Main Content Wrapper */}
         <div className='flex grow relative'>
