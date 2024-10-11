@@ -17,30 +17,28 @@ const Sidebar = ({ mapInstanceRef }) => {
   } = useContext(AppContext);
 
         return (
-            <div className='flex flex-col p-4 w-96 '>
+            <div 
+              /* Manually set the height of sidebar minus header to enable proper flex height & overflow scrolling */
+              style={{ height: `calc(100vh - 6rem)`}}
+              className='absolute sm:relative flex flex-col p-4 w-96'>
 
-              <div className="sticky top-0">
-                <div>
-                  <UseMyLocation denyLocation={denyLocation} setDenyLocation={setDenyLocation} setSearchValue={setSearchValue}/>
-                  
-                  <SearchBoxWrapper mapInstanceRef={mapInstanceRef} />
+                <div className="relative sticky top-0 z-20">
+                    <UseMyLocation denyLocation={denyLocation} setDenyLocation={setDenyLocation} setSearchValue={setSearchValue}/>
+                    <SearchBoxWrapper mapInstanceRef={mapInstanceRef} />
                 </div>
               
-                
-                <div className='text-2xl text-black font-semibold w-full mb-1.5 mt-6 z-0'>
-                  Stores
-                </div>
-                <div className='mb-4 z-0'>
-                  <div className='font-medium text-gray-500'>
+                <div className="hidden sm:block">
+                  <div className='text-2xl text-black font-semibold w-full mb-1.5 mt-6 z-0'>
+                    Stores
+                  </div>
+                  <div className='mb-4 font-medium text-gray-500'>
                     <span className="text-deepgreen font-bold">{features.length}</span> Stores nearby
                   </div>
                 </div>
-              </div>
               
               <LocationListing />
 
             </div>
-    
         )
 }
 

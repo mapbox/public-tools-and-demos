@@ -2,12 +2,13 @@ import PropTypes from 'prop-types'
 import { useEffect, useRef, useContext } from 'react'
 import mapboxgl from 'mapbox-gl'
 import { LocationData } from './Card'
+import { createRoot } from 'react-dom/client';
 import { AppContext } from './Context/AppContext'
+import { AppContextProvider } from './Context/AppContext';
 
-const Markers = ({ mapRef }) => {
+const Marker = ({ mapRef }) => {
     const prevSearchResultRef = useRef();
-    const popupEl = useRef();
-    const markerElRef = useRef();
+    const popupRef = useRef();
     const activeMarkerRef = useRef();
     const hoveredMarker = useRef();
     const { hoveredFeature, isMobile, searchResult, activeFeature } = useContext(AppContext);
@@ -38,7 +39,6 @@ const Markers = ({ mapRef }) => {
     useEffect(() => {
         const prevSearchResult = prevSearchResultRef.current;
         if (searchResult && prevSearchResult !== searchResult) { 
-            console.log("activeMarkerRef", activeMarkerRef);
             if(activeMarkerRef.current) {
                 activeMarkerRef.current.remove();
             }
@@ -68,13 +68,21 @@ const Markers = ({ mapRef }) => {
           
         activeMarkerRef.current = marker;
 
-        // Remove green dot when marker takes it's place
-        // This is not working.
-        mapRef.setFilter('store-locations', ['!=', 'id', activeFeature.id]);
-        
-
         // Generate pop up only on Mobile
         if (isMobile) {
+
+            // Create a container for the popup content
+            const popupContentEl = document.createElement('div');
+            popupContentEl.className = `${isMobile ? '' : 'hidden'} bg-white rounded-md cursor-pointer p-4`;
+
+            // Render the React content inside the container
+            const root = createRoot(popupContentEl);
+            root.render(
+                <AppContextProvider>
+                    <LocationData feature={activeFeature} />
+                </AppContextProvider>
+            );
+            
             let popup = new mapboxgl.Popup({
                 closeButton: false,
                 closeOnClick: true,
@@ -82,7 +90,9 @@ const Markers = ({ mapRef }) => {
                 maxWidth: '300px',
                 offset: 57
             })
-            .setDOMContent(popupEl.current)
+            .setDOMContent(popupContentEl)
+
+            popupRef.current = popup;
             
             // if popup is undefined, this will remove the popup from the marker
            activeMarkerRef.current.setPopup(popup);
@@ -92,7 +102,9 @@ const Markers = ({ mapRef }) => {
         return () => {
              // Cleanup popup and marker
              if (activeMarkerRef.current) {
-                activeMarkerRef.current.setPopup(null);
+                if(isMobile) {
+                    popupRef.current.remove();
+                }
                 activeMarkerRef.current.remove();
             }
         };
@@ -101,18 +113,14 @@ const Markers = ({ mapRef }) => {
 
 
     return (
-        <>
-            { activeFeature &&
-                <div ref={popupEl} className={`${isMobile ? '' : 'hidden'} bg-white rounded-md cursor-pointer p-4`}>
-                    <LocationData feature={activeFeature}/> 
-                </div> 
-            }
+        <>  
+        {/* The Markers returns GL JS DOM elements (not React elements) */}
         </>
     )
 }
 
-export default Markers;
+export default Marker;
 
-Markers.propTypes = {
+Marker.propTypes = {
     mapRef: PropTypes.any
 }

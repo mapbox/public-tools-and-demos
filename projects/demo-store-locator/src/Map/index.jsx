@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import { useRef, useEffect, useState, useContext } from 'react'
 import mapboxgl from 'mapbox-gl'
-import Markers from '../Markers'
+import Marker from '../Marker'
 import { AppContext } from '../Context/AppContext';
 import { addUserLocationPulse } from './pulse';
 
@@ -131,7 +131,7 @@ const Map = ({ onLoad }) => {
       <div ref={mapContainer} className='grow' />
       {mapLoaded &&
         features &&
-        <Markers mapRef={mapRef.current} />
+          <Marker mapRef={mapRef.current} />
       }
     </>
   )

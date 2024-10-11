@@ -44,25 +44,11 @@ export default function Home() {
         <Navbar/>
         
         {/* Main Content Wrapper */}
-        <div 
-          /* Manually set the height of sidebar minus header to enable proper flex height & overflow scrolling */
-          style={{ height: `calc(100vh - 6rem)`}}
-          className='flex grow'>
+        <div className='flex grow relative'>
           
           <Sidebar mapInstanceRef={mapInstanceRef} />
-          
-          
-            {/* SearchBox for small screens
-            <div className="lg:hidden md:w-1/3 w-4/5 absolute top-4 left-4 z-10">
-
-            <UseMyLocation denyLocation={denyLocation} setDenyLocation={setDenyLocation} setSearchValue={setSearchValue}/>
-
-              <SearchBoxWrapper
-                mapInstanceRef={mapInstanceRef}
-              />
-            </div> */}
            
-            <Map onLoad={handleMapLoad} />
+          <Map onLoad={handleMapLoad} />
           
         </div>
       </main>

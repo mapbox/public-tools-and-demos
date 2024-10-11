@@ -172,11 +172,3 @@ body {
     bottom: -37px;
   }
  }
-
-.shown {
-  transform: translateY(0);
-}
-
-.hidden {
-  transform: translateY(-100%);
-}

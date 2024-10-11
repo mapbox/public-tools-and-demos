@@ -4,7 +4,7 @@ import { AppContext } from './Context/AppContext';
 
 const LocationListing = () => {
     const locationRefs = useRef([]);
-    const {features, activeFeature, setActiveFeature} = useContext(AppContext);
+    const {features, activeFeature, setActiveFeature, isMobile } = useContext(AppContext);
 
       // on click, set the active feature
     const handleFeatureClick = (feature) => {
@@ -16,18 +16,18 @@ const LocationListing = () => {
       locationRefs.current = []; // Clear the refs array when new locations are populated
     }, [features]);
 
-    // Scroll to the active location when it changes
+    // Scroll to the active location when it changes (desktop only)
     useEffect(() => {
-        if (activeFeature && locationRefs.current[activeFeature.properties.id]) {
+        if (activeFeature && locationRefs.current[activeFeature.properties.id] && !isMobile) {
         locationRefs.current[activeFeature.properties.id].scrollIntoView({
             behavior: 'smooth', // Optionally smooth scrolling
             block: 'start',   // Align the element to the top of the container
         });
         }
-    }, [activeFeature]);
+    }, [activeFeature, isMobile]);
 
     return (
-        <div className='overflow-y-auto'>
+        <div className='overflow-y-auto invisible sm:visible h-0 sm:h-auto'>
               {features.length > 0 && features.map((feature, i) => {
                 return (
                   <div 
