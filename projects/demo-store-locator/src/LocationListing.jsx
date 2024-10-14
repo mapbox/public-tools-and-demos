@@ -1,3 +1,11 @@
+// The LocationListing component renders GeoJSON feature information retrieved by
+// queryRenderedFeatures() in Map/index.jsx. GeoJSON can have any data you'd like
+// to store inside the 'feature.properties' object. This component also uses the web API
+// scrollIntoView() to scroll the active Feature (either clicked on the map or in the sidebar)
+// to the top position.
+
+'use client'
+
 import React, { useRef, useEffect, useContext } from 'react';
 import Card from './Card';
 import { AppContext } from './Context/AppContext';

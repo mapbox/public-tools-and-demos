@@ -1,10 +1,12 @@
+// Top Level App component
+// This imports AppContext, Sets up the app layout and imports our 
+// Navbar, Sidebar (search & location listing)  & Map
+
 'use client'
 
 import { useRef, useEffect, useContext } from 'react'
-import SearchBoxWrapper from './SearchBoxWrapper.jsx'
 import { AppContext } from './Context/AppContext'
 import Navbar from './Navbar.jsx'
-import UseMyLocation from './UseMyLocation'
 import Sidebar from './Sidebar.jsx'
 
 import Map from './Map'
@@ -14,14 +16,14 @@ import './styles.css'
 
 export default function Home() {
   
-  // All Top level App state is stored in AppContext
+  // All Application state is stored in AppContext
   const { 
     setActiveLocation,
     setDenyLocation,
     setLoadingUserLocation, 
   } = useContext(AppContext);
 
-  // a ref to hold the Mapbox GL JS Map instance
+  // A ref to hold the Mapbox GL JS Map instance
   const mapInstanceRef = useRef()
 
   // Use Effect to request Users Location on App mount

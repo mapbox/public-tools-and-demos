@@ -1,3 +1,7 @@
+// The Sidebar component holds a Location UI component, the Mapbox Search JS 'SearchBox'
+// component, the LocationListing component and a nested flex layout via Tailwind classes
+// This component hides portions of itself on mobile, reducing down to just the UseMyLocation
+// and SearchBoxWrapper on small screens.
 'use client'
 
 import React, { useContext } from 'react'

@@ -18,7 +18,7 @@ const MapboxTooltips = ({ products }) => {
     return (
 
     <div className={`${isToggled ? 'relative' : '-translate-y-full absolute'} transition-transform px-3 flex flex-wrap justify-start w-full h-auto py-2 items-center bg-deepgreen overflow-visible z-50`}>
-    
+
         { productsToShow.map((product, index) => (
                 <MapboxTooltip 
                     key={index}

@@ -1,4 +1,11 @@
-// Card Layout, used in both Map Popups and in the List view
+// Card Layout, used in both Map Popups and in the LocationListing view
+// This component also makes use of turf.js (https://turfjs.org) to calculate
+// the distance from the activeLocation (either user location or search location)
+// to the store location. The results are returned in miles and added to the card
+// LocationData is used in both Popups and in the Sidebar, while the Card component
+// with additional hover logic is only used in the Sidebar
+
+'use client'
 import React from 'react';
 import PropTypes from 'prop-types'
 import MarkerIcon from './MarkerIcon';

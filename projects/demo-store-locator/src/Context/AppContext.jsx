@@ -1,17 +1,16 @@
 import React, { createContext, useState, useEffect, useMemo } from 'react';
 
-// Create context to store the Maps active location across the app. This is dependent
-// on whether userLocation is allowed through navigator.geolocation & usage of the Searchbox
+// Create App level context
 export const AppContext = createContext();
 
 // Create a provider component
 export const AppContextProvider = ({ children }) => {
 
-  // stores the feature that the user is currently viewing (triggers the popup)
+  // Stores the feature that the user is currently viewing (triggers the marker/popup)
   const [activeFeature, setActiveFeature] = useState()
   // activeLocation rendered on the map
   const [ activeLocation, setActiveLocation ] = useState(null);
-  // the data to be displayed on the map (this is static, but could be updated dynamically as the map view changes)
+  // The data returned from the visible viewport of the map. Rendered in LocationListing
   const [ features, setFeatures ] = useState([])
   // Allow/Deny location sharing for app
   const [ denyLocation, setDenyLocation ] = useState(null);
@@ -19,11 +18,11 @@ export const AppContextProvider = ({ children }) => {
   const [ hoveredFeature, setHoveredFeature ] = useState(null);
   // Loading state to manage loading spinner
   const [ loadingUserLocation, setLoadingUserLocation ] = useState(false);
-  // the current search value, used in the controlled mapbox-search-js input
+  // The current search value, used in the controlled SearchBox input
   const [searchValue, setSearchValue] = useState('')
-  // the selected search result, chosen from suggestions
+  // The selected search result, chosen from SearchBox suggestions
   const [searchResult, setSearchResult] = useState(null)
-  // set state based on screen size for responsive component rendering
+  // Set state based on screen size for responsive component rendering
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   // Handle resize events to update isMobile state
@@ -53,7 +52,7 @@ export const AppContextProvider = ({ children }) => {
     setSearchValue,
     isMobile,
     setIsMobile,
-  }), [activeFeature, activeLocation, features, denyLocation, hoveredFeature, loadingUserLocation, searchResult, searchValue, isMobile,]);
+  }), [activeFeature, activeLocation, features, denyLocation, hoveredFeature, loadingUserLocation, searchResult, searchValue, isMobile]);
 
   return (
     <AppContext.Provider value={value}>

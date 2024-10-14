@@ -49,7 +49,7 @@ body {
   transition-property: width, height; 
   transition-duration: .1s; 
   transition-timing-function: linear; 
-  /* Define Animate */
+  /* Define Maker Animation */
   animation: hover-in 0.3s ease-in-out;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.5);
 }
@@ -64,7 +64,7 @@ body {
   transition-property: width, height; 
   transition-duration: .1s; 
   transition-timing-function: linear; 
-  /* Define Animate */
+  /* Define Marker Animation */
   animation: pop-in 0.3s ease-out forwards, wobble 1.5s ease-in-out 0.3s forwards; 
   transform-origin: bottom center;
 }
@@ -128,7 +128,7 @@ body {
   }
 }
 
-/* Keyframe animation for pop-in */
+/* Keyframe animation for hover-in */
 @keyframes hover-in {
   0% {
     width: 0px;

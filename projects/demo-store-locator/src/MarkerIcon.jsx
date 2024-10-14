@@ -1,3 +1,5 @@
+// Custom SVG used in Card.jsx
+
 const MarkerIcon = () => (
 <svg 
   className="mr-2"

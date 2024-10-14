@@ -1,3 +1,10 @@
+// The Map component instantiates a Mapbox GL JS map, adds mouse event listeners,
+// sets constraints on the max bounds of the map (to the continental US), uses
+// queryRenderedFeatures to return GeoJSON features after any movement (at high zoom
+// levels) and utilizes useEffects to implement map.flyTo() animations based on state
+// changes.  Note that we store our map instance in a Ref so we can use it in the Markers
+'use client'
+
 import PropTypes from 'prop-types'
 import { useRef, useEffect, useState, useContext } from 'react'
 import mapboxgl from 'mapbox-gl'
@@ -7,9 +14,6 @@ import { addUserLocationPulse } from './pulse';
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
-
-export const accessToken = (mapboxgl.accessToken =
-  'pk.eyJ1IjoiZXhhbXBsZXMiLCJhIjoiY2lqbmp1MzNhMDBud3VvbHhqbjY1cnV2cCJ9.uGJJU2wgtXzcBNc62vY4_A')
 
 const Map = ({ onLoad }) => {
   const mapContainer = useRef(null);
@@ -24,6 +28,13 @@ const Map = ({ onLoad }) => {
 
   let mapRef = useRef(null);
   const pulseRef = useRef(null);
+
+  // This demo inherits accessToken from  `demo-components/accessToken`, to use this project
+  // for your purposes, uncomment the line below and replace YOUR_MAPBOX_ACCESS_TOKEN with
+  // the token from you mapbox account (https://account.mapbox.com/) - This token is also
+  // used in SearchBoxWrapper
+  // mapboxgl.accessToken = 'YOUR_MAPBOX_ACCESS_TOKEN'
+
 
   useEffect(() => {
     const map = (mapRef.current = new mapboxgl.Map({
@@ -65,7 +76,8 @@ const Map = ({ onLoad }) => {
       // Set minimum zoom to query & render locations
       if (Math.round(zoom) >= 10 ) {
 
-        // This query requests features from the unclustered layer in our tileset
+        // This query requests features from the unclustered layer in our tileset and 
+        // retrieves all features visible in the map viewport
         const locationsInView = mapRef.current.queryRenderedFeatures({ layers: ['store-locations'] });
         setFeatures(locationsInView)
       }
@@ -118,7 +130,7 @@ const Map = ({ onLoad }) => {
         // Fly to Demo City (Seattle)
         mapRef.current.flyTo({
           center: [-122.33935, 47.60774],
-          essential: true, // this animation is considered essential with respect to prefers-reduced-motion
+          essential: true, 
           zoom: 11
         });
 

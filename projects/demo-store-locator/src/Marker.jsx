@@ -1,3 +1,9 @@
+// The Markers component contains logic and GL JS functions to render and remove an 
+// 'activeMarker' and a 'hoveredMarker' to the GL JS Map. It also renders a pop-up 
+// (on mobile only) to display store info - the locations listing in the sidebar is 
+// hidden on small screens.
+'use client'
+
 import PropTypes from 'prop-types'
 import { useEffect, useRef, useContext } from 'react'
 import mapboxgl from 'mapbox-gl'

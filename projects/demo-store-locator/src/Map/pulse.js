@@ -1,4 +1,5 @@
-// See a standalone example of this pulsing dot 
+// Custom animated pulsing dot
+// See a standalone example of this 
 // at https://docs.mapbox.com/mapbox-gl-js/example/add-image-animated/
 
 export const addUserLocationPulse = (mapRef, pulseRef, activeLocation) => {

@@ -1,3 +1,7 @@
+// This returns our Mapbox Tooltips for demo purposes. This is imported from
+// `projects/demo-components` in this repo and can easily be removed. 
+// The remaining Navbar is for layout purposes only.
+
 'use client'
 
 import React from 'react'

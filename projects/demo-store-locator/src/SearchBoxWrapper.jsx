@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { SearchBox } from '@mapbox/search-js-react'
 import mapboxgl from 'mapbox-gl'
-import { accessToken } from './Map'
+import { accessToken } from 'mapbox-demo-components'
 import { AppContext } from './Context/AppContext'
 
 const SearchBoxWrapper = ({ mapInstanceRef }) => {

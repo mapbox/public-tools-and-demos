@@ -50,13 +50,13 @@ Content.propTypes = {
   markdownString: PropTypes.any
 }
 
-const MapboxTooltip = ({ className, title, children }) => {
+const MapboxTooltip = ({ className, title, content }) => {
   return (
     <>
       <div className='block'>
         <div
           className={classNames(
-            'inline-block rounded px-2 py-1.5 hover:cursor-pointer z-40 border border-transparent hover:border-gray-400',
+            'inline-block rounded px-2 py-1.5 hover:cursor-pointer z-40 border border-transparent hover:border-gray-400 m-1 sm:mr-2',
             className
           )}
           style={{ backgroundColor: '#ECEFF5' }}
@@ -65,14 +65,14 @@ const MapboxTooltip = ({ className, title, children }) => {
             className='flex items-center text-nowrap'
             data-tooltip-id={`tooltip-${title}`}
           >
-            <div className='mr-2'>
+            <div className='mr-1'>
               <LogoSVG fillColor="black"/>
             </div>
             <span className='text-sm pr-1 font-medium'>{title}</span>
           </div>
           <Tooltip
             id={`tooltip-${title}`}
-            content={<Content markdownString={children} />}
+            content={<Content markdownString={content} />}
             openOnClick
             className='z-50 w-96 bg-white text-sm font-normal px-4 py-3 rounded-lg !opacity-100'
             disableStyleInjection
@@ -88,9 +88,9 @@ const MapboxTooltip = ({ className, title, children }) => {
 }
 
 MapboxTooltip.propTypes = {
-  children: PropTypes.any,
+  content: PropTypes.string,
   className: PropTypes.any,
-  title: PropTypes.any
+  title: PropTypes.string
 }
 
 export default MapboxTooltip;
