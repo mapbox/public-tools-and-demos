@@ -9,6 +9,7 @@
   },
   "type": "module",
   "dependencies": {
+    "demo-components": "workspace:*",
     "aws-sdk": "^2.1310.0",
     "copy": "^0.3.2",
     "execa": "^6.1.0",

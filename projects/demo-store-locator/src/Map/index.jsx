@@ -11,6 +11,7 @@ import mapboxgl from 'mapbox-gl'
 import Marker from '../Marker'
 import { AppContext } from '../Context/AppContext';
 import { addUserLocationPulse } from './pulse';
+import { accessToken } from 'mapbox-demo-components'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
@@ -35,7 +36,8 @@ const Map = ({ onLoad }) => {
   // used in SearchBoxWrapper
   // mapboxgl.accessToken = 'YOUR_MAPBOX_ACCESS_TOKEN'
 
-
+  mapboxgl.accessToken = accessToken;
+  
   useEffect(() => {
     const map = (mapRef.current = new mapboxgl.Map({
       container: mapContainer.current,
