@@ -1,7 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 // eslint-disable-next-line
 module.exports = {
-  content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
+  content: [
+    './src/**/*.{js,ts,jsx,tsx,mdx}',
+    '../demo-components/src/*.jsx' // required to resolve tailwind classes in demo-components package
+  ],
   theme: {
     extend: {
       backgroundImage: {
