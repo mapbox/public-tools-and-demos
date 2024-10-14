@@ -2,6 +2,7 @@
 // shared their location.  The imported `getUserLocation()` uses the native Browser 
 // `navigator` API to request access to the users location. If location permission
 // is allowed state is updated on (initial app mount) and the map flys to the user location
+
 'use client'
 
 import React, { useContext }from 'react';

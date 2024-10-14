@@ -2,6 +2,7 @@
 // component, the LocationListing component and a nested flex layout via Tailwind classes
 // This component hides portions of itself on mobile, reducing down to just the UseMyLocation
 // and SearchBoxWrapper on small screens.
+
 'use client'
 
 import React, { useContext } from 'react'

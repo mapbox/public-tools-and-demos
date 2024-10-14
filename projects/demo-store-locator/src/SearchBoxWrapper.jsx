@@ -1,3 +1,8 @@
+// This component uses Mapbox Search JS's SearchBox component 
+// Learn more about the props available at https://docs.mapbox.com/mapbox-search-js/api/react/search/
+
+'use client'
+
 import React, { useContext } from 'react'
 import { SearchBox } from '@mapbox/search-js-react'
 import mapboxgl from 'mapbox-gl'

@@ -2,7 +2,9 @@
 // sets constraints on the max bounds of the map (to the continental US), uses
 // queryRenderedFeatures to return GeoJSON features after any movement (at high zoom
 // levels) and utilizes useEffects to implement map.flyTo() animations based on state
-// changes.  Note that we store our map instance in a Ref so we can use it in the Markers
+// changes.  Note that we store our map instance in a Ref so we can use it in Markers.jsx 
+// and our mapContainer in a ref so that the Map does not re-render when the component does.
+
 'use client'
 
 import PropTypes from 'prop-types'
@@ -30,14 +32,12 @@ const Map = ({ onLoad }) => {
   let mapRef = useRef(null);
   const pulseRef = useRef(null);
 
-  // This demo inherits accessToken from  `demo-components/accessToken`, to use this project
-  // for your purposes, uncomment the line below and replace YOUR_MAPBOX_ACCESS_TOKEN with
-  // the token from you mapbox account (https://account.mapbox.com/) - This token is also
-  // used in SearchBoxWrapper
-  // mapboxgl.accessToken = 'YOUR_MAPBOX_ACCESS_TOKEN'
+  // This demo imports accessToken from  `demo-components/accessToken`, to use this project
+  // for your purposes, replace `accessToken` below with your own Access Token available
+  // at (https://account.mapbox.com/) - This token is also used in SearchBoxWrapper
 
   mapboxgl.accessToken = accessToken;
-  
+
   useEffect(() => {
     const map = (mapRef.current = new mapboxgl.Map({
       container: mapContainer.current,

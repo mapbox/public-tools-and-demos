@@ -1,4 +1,5 @@
 // AppContextProvider wraps main App.jsx
+
 'use client'
 
 import React from 'react'
