@@ -12,6 +12,12 @@ Products used:
 * [Mapbox Search JS](https://docs.mapbox.com/mapbox-search-js/guides/)
 * [Mapbox Tiling Service](https://docs.mapbox.com/mapbox-tiling-service/guides)
 
+Product Features Used Here:
+* MTS Clustering - Tileset based clustering which is shown at low zoom levels
+* [Custom Markers](https://docs.mapbox.com/mapbox-gl-js/example/custom-marker-icons/)
+* [Popups](https://docs.mapbox.com/mapbox-gl-js/example/popup/)
+* [Mapbox Standard Style](https://docs.mapbox.com/mapbox-gl-js/guides/styles/#mapbox-standard-1)
+
 
 ## Local Development
 
