@@ -46,7 +46,7 @@ export const LocationData = ({ feature }) => {
         <h3 className="text-lg font-bold">{name}</h3>
         <address>{address}</address>
         <address>{city}, {state}</address>
-        <a className="text-deepgreen font-bold" href={`tel:+1${phone}`}>{phone}</a>
+        <a className="text-maroon font-bold" href={`tel:+1${phone}`}>{phone}</a>
       </div>      
       <div className="text-slate-400 min-w-16 text-right">
         {activeLocation ? `${getDistance(coordinates, activeLocation.coords)} mi`: ''}
@@ -93,7 +93,7 @@ const Card = ({ feature, onClick, activeFeature }) => {
     <div 
       className={
           `rounded-md cursor-pointer p-4 
-          ${isActiveFeature ? 'bg-tintgreen border-deepgreen border-2' : 'hover:bg-slate-100'}
+          ${isActiveFeature ? 'bg-tintgreen border-maroon border-2' : 'hover:bg-slate-100'}
           ${isMarkerHovered ? 'bg-slate-100' : ''}`} 
       onClick={handleClick}
       onMouseOver={handleMouseEnter}

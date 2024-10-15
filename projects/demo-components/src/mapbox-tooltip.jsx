@@ -25,7 +25,7 @@ const Content = ({ markdownString }) => {
           const { ...rest } = props
           return (
             <a
-              className='text-deepgreen font-bold hover:text-greenhover'
+              className='text-maroon font-bold hover:text-greenhover'
               target='_blank'
               {...rest}
             />

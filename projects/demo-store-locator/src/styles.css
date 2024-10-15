@@ -40,7 +40,7 @@ body {
 }
 
 .hover-marker {
-  background-color: #006241;
+  background-color: #602428;
   border: 2px solid white;
   height: 17px;
   width: 17px;
@@ -75,7 +75,7 @@ body {
   height: 0; 
   border-left: 7px solid transparent;
   border-right: 7px solid transparent;
-  border-top: 7px solid #006241;
+  border-top: 7px solid #602428;
   display: block;
   position: absolute;
   bottom: -5px;

@@ -17,7 +17,7 @@ const MapboxTooltips = ({ products }) => {
 
     return (
 
-    <div className={`${isToggled ? 'relative' : '-translate-y-full absolute'} transition-transform px-3 flex flex-wrap justify-start w-full h-auto py-2 items-center bg-deepgreen overflow-visible z-50`}>
+    <div className={`${isToggled ? 'relative' : '-translate-y-full absolute'} transition-transform px-3 flex flex-wrap justify-start w-full h-auto py-2 items-center bg-maroon overflow-visible z-50`}>
 
         { productsToShow.map((product, index) => (
                 <MapboxTooltip 
@@ -27,7 +27,7 @@ const MapboxTooltips = ({ products }) => {
         ))}
 
         <div 
-            className='transition-all info flex items-center absolute block bg-deepgreen rounded-b-md md:px-4 md:py-2 px-2.5 py-1.5 text-white md:text-base text-sm cursor-pointer'
+            className='transition-all info flex items-center absolute block bg-maroon rounded-b-md md:px-4 md:py-2 px-2.5 py-1.5 text-white md:text-base text-sm cursor-pointer'
             onClick={handleClick}>
                 <div className="mr-2">
                     <LogoSVG fillColor="white" />

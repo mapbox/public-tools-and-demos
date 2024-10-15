@@ -49,7 +49,7 @@ const LocationListing = () => {
 
               {features.length == 0 &&
               <div className="my-4 mx-5">
-                <h3 className="font-bold text-2xl border-b-4 border-deepgreen mb-2">Zoomed out too far</h3>
+                <h3 className="font-bold text-2xl border-b-4 border-maroon mb-2">Zoomed out too far</h3>
                 <p className="text-slate-400">Please search or zoom in to retrieve listing for this area.</p>
               </div>
             }
