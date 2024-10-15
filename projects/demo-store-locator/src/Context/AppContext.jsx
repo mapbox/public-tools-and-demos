@@ -23,11 +23,11 @@ export const AppContextProvider = ({ children }) => {
   // The selected search result, chosen from SearchBox suggestions
   const [searchResult, setSearchResult] = useState(null)
   // Set state based on screen size for responsive component rendering
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
 
   // Handle resize events to update isMobile state
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    const handleResize = () => setIsMobile(window.innerWidth < 640);
     window.addEventListener('resize', handleResize);
 
     return () => window.removeEventListener('resize', handleResize);

@@ -25,9 +25,9 @@ const Sidebar = ({ mapInstanceRef }) => {
             <div 
               /* Manually set the height of sidebar minus header to enable proper flex height & overflow scrolling */
               style={{ height: `calc(100vh - 6rem)`}}
-              className='absolute sm:relative flex flex-col p-4 w-5/6 sm:w-96'>
+              className='absolute sm:relative flex flex-col p-4 w-full sm:w-96'>
 
-                <div className="relative sticky top-0 z-20">
+                <div className="sticky top-0 z-20 flex flex-col sm:block flex-col-reverse">
                     <UseMyLocation denyLocation={denyLocation} setDenyLocation={setDenyLocation} setSearchValue={setSearchValue}/>
                     <SearchBoxWrapper mapInstanceRef={mapInstanceRef} />
                 </div>

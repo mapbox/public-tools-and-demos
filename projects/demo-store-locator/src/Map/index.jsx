@@ -20,13 +20,15 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
 const Map = ({ onLoad }) => {
   const mapContainer = useRef(null);
+  const controlRef = useRef(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const { 
     setActiveFeature, 
     activeLocation,
     features,
     setFeatures, 
-    denyLocation
+    denyLocation,
+    isMobile
   } = useContext(AppContext);
 
   let mapRef = useRef(null);
@@ -49,7 +51,10 @@ const Map = ({ onLoad }) => {
       zoom: 4
     }))
 
-    map.addControl(new mapboxgl.NavigationControl())
+    controlRef.current = new mapboxgl.NavigationControl();
+    if (!isMobile) {
+      map.addControl(controlRef.current);
+    }
 
     map.on('load', () => {
       onLoad(map)
@@ -139,6 +144,17 @@ const Map = ({ onLoad }) => {
       }, 2000)
     } 
   }, [denyLocation])
+
+  useEffect(() => {
+      const hasControl = mapRef.current.hasControl(controlRef.current);
+
+      if(hasControl && isMobile) {
+        mapRef.current.removeControl(controlRef.current);
+      } else if(!hasControl && !isMobile) {
+        mapRef.current.addControl(controlRef.current);
+      }
+    
+  }, [isMobile])
 
   return (
     <>

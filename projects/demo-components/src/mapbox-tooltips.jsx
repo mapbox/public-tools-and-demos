@@ -27,7 +27,7 @@ const MapboxTooltips = ({ products }) => {
         ))}
 
         <div 
-            className='transition-all info flex items-center absolute block bg-maroon rounded-b-md md:px-4 md:py-2 px-2.5 py-1.5 text-white md:text-base text-sm cursor-pointer'
+            className='transition-all info flex items-center absolute block bg-maroon rounded-b-md px-4 py-2 px-2.5 py-1.5 text-white sm:text-base text-sm cursor-pointer'
             onClick={handleClick}>
                 <div className="mr-2">
                     <LogoSVG fillColor="white" />
