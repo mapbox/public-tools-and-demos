@@ -20,7 +20,7 @@ const Marker = ({ mapRef }) => {
     const { hoveredFeature, isMobile, searchResult, activeFeature } = useContext(AppContext);
 
     // This creates a 'hover' marker on the map when the corresponding
-    // feature is hovered in LocationListing.jsx
+    // feature is hovered in CardList
     useEffect(() => {
         // Remove previous marker if it exists
         if (hoveredMarker.current) {

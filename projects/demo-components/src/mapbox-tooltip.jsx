@@ -6,7 +6,7 @@ import Markdown from 'react-markdown'
 import classNames from 'classnames'
 import LogoSVG from './logo-svg'
 
-const Content = ({ markdownString }) => {
+const Content = ({ markdownString, linkColor }) => {
 
   return (
     <Markdown
@@ -25,7 +25,7 @@ const Content = ({ markdownString }) => {
           const { ...rest } = props
           return (
             <a
-              className='text-maroon font-bold hover:text-greenhover'
+              className={`text-[${linkColor}] font-bold hover:opacity-50`}
               target='_blank'
               {...rest}
             />
@@ -50,7 +50,7 @@ Content.propTypes = {
   markdownString: PropTypes.any
 }
 
-const MapboxTooltip = ({ className, title, content }) => {
+const MapboxTooltip = ({ className, title, content, linkColor }) => {
   return (
     <>
       <div className='block'>
@@ -72,7 +72,7 @@ const MapboxTooltip = ({ className, title, content }) => {
           </div>
           <Tooltip
             id={`tooltip-${title}`}
-            content={<Content markdownString={content} />}
+            content={<Content linkColor={linkColor} markdownString={content} />}
             openOnClick
             className='z-50 w-96 bg-white text-sm font-normal px-4 py-3 rounded-lg !opacity-100'
             disableStyleInjection

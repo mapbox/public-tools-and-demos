@@ -1,12 +1,12 @@
 // The Sidebar component holds a Location UI component, the Mapbox Search JS 'SearchBox'
-// component, the LocationListing component and a nested flex layout via Tailwind classes
+// component, the CardListent and a nested flex layout via Tailwind classes
 // This component hides portions of itself on mobile, reducing down to just the UseMyLocation
 // and SearchBoxWrapper on small screens.
 
 'use client'
 
 import React, { useContext } from 'react'
-import LocationListing from './LocationListing.jsx'
+import CardList from './CardList'
 import SearchBoxWrapper from './SearchBoxWrapper'
 import { AppContext } from './Context/AppContext'
 import UseMyLocation from './UseMyLocation'
@@ -41,7 +41,7 @@ const Sidebar = ({ mapInstanceRef }) => {
                   </div>
                 </div>
               
-              <LocationListing />
+              <CardList/>
 
             </div>
         )

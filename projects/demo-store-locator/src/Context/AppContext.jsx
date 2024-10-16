@@ -10,8 +10,8 @@ export const AppContextProvider = ({ children }) => {
   const [activeFeature, setActiveFeature] = useState()
   // activeLocation rendered on the map
   const [ activeLocation, setActiveLocation ] = useState(null);
-  // The store data in the current map viewport. Rendered in LocationListing, updated whenever the viewport changes
-  const [ features, setFeatures ] = useState([])
+  // The store data in the current map viewport. Rendered in CardList, updated whenever the viewport changes
+ const [ features, setFeatures ] = useState([])
   // Allow/Deny location sharing for app
   const [ denyLocation, setDenyLocation ] = useState(null);
   // hoveredFeature set by hovering store listing in LocationsListing

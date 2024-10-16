@@ -1,4 +1,4 @@
-// The LocationListing component renders GeoJSON feature information retrieved by
+// The CardList component renders GeoJSON feature information retrieved by
 // queryRenderedFeatures() in Map/index.jsx. GeoJSON can have any data you'd like
 // to store inside the 'feature.properties' object. This component also uses the web API
 // scrollIntoView() to scroll the active Feature (either clicked on the map or in the sidebar)
@@ -10,7 +10,7 @@ import React, { useRef, useEffect, useContext } from 'react';
 import Card from './Card';
 import { AppContext } from './Context/AppContext';
 
-const LocationListing = () => {
+const CardList = () => {
     const locationRefs = useRef([]);
     const {features, activeFeature, setActiveFeature, isMobile } = useContext(AppContext);
 
@@ -58,4 +58,4 @@ const LocationListing = () => {
 
 }
 
-export default LocationListing;
+export default CardList;
