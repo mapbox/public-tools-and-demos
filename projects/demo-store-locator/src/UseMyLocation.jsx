@@ -28,7 +28,7 @@ const UseMyLocation = ({ denyLocation, setDenyLocation, setSearchValue }) => {
                 <FontAwesomeIcon
                 icon={faLocationArrow}
                 className='mr-2'
-                style={{color: "#602428"}}
+                style={{color: "#365874"}}
                 /> Enable location services to search near you.
             </div>
         ) : (
@@ -39,14 +39,14 @@ const UseMyLocation = ({ denyLocation, setDenyLocation, setSearchValue }) => {
                     <FontAwesomeIcon
                     icon={faLocationArrow}
                     className='mr-2'
-                    style={{color: "#602428"}}
+                    style={{color: "#365874"}}
                     /> Use My Location 
                     
                     {loadingUserLocation &&       
                         <FontAwesomeIcon
                             icon={faSpinner}
                             className="ml-2 animate-spin"
-                            style={{color: "#602428"}}
+                            style={{color: "#365874"}}
                             />
                     }
                 </div>
