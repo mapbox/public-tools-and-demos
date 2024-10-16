@@ -25,7 +25,7 @@ const Content = ({ markdownString, linkColor }) => {
           const { ...rest } = props
           return (
             <a
-              className={`text-${linkColor} font-bold hover:opacity-50`}
+              className={`text-accentColor font-bold hover:opacity-50`}
               target='_blank'
               {...rest}
             />

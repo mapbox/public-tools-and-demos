@@ -16,7 +16,9 @@ module.exports = {
         tintgreen: 'rgba(96, 36, 40, 0.1)',
         maroon: '#602428',
         greenhover: '#378269',
-        transwhite: 'rgba(255, 255, 255, 0.5)'
+        transwhite: 'rgba(255, 255, 255, 0.5)',
+        // class to customize color for shared Tooltips components
+        accentColor: '#602428'
       }
     },
     fontFamily: {
