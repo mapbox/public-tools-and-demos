@@ -24,6 +24,8 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@mapbox/mapbox-gl-geocoder": "^5.0.1",
     "@mapbox/web-analytics": "^0.9.0",
-    "mapbox-gl": "^2.14.1"
+    "mapbox-gl": "^2.14.1",
+    "react-markdown": "^9.0.1",
+    "react-tooltip": "^5.28.0"
   }
 }
