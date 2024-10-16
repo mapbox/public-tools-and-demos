@@ -1,6 +1,6 @@
 ## Store Locator Developer Demo - React
 
-This is a developer demo app built with React and various Mapbox tools and services, demonstrating the UI/UX of store locator app. This application contains many customizations which are not needed for a simple store locator, but provides the framework for you to build your own, and a demonstration of more complex Mapbox features/products like MTS clustering, marker animations, usage of users geolocation, custom animations and
+This is a developer demo app built with React and various Mapbox tools and services, demonstrating the UI/UX of a store locator app. This application contains many customizations which are not needed for a simple store locator, but provides the framework for you to build your own, and a demonstration of more complex Mapbox features/products like MTS clustering, marker animations, usage of users geolocation, custom animations and
 different UI patterns for mobile vs desktop. 
 
 ## Data used in this demo
