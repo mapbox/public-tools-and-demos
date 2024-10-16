@@ -7,8 +7,15 @@ import { faChevronUp} from '@fortawesome/free-solid-svg-icons'
 import { tooltipData } from './tooltipData';
 
 const MapboxTooltips = ({ products, bgColor }) => {
-    const [ isToggled, setIsToggled ] = useState(false);
 
+    const colorVariants = {
+        // Store Locator
+        maroon: 'bg-maroon',
+        // Real Estate Demo Mapbox Blue
+        blue: 'bg-[#007afb]',
+    }
+
+    const [ isToggled, setIsToggled ] = useState(false);
 
     const productsToShow = tooltipData.filter(product => products.includes(product.title));
 
@@ -18,7 +25,7 @@ const MapboxTooltips = ({ products, bgColor }) => {
 
     return (
 
-    <div className={`${isToggled ? 'relative' : '-translate-y-full absolute'} transition-transform px-3 flex flex-wrap justify-start w-full h-auto py-2 items-center bg-[${bgColor}] overflow-visible z-50`}>
+    <div className={`${isToggled ? 'relative' : '-translate-y-full absolute'} transition-transform px-3 flex flex-wrap justify-start w-full h-auto py-2 items-center ${colorVariants[bgColor]} overflow-visible z-50`}>
 
         { productsToShow.map((product, index) => (
                 <MapboxTooltip
@@ -29,7 +36,7 @@ const MapboxTooltips = ({ products, bgColor }) => {
         ))}
 
         <div 
-            className={`transition-all info flex items-center absolute block bg-[${bgColor}] rounded-b-md px-4 py-2 px-2.5 py-1.5 text-white sm:text-base text-sm cursor-pointer`}
+            className={`transition-all info flex items-center absolute block ${colorVariants[bgColor]} rounded-b-md px-4 py-2 px-2.5 py-1.5 text-white sm:text-base text-sm cursor-pointer`}
             onClick={handleClick}>
                 <div className="mr-2">
                     <LogoSVG fillColor="white" />
@@ -47,5 +54,5 @@ export default MapboxTooltips;
 
 MapboxTooltips.PropTypes = {
     products: PropTypes.array,
-    bgColor: PropTypes.string // hex code with # included
+    bgColor: PropTypes.string // desired color needs to match map colorVariants. Add additional colors in colorVariants
 }

@@ -13,7 +13,7 @@ const Navbar = () => {
     return (
         <>
             <MapboxTooltips 
-                bgColor={'#602428'}
+                bgColor={'maroon'}
                 products={['Mapbox GL JS', 'Mapbox Search JS', 'MTS Clustering', 'Mapbox Standard Style', 'Map Markers', 'Popups', 'Source Code']}/>
 
             <div className='flex shrink-0 justify-between h-16 py-12 items-center border-b border-gray-200 bg-white z-10'>
