@@ -43,6 +43,7 @@ const Map = ({ onLoad }) => {
   useEffect(() => {
     const map = (mapRef.current = new mapboxgl.Map({
       container: mapContainer.current,
+      // this is a custom style, created with store location data loaded via Mapbox Tiling Service and styled in Mapbox Studio.
       style: 'mapbox://styles/examples/cm0foo08s01tn01qq2dzccr6i', 
       center:  [
         -97.76095065780527,
