@@ -398,6 +398,7 @@ export default [
     category: 'tools-and-resources',
     title: 'MapboxDevs Discord',
     subTitle: 'Chat, get help, find friends',
+    link: 'https://discord.gg/UshjQYyDFw',
     icon: 'discord'
   },
   {
