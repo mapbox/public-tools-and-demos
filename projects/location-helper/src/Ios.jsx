@@ -12,7 +12,6 @@ const Ios = ({
     bbox,
     zxy }) => {
      
-    console.log("center", center)
     const [displayBbox, setDisplayBbox ] = useState('use the polygon button to draw a bounding box')
 
     useEffect(()=> {
@@ -23,22 +22,27 @@ const Ios = ({
     }, [bbox])
     
     function processCenter(centerArray) {
-        const iosCenter = `CLLocationCoordinate2D(latitude: ${format(centerArray.lat, 5)}, longitude: ${format(centerArray.lng, 5)})`
-        return iosCenter
+        return (
+`CLLocationCoordinate2D(
+    latitude: ${format(centerArray.lat, 5)}, 
+    longitude: ${format(centerArray.lng, 5)}
+)`)
     }
 
     function formatBoundsArray(bounds) {
-        return `CoordinateBounds(
-                    southwest: CLLocationCoordinate2D(latitude:  ${format(bounds._sw.lat, 5)}, longitude: ${format(bounds._sw.lng, 5)}),
-                    northeast: CLLocationCoordinate2D(latitude: ${format(bounds._ne.lat, 5)}, longitude: ${format(bounds._ne.lng, 5)})
-                )`
+        return (
+`CoordinateBounds(
+    southwest: CLLocationCoordinate2D(latitude:  ${format(bounds._sw.lat, 5)}, longitude: ${format(bounds._sw.lng, 5)}),
+    northeast: CLLocationCoordinate2D(latitude: ${format(bounds._ne.lat, 5)}, longitude: ${format(bounds._ne.lng, 5)})
+)`)
     }
 
     function formatBoundingBox(bbox) {
-        return `CoordinateBounds(
-                    southwest: CLLocationCoordinate2D(latitude:  ${format(bbox[1], 5)}, longitude: ${format(bbox[0], 5)}),
-                    northeast: CLLocationCoordinate2D(latitude: ${format(bbox[3], 5)}, longitude: ${format(bbox[2], 5)})
-                )`
+        return (
+`CoordinateBounds(
+    southwest: CLLocationCoordinate2D(latitude:  ${format(bbox[1], 5)}, longitude: ${format(bbox[0], 5)}),
+    northeast: CLLocationCoordinate2D(latitude: ${format(bbox[3], 5)}, longitude: ${format(bbox[2], 5)})
+)`)
     }
      
     return (
@@ -66,12 +70,11 @@ const Ios = ({
 export default Ios
 
 Ios.propTypes = {
-    displayCenterArray: PropTypes.array,
-    displayCenterObject: PropTypes.object,
-    displayZoom: PropTypes.number,
-    displayBearing: PropTypes.number,
-    displayPitch: PropTypes.number,
-    displayBoundsArray: PropTypes.array, 
-    displayBbox: PropTypes.array,
+    center: PropTypes.object,
+    displayZoom: PropTypes.string,
+    displayBearing: PropTypes.string,
+    displayPitch: PropTypes.string,
+    bounds: PropTypes.object, 
+    displayBbox: PropTypes.any,
     zxy: PropTypes.any
 }

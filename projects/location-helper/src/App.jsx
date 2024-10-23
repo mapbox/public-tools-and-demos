@@ -240,6 +240,8 @@ function App() {
           githubLink:
             'https://github.com/mapbox/public-tools-and-demos/tree/main/projects/location-helper'
         }}
+        /* pass in sidebar width via assembly class */
+        sidebarSize={'w-1/3'}
         mapComponent={
           <Map
             center={center}
@@ -284,15 +286,11 @@ function App() {
         <div className='mb12 txt-s'>
           The map&apos;s current center point, zoom level, rotation angle, and
           pitch angle are displayed below. You can use these values to set the
-          camera position in{' '}
-          <ExternalLink to='https://docs.mapbox.com/mapbox-gl-js'>
-            Mapbox GL JS
-          </ExternalLink>{' '}
-          or the{' '}
-          <ExternalLink to='https://www.mapbox.com/mobile-maps-sdk'>
-            Mapbox Mobile SDKs
-          </ExternalLink>
-          .
+          camera position in
+          <ExternalLink to='https://docs.mapbox.com/mapbox-gl-js'> Mapbox GL JS </ExternalLink>
+          or the
+          <ExternalLink to='https://docs.mapbox.com/ios/maps/guides'> iOS </ExternalLink> or the 
+          <ExternalLink to='https://docs.mapbox.com/android/maps/guides'> Android </ExternalLink>mobile SDK's.
         </div>
 
         <Tabs

@@ -14,7 +14,10 @@ const TableRow = ({ label, value, noBorder }) => (
       >
         {label}
       </div>
-      <div className='txt-mono txt-ms pl12 flex-child-grow copiable-container overflow-auto'>
+      <div 
+        className='txt-mono txt-ms pl12 flex-child-grow copiable-container overflow-auto'
+        //style={{whiteSpace: "pre"}}
+        >
         <Copiable value={value} />
       </div>
     </div>

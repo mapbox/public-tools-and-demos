@@ -30,18 +30,24 @@ const Web = ({
     } 
 
     function formatBoundsArray(bounds) {
-        return `[[${format(bounds._sw.lng, 5)}, ${format(bounds._sw.lat, 5)}], 
-            [${format(bounds._ne.lng, 5)}, ${format(bounds._ne.lat, 5)}]]`
+        return (
+`[
+    [${format(bounds._sw.lng, 5)}, ${format(bounds._sw.lat, 5)}], 
+    [${format(bounds._ne.lng, 5)}, ${format(bounds._ne.lat, 5)}]
+]`)
     }
 
     function formatBoundingBox(bbox) {
-        return `[[${format(bbox[0], 5)}, ${format(bbox[1], 5)}],
-            [${format(bbox[2],5)}, ${format(bbox[3], 5)}]]`
+        return (
+`[
+    [${format(bbox[0], 5)}, ${format(bbox[1], 5)}],
+    [${format(bbox[2],5)}, ${format(bbox[3], 5)}]
+]`)
       }
 
     return (
 
-        <div className='overflow-x-auto relative'>
+        <div className='overflow-auto relative'>
           <TableRow label='center (array)' value={formatCenterArray(center)} />
           <TableRow label='center (object)' value={formatCenterObject(center)} />
           <TableRow label='zoom' value={displayZoom} />
@@ -65,12 +71,11 @@ const Web = ({
 export default Web
 
 Web.propTypes = {
-    displayCenterArray: PropTypes.array,
-    displayCenterObject: PropTypes.object,
-    displayZoom: PropTypes.number,
-    displayBearing: PropTypes.number,
-    displayPitch: PropTypes.number,
-    displayBoundsArray: PropTypes.array, 
-    displayBbox: PropTypes.array,
+    center: PropTypes.object,
+    displayZoom: PropTypes.string,
+    displayBearing: PropTypes.string,
+    displayPitch: PropTypes.string,
+    bounds: PropTypes.object, 
+    displayBbox: PropTypes.any,
     zxy: PropTypes.any
 }
