@@ -63,10 +63,10 @@ const Map = ({ onLoad }) => {
     })
 
     // Set the max bounds of the map to the extent of your dataset
-    map.setMaxBounds([
-      [-164.00944, 24.83458], // SouthWest coordinates
-      [-68.52300, 70.17738] // Northeast coordinates
-    ]);
+    // map.setMaxBounds([
+    //   [-164.00944, 24.83458], // SouthWest coordinates
+    //   [-68.52300, 70.17738] // Northeast coordinates
+    // ]);
 
     // Change the cursor to a pointer when the mouse is over a feature in the store-locations layer.  
     map.on('mouseenter', 'store-locations', () => {  
