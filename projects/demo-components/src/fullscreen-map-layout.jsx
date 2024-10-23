@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import Header from './header'
 
-const FullscreenMapLayout = ({ headerProps, mapComponent, children }) => {
+const FullscreenMapLayout = ({ headerProps, mapComponent, children, sidebarSize = 'w320' }) => {
   return (
     <div
       id='container'
@@ -10,7 +10,7 @@ const FullscreenMapLayout = ({ headerProps, mapComponent, children }) => {
       <div className='flex-child-grow relative flex flex--column'>
         {mapComponent}
         {/* medium+ sidebar */}
-        <div className='absolute left mx6 my6 px6 py6 top-ml w360 none block-ml z4 bottom mb30 hmax-full'>
+        <div className={`${sidebarSize} absolute left mx6 my6 px6 py6 top-ml none block-ml z4 bottom mb30 hmax-full`}>
           <div className='bg-white h-auto-ml hmax-full px12 py12 round-ml scroll-auto shadow-darken25 shadow-none-ml viewport-third overflow-scroll'>
             {children}
           </div>
