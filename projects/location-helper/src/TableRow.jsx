@@ -10,13 +10,13 @@ const TableRow = ({ label, value, noBorder }) => (
     >
       <div
         scope='row'
-        className='w120 align-r py3 txt-s txt-bold flex-child-no-shrink'
+        className='w-1/4 align-r py3 txt-s txt-bold flex-child-no-shrink'
       >
         {label}
       </div>
       <div 
         className='txt-mono txt-ms pl12 flex-child-grow copiable-container overflow-auto'
-        //style={{whiteSpace: "pre"}}
+        style={{whiteSpace: "pre"}}
         >
         <Copiable value={value} />
       </div>

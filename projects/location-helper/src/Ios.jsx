@@ -32,16 +32,28 @@ const Ios = ({
     function formatBoundsArray(bounds) {
         return (
 `CoordinateBounds(
-    southwest: CLLocationCoordinate2D(latitude:  ${format(bounds._sw.lat, 5)}, longitude: ${format(bounds._sw.lng, 5)}),
-    northeast: CLLocationCoordinate2D(latitude: ${format(bounds._ne.lat, 5)}, longitude: ${format(bounds._ne.lng, 5)})
+    southwest: CLLocationCoordinate2D(
+        latitude:  ${format(bounds._sw.lat, 5)}, 
+        longitude: ${format(bounds._sw.lng, 5)}
+    ),
+    northeast: CLLocationCoordinate2D(
+        latitude: ${format(bounds._ne.lat, 5)}, 
+        longitude: ${format(bounds._ne.lng, 5)}
+    )
 )`)
     }
 
     function formatBoundingBox(bbox) {
         return (
 `CoordinateBounds(
-    southwest: CLLocationCoordinate2D(latitude:  ${format(bbox[1], 5)}, longitude: ${format(bbox[0], 5)}),
-    northeast: CLLocationCoordinate2D(latitude: ${format(bbox[3], 5)}, longitude: ${format(bbox[2], 5)})
+    southwest: CLLocationCoordinate2D(
+        latitude:  ${format(bbox[1], 5)}, 
+        longitude: ${format(bbox[0], 5)}
+    ),
+    northeast: CLLocationCoordinate2D(
+        latitude: ${format(bbox[3], 5)}, 
+        longitude: ${format(bbox[2], 5)}
+    )
 )`)
     }
      
@@ -53,7 +65,7 @@ const Ios = ({
           <TableRow label='bearing' value={displayBearing} />
           <TableRow label='pitch' value={displayPitch} />
           <TableRow
-            label='viewport bounds'
+            label={`viewport \n bounds`}
             value={formatBoundsArray(bounds)}
             noBorder
           />

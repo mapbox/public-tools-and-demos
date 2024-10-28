@@ -296,7 +296,10 @@ function App() {
         <Tabs
           onChange={(id) => setActiveTab(id)}
           active={activeTab}
-          themeTabsContainer="mb12"
+          activeColor={'blue'}
+          hoverColor={'gray-dark'}
+          overlapBorder={true}
+          themeTabsContainer={"mb12 border-b border--blue"}
           items={[
             { id: 'web', label: 'Web', content: <Web  
                 center={center}
