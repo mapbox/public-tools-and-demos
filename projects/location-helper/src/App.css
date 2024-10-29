@@ -7,7 +7,3 @@
 .copiable-container:hover [data-testid='copy-button'] {
   visibility: visible;
 }
-
-/* pre {
-  white-space: pre;
-} */

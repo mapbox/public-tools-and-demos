@@ -1,25 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
-import TableRow from "./TableRow"
+import React from 'react'
+import BasePlatform from './BasePlatform'
 import { format } from './utils'
 
-const Android = ({
-    center,  
-    displayZoom, 
-    displayBearing, 
-    displayPitch, 
-    bounds, 
-    bbox,
-    zxy }) => {
-
-    const [displayBbox, setDisplayBbox ] = useState('use the polygon button to draw a bounding box')
-
-    useEffect(()=> {
-        if(bbox) {
-            const bounding = formatBoundingBox(bbox);
-            setDisplayBbox(bounding)
-        }
-    }, [bbox])
+const Android = (props) => {
     
     function processCenter(centerObj) {
         return `Point.fromLngLat(${format(centerObj.lng, 5)}, ${format(centerObj.lat, 5)})`
@@ -43,36 +26,7 @@ const Android = ({
 )`)
     }
 
-    return (
-
-        <div className='overflow-x-auto relative'>
-          <TableRow label='center' value={processCenter(center)} />
-          <TableRow label='zoom' value={displayZoom} />
-          <TableRow label='bearing' value={displayBearing} />
-          <TableRow label='pitch' value={displayPitch} />
-          <TableRow
-            label='viewport bounds'
-            value={formatBoundsArray(bounds)}
-            noBorder
-          />
-          <TableRow
-            label='user-drawn bounding box'
-            value={displayBbox}
-            noBorder
-          />
-          <TableRow label='z/x/y tile' value={zxy} noBorder />
-        </div>
-    )
+    return <BasePlatform {...props} formatCenter={processCenter} formatBounds={formatBoundsArray} formatBbox={formatBoundingBox} />
 }
 
 export default Android
-
-Android.propTypes = {
-    center: PropTypes.object,
-    displayZoom: PropTypes.string,
-    displayBearing: PropTypes.string,
-    displayPitch: PropTypes.string,
-    bounds: PropTypes.object, 
-    displayBbox: PropTypes.any,
-    zxy: PropTypes.any
-}
