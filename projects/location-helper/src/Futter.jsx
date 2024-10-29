@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import TableRow from "./TableRow"
 import { format } from './utils'
 
-const Ios = ({
+const Flutter = ({
     center,
     displayZoom, 
     displayBearing, 
@@ -23,38 +23,41 @@ const Ios = ({
     
     function processCenter(centerArray) {
         return (
-`CLLocationCoordinate2D(
-  latitude: ${format(centerArray.lat, 5)}, 
-  longitude: ${format(centerArray.lng, 5)}
-)`)
+`Point(
+  coordinates: Position(
+    ${format(centerArray.lat, 5)}, 
+    ${format(centerArray.lng, 5)}
+))`)
     }
 
     function formatBoundsArray(bounds) {
         return (
 `CoordinateBounds(
-  southwest: CLLocationCoordinate2D(
-    latitude:  ${format(bounds._sw.lat, 5)}, 
-    longitude: ${format(bounds._sw.lng, 5)}
-  ),
-  northeast: CLLocationCoordinate2D(
-    latitude: ${format(bounds._ne.lat, 5)}, 
-    longitude: ${format(bounds._ne.lng, 5)}
-  )
+  southwest: Point(
+    coordinates: Position(
+      ${format(bounds._sw.lat, 5)}, ${format(bounds._sw.lng, 5)}
+  )),
+  northeast: Point(
+    coordinates: Position(
+      ${format(bounds._ne.lat, 5)},  ${format(bounds._ne.lng, 5)}
+  )),
+  infiniteBounds: false
 )`)
     }
 
     function formatBoundingBox(bbox) {
         return (
 `CoordinateBounds(
-  southwest: CLLocationCoordinate2D(
-    latitude:  ${format(bbox[1], 5)}, 
-    longitude: ${format(bbox[0], 5)}
-  ),
-  northeast: CLLocationCoordinate2D(
-    latitude: ${format(bbox[3], 5)}, 
-    longitude: ${format(bbox[2], 5)}
-  )
-)`)
+    southwest: Point(
+      coordinates: Position(
+        ${format(bbox[1], 5)}, ${format(bbox[0], 5)}
+    )),
+    northeast: Point(
+      coordinates: Position(
+        ${format(bbox[3], 5)},  ${format(bbox[2], 5)}
+    )),
+    infiniteBounds: false
+  )`)
     }
      
     return (
@@ -79,9 +82,9 @@ const Ios = ({
     )
 }
 
-export default Ios
+export default Flutter
 
-Ios.propTypes = {
+Flutter.propTypes = {
     center: PropTypes.object,
     displayZoom: PropTypes.string,
     displayBearing: PropTypes.string,

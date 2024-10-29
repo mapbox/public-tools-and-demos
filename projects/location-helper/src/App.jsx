@@ -9,6 +9,7 @@ import {
 import Web from './Web'
 import Ios from './Ios'
 import Android from './Android'
+import Flutter from './Futter'
 import bboxPolygon from '@turf/bbox-polygon'
 import { ExternalLink, FullscreenMapLayout, Map } from 'mapbox-demo-components'
 import Tabs from '@mapbox/mr-ui/tabs'
@@ -50,7 +51,7 @@ function App() {
   const [quadkey, setQuadkey] = useState(null)
   const [bbox, setBbox] = useState(null)
   const drawRef = useRef()
-  const [activeTab, setActiveTab] = useState('web')
+  const [activeTab, setActiveTab] = useState(null)
 
   const startDrawingBbox = () => {
     if (
@@ -225,6 +226,17 @@ function App() {
     })
   }
 
+  useEffect(()=> {
+    const storedPlatform = localStorage.getItem('LocationHelper.platform')
+    const active = storedPlatform || 'web'
+    setActiveTab(active)
+  },[])
+
+  function tabsClick(id) {
+    setActiveTab(id)
+    localStorage.setItem('LocationHelper.platform', id)
+  }
+
   const displayZoom = format(zoom, 2)
   const displayBearing = format(bearing, 2)
   const displayPitch = format(pitch, 2)
@@ -294,7 +306,7 @@ function App() {
         </div>
 
         <Tabs
-          onChange={(id) => setActiveTab(id)}
+          onChange={(id) => tabsClick(id)}
           active={activeTab}
           activeColor={'blue'}
           hoverColor={'gray-dark'}
@@ -329,6 +341,15 @@ function App() {
                 bbox={bbox}
                 zxy={zxy}
                 />  },
+            { id: 'flutter', label: 'Flutter', content: <Flutter 
+              center={center}
+              displayZoom={displayZoom} 
+              displayBearing={displayBearing}
+              displayPitch={displayPitch}
+              bounds={bounds}                
+              bbox={bbox}
+              zxy={zxy}
+              />  },
           ]}
         />
 
