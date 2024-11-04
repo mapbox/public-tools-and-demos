@@ -313,7 +313,9 @@ function App() {
           overlapBorder={true}
           themeTabsContainer={"mb12 border-b border--blue"}
           items={[
-            { id: 'web', label: 'Web', content: <Web  
+            { id: 'web', 
+              label: 'Web', 
+              content: <Web  
                 center={center}
                 displayZoom={displayZoom} 
                 displayBearing={displayBearing}
@@ -323,7 +325,9 @@ function App() {
                 zxy={zxy}
                 /> 
             },
-            { id: 'ios', label: 'iOS', content: <Ios
+            { id: 'ios', 
+              label: 'iOS', 
+              content: <Ios
                 center={center}
                 displayZoom={displayZoom} 
                 displayBearing={displayBearing}
@@ -331,8 +335,11 @@ function App() {
                 bounds={bounds}
                 bbox={bbox}
                 zxy={zxy}
-              /> },
-            { id: 'android', label: 'Android', content: <Android 
+              /> 
+            },
+            { id: 'android', 
+              label: 'Android', 
+              content: <Android 
                 center={center}
                 displayZoom={displayZoom} 
                 displayBearing={displayBearing}
@@ -340,16 +347,20 @@ function App() {
                 bounds={bounds}                
                 bbox={bbox}
                 zxy={zxy}
-                />  },
-            { id: 'flutter', label: 'Flutter', content: <Flutter 
-              center={center}
-              displayZoom={displayZoom} 
-              displayBearing={displayBearing}
-              displayPitch={displayPitch}
-              bounds={bounds}                
-              bbox={bbox}
-              zxy={zxy}
-              />  },
+                />  
+            },
+            { id: 'flutter', 
+              label: 'Flutter', 
+              content: <Flutter 
+                center={center}
+                displayZoom={displayZoom} 
+                displayBearing={displayBearing}
+                displayPitch={displayPitch}
+                bounds={bounds}                
+                bbox={bbox}
+                zxy={zxy}
+                />  
+            },
           ]}
         />
 
