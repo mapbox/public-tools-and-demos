@@ -6,12 +6,17 @@ import {
   quadkeyToTile,
   tileToBBOX
 } from '@mapbox/tilebelt'
+import Web from './Web'
+import Ios from './Ios'
+import Android from './Android'
+import Flutter from './Futter'
 import bboxPolygon from '@turf/bbox-polygon'
 import { ExternalLink, FullscreenMapLayout, Map } from 'mapbox-demo-components'
-import Copiable from '@mapbox/mr-ui/copiable'
+import Tabs from '@mapbox/mr-ui/tabs'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import DrawRectangle from 'mapbox-gl-draw-rectangle-mode'
 import turfBbox from '@turf/bbox'
+import { format } from './utils'
 
 import '@mapbox/mbx-assembly/dist/assembly.js'
 import MapboxGLButtonControl from './MapboxGLButtonControl'
@@ -36,34 +41,6 @@ const INITIAL_BOUNDS = {
   }
 }
 
-const format = (d, n) => {
-  return d.toFixed(n).replace(/[.,]00$/, '')
-}
-
-const TableRow = ({ label, value, noBorder }) => (
-  <div
-    className={`flex flex--center-cross py3 ${
-      !noBorder && 'border-b border--gray-light'
-    }`}
-  >
-    <div
-      scope='row'
-      className='w120 align-r py3 txt-s txt-bold flex-child-no-shrink'
-    >
-      {label}
-    </div>
-    <div className='txt-mono txt-ms pl12 flex-child-grow copiable-container'>
-      <Copiable value={value} />
-    </div>
-  </div>
-)
-
-TableRow.propTypes = {
-  label: PropTypes.any,
-  noBorder: PropTypes.any,
-  value: PropTypes.any
-}
-
 function App() {
   const [center, setCenter] = useState(INITIAL_CENTER)
   const [zoom, setZoom] = useState(INITIAL_ZOOM)
@@ -74,6 +51,7 @@ function App() {
   const [quadkey, setQuadkey] = useState(null)
   const [bbox, setBbox] = useState(null)
   const drawRef = useRef()
+  const [activeTab, setActiveTab] = useState(null)
 
   const startDrawingBbox = () => {
     if (
@@ -248,33 +226,24 @@ function App() {
     })
   }
 
-  const displayCenterArray = `[${format(center.lng, 5)}, ${format(
-    center.lat,
-    5
-  )}]`
-  const displayCenterObject = `{lng: ${format(center.lng, 5)}, lat: ${format(
-    center.lat,
-    5
-  )}}`
+  useEffect(()=> {
+    const storedPlatform = localStorage.getItem('LocationHelper.platform')
+    const active = storedPlatform || 'web'
+    setActiveTab(active)
+  },[])
+
+  function tabsClick(id) {
+    setActiveTab(id)
+    localStorage.setItem('LocationHelper.platform', id)
+  }
 
   const displayZoom = format(zoom, 2)
   const displayBearing = format(bearing, 2)
   const displayPitch = format(pitch, 2)
-
-  const displayBoundsArray = `[[${format(bounds._sw.lng, 5)}, ${format(
-    bounds._sw.lat,
-    5
-  )}], [${format(bounds._ne.lng, 5)}, ${format(bounds._ne.lat, 5)}]]`
+  
   const tile = quadkey ? quadkeyToTile(quadkey) : []
   const zxy = quadkey ? `${tile[2]}/${tile[0]}/${tile[1]}` : ''
 
-  let displayBbox = 'use the polygon button to draw a bounding box'
-  if (bbox) {
-    displayBbox = `[[${format(bbox[0], 5)}, ${format(bbox[1], 5)}],[${format(
-      bbox[2],
-      5
-    )}, ${format(bbox[3], 5)}]]`
-  }
   return (
     <div className='App h-viewport-full'>
       <FullscreenMapLayout
@@ -283,6 +252,8 @@ function App() {
           githubLink:
             'https://github.com/mapbox/public-tools-and-demos/tree/main/projects/location-helper'
         }}
+        /* pass in sidebar width via assembly class */
+        sidebarSize={'w-1/3'}
         mapComponent={
           <Map
             center={center}
@@ -327,34 +298,72 @@ function App() {
         <div className='mb12 txt-s'>
           The map&apos;s current center point, zoom level, rotation angle, and
           pitch angle are displayed below. You can use these values to set the
-          camera position in{' '}
-          <ExternalLink to='https://docs.mapbox.com/mapbox-gl-js'>
-            Mapbox GL JS
-          </ExternalLink>{' '}
-          or the{' '}
-          <ExternalLink to='https://www.mapbox.com/mobile-maps-sdk'>
-            Mapbox Mobile SDKs
-          </ExternalLink>
-          .
+          camera position in
+          <ExternalLink to='https://docs.mapbox.com/mapbox-gl-js'> Mapbox GL JS </ExternalLink>
+          or the
+          <ExternalLink to='https://docs.mapbox.com/ios/maps/guides'> iOS </ExternalLink> or the 
+          <ExternalLink to='https://docs.mapbox.com/android/maps/guides'> Android </ExternalLink>mobile SDK's.
         </div>
-        <div className='overflow-x-auto relative'>
-          <TableRow label='center (array)' value={displayCenterArray} />
-          <TableRow label='center (object)' value={displayCenterObject} />
-          <TableRow label='zoom' value={displayZoom} />
-          <TableRow label='bearing' value={displayBearing} />
-          <TableRow label='pitch' value={displayPitch} />
-          <TableRow
-            label='viewport bounds'
-            value={displayBoundsArray}
-            noBorder
-          />
-          <TableRow
-            label='user-drawn bounding box'
-            value={displayBbox}
-            noBorder
-          />
-          <TableRow label='z/x/y tile' value={zxy} noBorder />
-        </div>
+
+        <Tabs
+          onChange={(id) => tabsClick(id)}
+          active={activeTab}
+          activeColor={'blue'}
+          hoverColor={'gray-dark'}
+          overlapBorder={true}
+          themeTabsContainer={"mb12 border-b border--blue"}
+          items={[
+            { id: 'web', 
+              label: 'Web', 
+              content: <Web  
+                center={center}
+                displayZoom={displayZoom} 
+                displayBearing={displayBearing}
+                displayPitch={displayPitch}
+                bounds={bounds}
+                bbox={bbox}
+                zxy={zxy}
+                /> 
+            },
+            { id: 'ios', 
+              label: 'iOS', 
+              content: <Ios
+                center={center}
+                displayZoom={displayZoom} 
+                displayBearing={displayBearing}
+                displayPitch={displayPitch}
+                bounds={bounds}
+                bbox={bbox}
+                zxy={zxy}
+              /> 
+            },
+            { id: 'android', 
+              label: 'Android', 
+              content: <Android 
+                center={center}
+                displayZoom={displayZoom} 
+                displayBearing={displayBearing}
+                displayPitch={displayPitch}
+                bounds={bounds}                
+                bbox={bbox}
+                zxy={zxy}
+                />  
+            },
+            { id: 'flutter', 
+              label: 'Flutter', 
+              content: <Flutter 
+                center={center}
+                displayZoom={displayZoom} 
+                displayBearing={displayBearing}
+                displayPitch={displayPitch}
+                bounds={bounds}                
+                bbox={bbox}
+                zxy={zxy}
+                />  
+            },
+          ]}
+        />
+
       </FullscreenMapLayout>
     </div>
   )
