@@ -136,8 +136,8 @@ const getFreeNearbyPosition = (categoryTilePosition, gridId) => {
   let attempts = 0
   let depth = 1
 
-  const [categoryTileX, categoryTileY] = categoryTilePosition 
-  
+  const [categoryTileX, categoryTileY] = categoryTilePosition
+
   /* eslint-disable-next-line */
   while (true) {
     let x = getRandomInt(categoryTileX - 1, categoryTileX + depth + 1, 'x')
@@ -170,10 +170,10 @@ const layoutTiles = (gridId, cb) => {
       const item = mapboxItems[i]
 
       if (item.type === 'category') {
-        [x, y] = getFreeNearbyPositionForCategory(gridId)
+        ;[x, y] = getFreeNearbyPositionForCategory(gridId)
         categoryTilePositions[item.category] = [x, y]
       } else {
-        [x, y] = getFreeNearbyPosition(
+        ;[x, y] = getFreeNearbyPosition(
           categoryTilePositions[item.category],
           gridId
         )

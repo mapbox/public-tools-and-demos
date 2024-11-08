@@ -1,5 +1,5 @@
 // Top Level App component
-// This imports AppContext, Sets up the app layout and imports our 
+// This imports AppContext, Sets up the app layout and imports our
 // Navbar, Sidebar (search & location listing)  & Map
 
 'use client'
@@ -15,22 +15,18 @@ import getUserLocation from './utils'
 import './styles.css'
 
 export default function Home() {
-  
   // All Application state is stored in AppContext
-  const { 
-    setActiveLocation,
-    setDenyLocation,
-    setLoadingUserLocation, 
-  } = useContext(AppContext);
+  const { setActiveLocation, setDenyLocation, setLoadingUserLocation } =
+    useContext(AppContext)
 
   // A ref to hold the Mapbox GL JS Map instance
   const mapInstanceRef = useRef()
 
   // Use Effect to request Users Location on App mount
   useEffect(() => {
-    setLoadingUserLocation(true);
-    getUserLocation(setActiveLocation, setLoadingUserLocation, setDenyLocation);
-  }, []);
+    setLoadingUserLocation(true)
+    getUserLocation(setActiveLocation, setLoadingUserLocation, setDenyLocation)
+  }, [])
 
   // // when the map loads
   const handleMapLoad = (map) => {
@@ -40,16 +36,13 @@ export default function Home() {
   return (
     <>
       <main className='flex flex-col h-screen relative'>
-        
-        <Navbar/>
-        
+        <Navbar />
+
         {/* Main Content Wrapper */}
         <div className='flex grow relative'>
-          
           <Sidebar mapInstanceRef={mapInstanceRef} />
-           
+
           <Map onLoad={handleMapLoad} />
-          
         </div>
       </main>
     </>

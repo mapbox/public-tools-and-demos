@@ -12,39 +12,37 @@ import { AppContext } from './Context/AppContext'
 import UseMyLocation from './UseMyLocation'
 
 const Sidebar = ({ mapInstanceRef }) => {
+  const { features, denyLocation, setDenyLocation, setSearchValue } =
+    useContext(AppContext)
 
-    const { 
-    features,
-    denyLocation,
-    setDenyLocation,
-    setSearchValue,
+  return (
+    <div
+      /* Manually set the height of sidebar minus header to enable proper flex height & overflow scrolling */
+      style={{ height: `calc(100vh - 6rem)` }}
+      className='absolute sm:relative flex flex-col p-4 w-full sm:w-96'
+    >
+      <div className='sticky top-0 z-20 flex flex-col sm:block flex-col-reverse'>
+        <UseMyLocation
+          denyLocation={denyLocation}
+          setDenyLocation={setDenyLocation}
+          setSearchValue={setSearchValue}
+        />
+        <SearchBoxWrapper mapInstanceRef={mapInstanceRef} />
+      </div>
 
-  } = useContext(AppContext);
+      <div className='hidden sm:block'>
+        <div className='text-2xl text-black font-semibold w-full mb-1.5 mt-6 z-0'>
+          Stores
+        </div>
+        <div className='mb-4 font-medium text-gray-500'>
+          <span className='text-maroon font-bold'>{features.length}</span>{' '}
+          Stores nearby
+        </div>
+      </div>
 
-        return (
-            <div 
-              /* Manually set the height of sidebar minus header to enable proper flex height & overflow scrolling */
-              style={{ height: `calc(100vh - 6rem)`}}
-              className='absolute sm:relative flex flex-col p-4 w-full sm:w-96'>
-
-                <div className="sticky top-0 z-20 flex flex-col sm:block flex-col-reverse">
-                    <UseMyLocation denyLocation={denyLocation} setDenyLocation={setDenyLocation} setSearchValue={setSearchValue}/>
-                    <SearchBoxWrapper mapInstanceRef={mapInstanceRef} />
-                </div>
-              
-                <div className="hidden sm:block">
-                  <div className='text-2xl text-black font-semibold w-full mb-1.5 mt-6 z-0'>
-                    Stores
-                  </div>
-                  <div className='mb-4 font-medium text-gray-500'>
-                    <span className="text-maroon font-bold">{features.length}</span> Stores nearby
-                  </div>
-                </div>
-              
-              <CardList/>
-
-            </div>
-        )
+      <CardList />
+    </div>
+  )
 }
 
-export default Sidebar;
+export default Sidebar
