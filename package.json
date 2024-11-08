@@ -5,7 +5,8 @@
   ],
   "private": true,
   "scripts": {
-    "format": "prettier --write '**/*.{js,jsx,css,html,json}'"
+    "format": "prettier --write '**/*.{js,jsx,css,html,json}'",
+    "prepare": "npx husky install"
   },
   "type": "module",
   "dependencies": {

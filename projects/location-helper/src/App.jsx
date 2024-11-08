@@ -9,7 +9,7 @@ import {
 import Web from './Web'
 import Ios from './Ios'
 import Android from './Android'
-import Flutter from './Futter'
+import Flutter from './Flutter'
 import bboxPolygon from '@turf/bbox-polygon'
 import { ExternalLink, FullscreenMapLayout, Map } from 'mapbox-demo-components'
 import Tabs from '@mapbox/mr-ui/tabs'
@@ -226,11 +226,11 @@ function App() {
     })
   }
 
-  useEffect(()=> {
+  useEffect(() => {
     const storedPlatform = localStorage.getItem('LocationHelper.platform')
     const active = storedPlatform || 'web'
     setActiveTab(active)
-  },[])
+  }, [])
 
   function tabsClick(id) {
     setActiveTab(id)
@@ -240,7 +240,7 @@ function App() {
   const displayZoom = format(zoom, 2)
   const displayBearing = format(bearing, 2)
   const displayPitch = format(pitch, 2)
-  
+
   const tile = quadkey ? quadkeyToTile(quadkey) : []
   const zxy = quadkey ? `${tile[2]}/${tile[0]}/${tile[1]}` : ''
 
@@ -299,10 +299,21 @@ function App() {
           The map&apos;s current center point, zoom level, rotation angle, and
           pitch angle are displayed below. You can use these values to set the
           camera position in
-          <ExternalLink to='https://docs.mapbox.com/mapbox-gl-js'> Mapbox GL JS </ExternalLink>
+          <ExternalLink to='https://docs.mapbox.com/mapbox-gl-js'>
+            {' '}
+            Mapbox GL JS{' '}
+          </ExternalLink>
           or the
-          <ExternalLink to='https://docs.mapbox.com/ios/maps/guides'> iOS </ExternalLink> or the 
-          <ExternalLink to='https://docs.mapbox.com/android/maps/guides'> Android </ExternalLink>mobile SDK's.
+          <ExternalLink to='https://docs.mapbox.com/ios/maps/guides'>
+            {' '}
+            iOS{' '}
+          </ExternalLink>{' '}
+          or the
+          <ExternalLink to='https://docs.mapbox.com/android/maps/guides'>
+            {' '}
+            Android{' '}
+          </ExternalLink>
+          mobile SDK's.
         </div>
 
         <Tabs
@@ -311,59 +322,70 @@ function App() {
           activeColor={'blue'}
           hoverColor={'gray-dark'}
           overlapBorder={true}
-          themeTabsContainer={"mb12 border-b border--blue"}
+          themeTabsContainer={'mb12 border-b border--blue'}
           items={[
-            { id: 'web', 
-              label: 'Web', 
-              content: <Web  
-                center={center}
-                displayZoom={displayZoom} 
-                displayBearing={displayBearing}
-                displayPitch={displayPitch}
-                bounds={bounds}
-                bbox={bbox}
-                zxy={zxy}
-                /> 
+            {
+              id: 'web',
+              label: 'Web',
+              content: (
+                <Web
+                  center={center}
+                  displayZoom={displayZoom}
+                  displayBearing={displayBearing}
+                  displayPitch={displayPitch}
+                  bounds={bounds}
+                  bbox={bbox}
+                  zxy={zxy}
+                />
+              )
             },
-            { id: 'ios', 
-              label: 'iOS', 
-              content: <Ios
-                center={center}
-                displayZoom={displayZoom} 
-                displayBearing={displayBearing}
-                displayPitch={displayPitch}
-                bounds={bounds}
-                bbox={bbox}
-                zxy={zxy}
-              /> 
+            {
+              id: 'ios',
+              label: 'iOS',
+              content: (
+                <Ios
+                  center={center}
+                  displayZoom={displayZoom}
+                  displayBearing={displayBearing}
+                  displayPitch={displayPitch}
+                  bounds={bounds}
+                  bbox={bbox}
+                  zxy={zxy}
+                />
+              )
             },
-            { id: 'android', 
-              label: 'Android', 
-              content: <Android 
-                center={center}
-                displayZoom={displayZoom} 
-                displayBearing={displayBearing}
-                displayPitch={displayPitch}
-                bounds={bounds}                
-                bbox={bbox}
-                zxy={zxy}
-                />  
+            {
+              id: 'android',
+              label: 'Android',
+              content: (
+                <Android
+                  center={center}
+                  displayZoom={displayZoom}
+                  displayBearing={displayBearing}
+                  displayPitch={displayPitch}
+                  bounds={bounds}
+                  bbox={bbox}
+                  zxy={zxy}
+                />
+              )
             },
-            { id: 'flutter', 
-              label: 'Flutter', 
-              content: <Flutter 
-                center={center}
-                displayZoom={displayZoom} 
-                displayBearing={displayBearing}
-                displayPitch={displayPitch}
-                bounds={bounds}                
-                bbox={bbox}
-                zxy={zxy}
-                />  
-            },
+            {
+              id: 'flutter',
+              label: 'Flutter',
+              content: (
+                <Flutter
+                  center={center}
+                  displayZoom={displayZoom}
+                  displayBearing={displayBearing}
+                  displayPitch={displayPitch}
+                  bounds={bounds}
+                  bbox={bbox}
+                  zxy={zxy}
+                />
+              )
+            }
           ]}
         />
-
       </FullscreenMapLayout>
     </div>
   )

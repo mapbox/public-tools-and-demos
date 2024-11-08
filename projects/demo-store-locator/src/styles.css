@@ -46,9 +46,9 @@ body {
   width: 17px;
   background-position-x: 50%;
   border-radius: 50%;
-  transition-property: width, height; 
-  transition-duration: .1s; 
-  transition-timing-function: linear; 
+  transition-property: width, height;
+  transition-duration: 0.1s;
+  transition-timing-function: linear;
   /* Define Maker Animation */
   animation: hover-in 0.3s ease-in-out;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.5);
@@ -61,18 +61,19 @@ body {
   background-repeat: no-repeat;
   border-radius: 50%;
   cursor: pointer;
-  transition-property: width, height; 
-  transition-duration: .1s; 
-  transition-timing-function: linear; 
+  transition-property: width, height;
+  transition-duration: 0.1s;
+  transition-timing-function: linear;
   /* Define Marker Animation */
-  animation: pop-in 0.3s ease-out forwards, wobble 1.5s ease-in-out 0.3s forwards; 
+  animation: pop-in 0.3s ease-out forwards,
+    wobble 1.5s ease-in-out 0.3s forwards;
   transform-origin: bottom center;
 }
 
 .marker::before {
   content: '';
-  width: 0; 
-  height: 0; 
+  width: 0;
+  height: 0;
   border-left: 7px solid transparent;
   border-right: 7px solid transparent;
   border-top: 7px solid #365874;
@@ -80,7 +81,7 @@ body {
   position: absolute;
   bottom: -5px;
   left: 50%;
-  transform: translateX(-50%)
+  transform: translateX(-50%);
 }
 
 /* Keyframe animation for pop-in */
@@ -95,17 +96,17 @@ body {
     width: 55px;
     height: 55px;
     opacity: 1;
-    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.4);  /* Add a subtle shadow */
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.4); /* Add a subtle shadow */
   }
   85% {
     width: 48px;
     height: 48px;
-    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.3);  /* Shrink shadow with wobble */
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.3); /* Shrink shadow with wobble */
   }
   100% {
     width: 50px;
     height: 50px;
-    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);  /* Final shadow size */
+    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3); /* Final shadow size */
   }
 }
 
@@ -166,9 +167,9 @@ body {
     bottom: -30px;
     right: 5%;
   }
-  
+
   .info:hover {
     padding-top: 1rem;
     bottom: -37px;
   }
- }
+}

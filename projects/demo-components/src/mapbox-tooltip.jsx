@@ -7,7 +7,6 @@ import classNames from 'classnames'
 import LogoSVG from './logo-svg'
 
 const Content = ({ markdownString, linkColor }) => {
-
   return (
     <Markdown
       components={{
@@ -66,7 +65,7 @@ const MapboxTooltip = ({ className, title, content, linkColor }) => {
             data-tooltip-id={`tooltip-${title}`}
           >
             <div className='mr-1'>
-              <LogoSVG fillColor="black"/>
+              <LogoSVG fillColor='black' />
             </div>
             <span className='text-sm pr-1 font-medium'>{title}</span>
           </div>
@@ -93,4 +92,4 @@ MapboxTooltip.propTypes = {
   title: PropTypes.string
 }
 
-export default MapboxTooltip;
+export default MapboxTooltip
