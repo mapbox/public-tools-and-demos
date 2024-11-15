@@ -13,6 +13,20 @@
       content="Demonstration of dynamic camera and map controls based on the user's scrolling position"
     />
     <title>Mapbox Storytelling Demo | Mapbox Spatial Developer Tools</title>
+    
+      <!-- Add segment tracking for tool usage -->
+      <script src="https://docs.mapbox.com/analytics.min.js"></script>
+      <script>
+        window.mbxMetadata = {
+          content_type: 'developer-tool'
+        };
+  
+        // eslint-disable-next-line no-undef
+        initializeMapboxAnalytics({
+          marketoMunchkin: false
+        });
+      </script>
+
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
