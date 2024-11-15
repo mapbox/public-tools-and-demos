@@ -2,7 +2,7 @@
 
 An html and javascript template for quickly creating an [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js) interactive marker map with data sourced from a Google Sheet.
 
-[Sample Code]() [Sample Google Sheet](https://docs.google.com/spreadsheets/d/1MiqwGe_7m6B0xFQfaS3GGRO8CmGm5xlXPICDPEeGHyo/edit?gid=0#gid=0) [Live Map Demo](https://labs.mapbox.com/sheetmapper/)
+[Sample Code](https://github.com/mapbox/public-tools-and-demos/blob/main/projects/sheetmapper/index.html) [Sample Google Sheet](https://docs.google.com/spreadsheets/d/1MiqwGe_7m6B0xFQfaS3GGRO8CmGm5xlXPICDPEeGHyo/edit?gid=0#gid=0) [Live Map Demo](https://labs.mapbox.com/sheetmapper/)
 
 ## How to Use
 
