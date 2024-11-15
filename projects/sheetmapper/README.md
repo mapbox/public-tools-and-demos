@@ -4,7 +4,7 @@ An html and javascript template for quickly creating an [Mapbox GL JS](https://d
 
 [Sample Code](https://github.com/mapbox/public-tools-and-demos/blob/main/projects/sheetmapper/index.html) [Sample Google Sheet](https://docs.google.com/spreadsheets/d/1MiqwGe_7m6B0xFQfaS3GGRO8CmGm5xlXPICDPEeGHyo/edit?gid=0#gid=0) [Live Map Demo](https://labs.mapbox.com/sheetmapper/)
 
-![Uploading 127_0_0_1_5500_index_html.png…]()
+<img width="958" alt="127_0_0_1_5500_index_html" src="https://github.com/user-attachments/assets/34c12c15-2321-4cf6-a1a5-94eeb635fde9">
 
 
 ## How to Use
