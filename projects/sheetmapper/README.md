@@ -108,7 +108,7 @@ You can also configure the following values in the `sheetmapperOptions` object:
 
 You can define additional `markerOptions` as defined in the [Mapbox GL JS API Reference Documentation](https://docs.mapbox.com/mapbox-gl-js/api/markers/#marker)
 
-### Run a Development Server to Preview your Sheetmapper Map
+### Step 5. Run a Development Server to Preview your Sheetmapper Map
 
 With the Sheetmapper HTML file configured, you are ready to preview the site in a development server.
 
