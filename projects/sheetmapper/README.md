@@ -4,7 +4,8 @@ An html and javascript template for quickly creating an [Mapbox GL JS](https://d
 
 [Sample Code](https://github.com/mapbox/public-tools-and-demos/blob/main/projects/sheetmapper/index.html) [Sample Google Sheet](https://docs.google.com/spreadsheets/d/1MiqwGe_7m6B0xFQfaS3GGRO8CmGm5xlXPICDPEeGHyo/edit?gid=0#gid=0) [Live Map Demo](https://labs.mapbox.com/sheetmapper/)
 
-![image](https://private-user-images.githubusercontent.com/1833820/386341283-6f985e95-7a78-4a23-9169-cc0b2182f7c9.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MzE2OTAxNzEsIm5iZiI6MTczMTY4OTg3MSwicGF0aCI6Ii8xODMzODIwLzM4NjM0MTI4My02Zjk4NWU5NS03YTc4LTRhMjMtOTE2OS1jYzBiMjE4MmY3YzkucG5nP1gtQW16LUFsZ29yaXRobT1BV1M0LUhNQUMtU0hBMjU2JlgtQW16LUNyZWRlbnRpYWw9QUtJQVZDT0RZTFNBNTNQUUs0WkElMkYyMDI0MTExNSUyRnVzLWVhc3QtMSUyRnMzJTJGYXdzNF9yZXF1ZXN0JlgtQW16LURhdGU9MjAyNDExMTVUMTY1NzUxWiZYLUFtei1FeHBpcmVzPTMwMCZYLUFtei1TaWduYXR1cmU9YjZkYjY5NWExMDJiNWIwYzg1MmIyM2E0OTk3NTc3ZTMzN2I2MTk4NTZlYmU4ZWEzNzBmNzE0NDcwZGMwZmI2OCZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QifQ.ZpOJXa53AS7K1Lepznd9v96HSOgs4kaH1Rq3XgQ4x2I)
+![Uploading 127_0_0_1_5500_index_html.png…]()
+
 
 ## How to Use
 
