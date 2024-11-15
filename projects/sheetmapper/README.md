@@ -56,9 +56,9 @@ You can confirm that it is working by trying it out in a web browser, it should 
 - Publishing to the web makes the document publicly accessible to anyone with the link. Use caution with sensitive information.
 - If you update the Google Sheet, the CSV link will reflect those changes automatically.
 
-### Step 3. Preview Sheetmapper locally
+### Step 3. Open the Sheetmapper HTML File in Visual Studio Code
 
-Follow these steps to download the Sheetmapper HTML file from GitHub, open it in Visual Studio Code, and view it in your browser.
+Follow these steps to download the Sheetmapper HTML file from GitHub, and open it in Visual Studio Code.
 
 #### 1: Find and Download the HTML File from GitHub
 1. Go to the [Sheetmapper HTML file on github](https://github.com/mapbox/public-tools-and-demos/)
@@ -70,19 +70,7 @@ Follow these steps to download the Sheetmapper HTML file from GitHub, open it in
 2. Use **File > Open File…** or **File > Open Folder…** to open the Sheetmapper HTML file or the folder containing the Sheetmapper HTML file.
 3. Once the file is open, you should see the HTML code in Visual Studio Code.
 
-#### 3: Install the Live Server Extension
-To make it easier to preview changes in real-time, you can install the Live Server extension in Visual Studio Code:
-1. Go to the **Extensions** tab in Visual Studio Code (the square icon on the sidebar).
-2. Search for **Live Server** and click **Install**.
-3. Once installed, you’ll be able to start a live server to preview the HTML file.
 
-#### 4: Run the HTML File in Your Browser
-1. With the HTML file open, right-click in the editor window and select **Open with Live Server**.
-2. Your default browser will open, displaying the HTML page. Any changes you make and save will automatically refresh in the browser. You will see a browser alert with an error if you have not yet configured Sheetmapper.
-
-## Troubleshooting Tips
-- Ensure that **Live Server** is properly installed and enabled if using the live preview.
-- If the file does not open in your browser, check the file path or try opening it manually by dragging it into your browser window.
 
 ### Step 4. Configure Sheetmapper
 
@@ -119,6 +107,21 @@ You can also configure the following values in the `sheetmapperOptions` object:
 | `description`         | `String` | A description for your map, displayed in smaller text below the title.                                     |
 
 You can define additional `markerOptions` as defined in the [Mapbox GL JS API Reference Documentation](https://docs.mapbox.com/mapbox-gl-js/api/markers/#marker)
+
+### Run a Development Server to Preview your Sheetmapper Map
+
+With the Sheetmapper HTML file configured, you are ready to preview the site in a development server.
+
+#### 1: Install the Live Server Extension
+To make it easier to preview changes in real-time, you can install the Live Server extension in Visual Studio Code.  (This will serve the Sheetmapper HTML file from a local webserver, preventing CORS errors and other issues that can arise from opening an HTML file without using a development server):
+1. Go to the **Extensions** tab in Visual Studio Code (the square icon on the sidebar).
+2. Search for **Live Server** and click **Install**.
+3. Once installed, you’ll be able to start a live server to preview the HTML file.
+
+#### 2: Run the HTML File in Your Browser
+1. With the HTML file open, right-click in the editor window and select **Open with Live Server**.
+2. Your default browser will open, displaying the Sheetmapper map. Any changes you make and save will automatically refresh in the browser. You will see a browser alert with an error if you have properly configured Sheetmapper.
+3. If you don't see the map, [check the developer console](https://docs.devsamurai.com/user-story-map/how-to-open-web-console-on-different-browsers#:~:text=Chrome-,Open%20the%20DevTools,menu%2C%20and%20click%20Console%20tab.) for javascript errors, and refer to the troubleshooting tips below.
 
 ### Troubleshooting
 
