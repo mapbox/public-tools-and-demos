@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title></title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://npmcdn.com/csv2geojson@latest/csv2geojson.js'></script>
+    <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Popup styling */
+
+        .mapboxgl-popup {
+            padding-bottom: 5px;
+        }
+
+        .mapboxgl-popup-close-button {
+            display: none;
+        }
+
+        .mapboxgl-popup-content {
+            font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+            padding: 0;
+            width: 250px;
+        }
+
+        .mapboxgl-popup-content-wrapper {
+            padding: 1%;
+        }
+
+        .mapboxgl-popup-content h3 {
+            background: rgb(61, 59, 59);
+            text-align: center;
+            color: #fff;
+            margin: 0;
+            display: block;
+            padding: 15px;
+            font-weight: 700;
+            margin-top: -5px;
+        }
+
+        .mapboxgl-popup-content h4 {
+            margin: 0;
+            display: block;
+            padding: 10px 3px 10px 10px;
+            font-weight: 400;
+        }
+
+        .mapboxgl-container {
+            cursor: pointer;
+        }
+
+        .mapboxgl-popup-anchor-top>.mapboxgl-popup-content {
+            margin-top: 3px;
+        }
+
+        .mapboxgl-popup-anchor-top>.mapboxgl-popup-tip {
+            border-bottom-color: rgb(61, 59, 59);
+        }
+
+        /* title and description styling */
+
+        #text-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 16px 20px;
+            color: #333;
+            background-color: #ffffffcc;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            font-family: sans-serif;
+            max-width: 300px;
+        }
+
+        #title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        #description {
+            font-size: 14px;
+            line-height: 20px;
+        }
+
+        @media (max-width: 768px) {
+            #text-overlay {
+                left: 0;
+                right: 0;
+                max-width: none;
+                margin: 0 10px;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="text-overlay">
+        <div id="title"></div>
+        <div id="description"></div>
+    </div>
+    <div id='map'></div>
+    <script>
+
+        
+        const sheetmapperOptions = {
+            googleSheetDownloadUrl: 'YOUR_GOOGLE_SHEET_DOWNLOAD_URL',
+            mapboxAccessToken: 'YOUR_MAPBOX_ACCESS_TOKEN',
+            markerOptions: {
+                color: '#4682b4',
+                scale: 0.8
+            },
+            title: 'Mapbox Sheetmapper',
+            description: 'Sheetmapper is an html and javascript template to help you quickly create an interactive map with point data sourced from a google sheet.'
+        }
+
+        async function convertCsvToGeojson(csvData) {
+            return new Promise((resolve, reject) => {
+                csv2geojson.csv2geojson(csvData, {
+                    latfield: 'Latitude',
+                    lonfield: 'Longitude',
+                    delimiter: ','
+                }, (error, data) => {
+                    if (error) {
+                        reject(error); // Reject the promise if there's an error
+                    } else {
+                        resolve(data); // Resolve the promise with the converted GeoJSON data
+                    }
+                });
+            });
+        }
+
+        const { markers, markerOptions, title, description, googleSheetDownloadUrl, mapboxAccessToken } = sheetmapperOptions
+
+
+        mapboxgl.accessToken = mapboxAccessToken; //Mapbox token 
+
+
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const response = await fetch(`${googleSheetDownloadUrl}`);
+
+                if (!response.ok) {
+                    throw new Error(`Error loading google sheet data. Make sure googleSheetId is configured properly and that the google sheet has been published to the web.`);
+                }
+
+                const csvData = await response.text();
+
+                const geojsonData = await convertCsvToGeojson(csvData)
+
+                const bounds = turf.bbox(geojsonData)
+
+                const map = new mapboxgl.Map({
+                    container: 'map', // container id
+                    bounds,
+                    fitBoundsOptions: {
+                        padding: 100
+                    }
+                });
+
+                map.on('load', function () {
+                    geojsonData.features.forEach((d) => {
+                        // set popup content
+                        // You can adjust the values of the popup to match the column names of your google sheet.
+                        // For example: d.properties.Name is retrieving information from the field Name in the google sheet.
+                        var popupContent = `<h3>` + d.properties.Name + `</h3>` + `<h4>` + `<b>` + `Address: ` + `</b>` + d.properties.Address + `</h4>` + `<h4>` + `<b>` + `Phone: ` + `</b>` + d.properties.Phone + `</h4>`;
+
+                        const marker = new mapboxgl.Marker(markerOptions)
+                            .setLngLat(d.geometry.coordinates)
+                            .setPopup(new mapboxgl.Popup().setHTML(popupContent)) // add popup
+                            .addTo(map)
+                    })
+
+                    if (title) {
+                        document.getElementById("title").innerHTML = title;
+                    }
+
+                    if (description) {
+                        document.getElementById("description").innerHTML = description;
+                    }
+                });
+
+            } catch (error) {
+                alert(error)
+            }
+        });
+    </script>
+</body>
+
+</html>
