@@ -167,7 +167,7 @@ var config = {
       title: '',
       image: '',
       description:
-        "The hard part still may be coming up with a story, but now it's a little easier to tell. Built with Mapbox GL JS, Scrollama.js, and JavaScript. Learn more at <a href='https://www.mapbox.com/solutions/interactive-storytelling/'>https://www.mapbox.com/solutions/interactive-storytelling/</a>",
+        "The hard part still may be coming up with a story, but now it's a little easier to tell. Built with Mapbox GL JS, Scrollama.js, and JavaScript. Clone the template and find documentation at <a href='https://github.com/mapbox/storytelling/'>https://github.com/mapbox/storytelling</a>",
       location: {
         center: [-97.061, 38.39659],
         zoom: 3.3,
