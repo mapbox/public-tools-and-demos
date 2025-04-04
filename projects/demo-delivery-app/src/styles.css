@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+  font-family: 'Open Sans', sans-serif;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('https://api.mapbox.com/mapbox-assembly/fonts/opensans-regular.v1.woff2')
+    format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('https://api.mapbox.com/mapbox-assembly/fonts/opensans-bold.v1.woff2')
+    format('woff2');
+  font-weight: 600;
+  font-style: normal;
+}
+
+.react-tooltip {
+  pointer-events: auto !important;
+}
+
+/* Toggle for Mapbox tooltips */
+.info {
+  bottom: -40px;
+  right: 5%;
+}
+
+.info:hover {
+  padding-top: 1rem;
+  bottom: -47px;
+}
+
+@media (max-width: 640px) {
+  .info {
+    bottom: -30px;
+    right: 5%;
+  }
+
+  .info:hover {
+    padding-top: 1rem;
+    bottom: -37px;
+  }
+}
+
+/* truck marker should always be above other marker */
+.truck-marker {
+  z-index: 5
+}

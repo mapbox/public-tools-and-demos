@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delivery App | Mapbox Developer Demo</title>
+
+       <!-- Add segment tracking for tool usage -->
+       <script src="https://docs.mapbox.com/analytics.min.js"></script>
+       <script>
+         window.mbxMetadata = {
+           content_type: 'developer-tool'
+         };
+   
+         // eslint-disable-next-line no-undef
+         initializeMapboxAnalytics({
+           marketoMunchkin: false
+         });
+       </script>
+       
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
