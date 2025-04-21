@@ -12,7 +12,8 @@
     ],
     "ignorePatterns": [
         "dist",
-        ".eslintrc.cjs"
+        ".eslintrc.cjs",
+         "**/*.html"
     ],
     "parserOptions": {
         "ecmaVersion": "latest",

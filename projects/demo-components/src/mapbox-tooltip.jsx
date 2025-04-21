@@ -1,12 +1,11 @@
 // Mapbox Tooltip - for adding hints about Mapbox features
-
 import PropTypes from 'prop-types'
 import { Tooltip } from 'react-tooltip'
 import Markdown from 'react-markdown'
 import classNames from 'classnames'
 import LogoSVG from './logo-svg'
 
-const Content = ({ markdownString, linkColor }) => {
+const Content = ({ markdownString }) => {
   return (
     <Markdown
       components={{
@@ -89,7 +88,8 @@ const MapboxTooltip = ({ className, title, content, linkColor }) => {
 MapboxTooltip.propTypes = {
   content: PropTypes.string,
   className: PropTypes.any,
-  title: PropTypes.string
+  title: PropTypes.string,
+  linkColor: PropTypes.string
 }
 
 export default MapboxTooltip
