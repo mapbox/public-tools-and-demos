@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import MapboxTooltip from './mapbox-tooltip'
 import LogoSVG from './logo-svg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -50,7 +50,7 @@ const MapboxTooltips = ({ products }) => {
 
 export default MapboxTooltips
 
-MapboxTooltips.PropTypes = {
+MapboxTooltips.propTypes = {
   products: PropTypes.array,
   bgColor: PropTypes.string // desired color needs to match map colorVariants. Add additional colors in colorVariants
 }
