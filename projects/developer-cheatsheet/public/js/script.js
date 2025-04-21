@@ -70,11 +70,13 @@ const getWidget = (item) => {
   <div class="flip-card grid-stack-item-content-inner tile category-${category}">
     <div class="flip-card-inner">
       <div class="flip-card-front category-${category}">
-        <svg width="40" height="40" class='icon'>
-            <path d="M20 40C31.0457 40 40 31.0457 40 20C40 8.9543 31.0457 0 20 0C8.9543 0 0 8.9543 0 20C0 31.0457 8.9543 40 20 40Z" fill="white"/>
-            <use xlink:href="img/shapes.svg#${icon}"></use>
-        </svg>
-        <div>${title}</div>
+        <a href = '${link}' target='_blank' noopener noreferrer>
+          <svg width="40" height="40" class='icon'>
+              <path d="M20 40C31.0457 40 40 31.0457 40 20C40 8.9543 31.0457 0 20 0C8.9543 0 0 8.9543 0 20C0 31.0457 8.9543 40 20 40Z" fill="white"/>
+              <use xlink:href="img/shapes.svg#${icon}"></use>
+          </svg>
+          <div>${title}</div>
+        </a>
       </div>
       <div class="flip-card-back category-${category}">
         <a href = '${link}' target='_blank' noopener noreferrer>

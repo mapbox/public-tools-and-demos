@@ -1,26 +1,17 @@
 import { useEffect } from 'react'
-import '@mapbox/web-analytics'
 
 const PageShell = ({ children }) => {
   useEffect(() => {
+    // @mapbox/web-analytics is inline in the HTML index.html for each project
     // set mapbox metadata before initializing analytics
     window.mbxMetadata = {
-      product: 'Mapbox GL JS', // comma delimited string
-      service: 'maps', // comma delimited string
-      platform: 'web', // comma delimited string
-      content_type: 'public-demos-and-tools' // single value string
+      content_type: 'developer-tool'
     }
 
-    // initialize analytics
-    if (window && window.initializeMapboxAnalytics) {
-      window.initializeMapboxAnalytics({
-        webAnalytics: {
-          segmentIntegrations: {
-            Drift: false
-          }
-        }
-      })
-    }
+    // eslint-disable-next-line no-undef
+    initializeMapboxAnalytics({
+      marketoMunchkin: false
+    })
   }, [])
   return children
 }
