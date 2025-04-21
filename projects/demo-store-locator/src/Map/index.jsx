@@ -41,6 +41,8 @@ const Map = ({ onLoad }) => {
   mapboxgl.accessToken = accessToken
 
   useEffect(() => {
+    if (mapRef.current) return // map already initialized
+
     const map = (mapRef.current = new mapboxgl.Map({
       container: mapContainer.current,
       // this is a custom style, created with store location data loaded via Mapbox Tiling Service and styled in Mapbox Studio.
