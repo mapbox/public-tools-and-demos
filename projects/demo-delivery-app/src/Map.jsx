@@ -8,15 +8,13 @@
 'use client'
 
 import PropTypes from 'prop-types'
-import { useRef, useEffect, useState, useContext } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import mapboxgl from 'mapbox-gl'
 import TruckMarker from './TruckMarker'
 import { accessToken } from 'mapbox-demo-components'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
-import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
-import { version } from 'prettier'
 import { ORIGIN_COORDINATES } from './App'
 
 const mapStyle = {
@@ -42,36 +40,36 @@ const mapStyle = {
       },
       paint: {
         'line-color': '#007CFF',
-        'line-width': 6,
+        'line-width': 6
       }
-    },
+    }
   ],
   imports: [
     {
-      "id": "basemap",
-      "url": "mapbox://styles/mapbox/standard"
+      id: 'basemap',
+      url: 'mapbox://styles/mapbox/standard'
     }
   ]
 }
 
 const WaypointMarker = ({ coordinates, map }) => {
   // a ref for the mapboxgl.Marker instance
-  const markerRef = useRef(null);
+  const markerRef = useRef(null)
   // a ref for an element to hold the marker's content
-  const contentRef = useRef(document.createElement("div"));
+  const contentRef = useRef(document.createElement('div'))
 
   // instantiate the marker on mount, remove it on unmount
   useEffect(() => {
     markerRef.current = new mapboxgl.Marker(contentRef.current, {
-      anchor: "center",
+      anchor: 'center'
     })
       .setLngLat(coordinates)
       .addTo(map)
 
     return () => {
-      markerRef.current.remove();
-    };
-  }, []);
+      markerRef.current.remove()
+    }
+  }, [])
 
   return (
     <>
@@ -81,16 +79,21 @@ const WaypointMarker = ({ coordinates, map }) => {
             backgroundImage: `url(/demo-delivery-app/img/waypoint.svg)`,
             height: 26,
             width: 26,
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
+            backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat'
           }}
         />,
 
         contentRef.current
       )}
     </>
-  );
-};
+  )
+}
+
+WaypointMarker.propTypes = {
+  coordinates: PropTypes.any,
+  map: PropTypes.any
+}
 
 const Map = ({ track, waypoints, onLoad, onMarkerMove }) => {
   const mapContainer = useRef(null)
@@ -98,7 +101,6 @@ const Map = ({ track, waypoints, onLoad, onMarkerMove }) => {
   let mapRef = useRef(null)
 
   const [mapLoaded, setMapLoaded] = useState(false)
-
 
   // This demo imports accessToken from  `demo-components/accessToken`, to use this project
   // for your purposes, replace `accessToken` below with your own Access Token available
@@ -118,13 +120,11 @@ const Map = ({ track, waypoints, onLoad, onMarkerMove }) => {
     controlRef.current = new mapboxgl.NavigationControl()
     map.addControl(controlRef.current)
 
-
     map.on('load', () => {
       onLoad(map)
       setMapLoaded(true)
     })
   })
-
 
   useEffect(() => {
     if (!mapLoaded) return
@@ -134,17 +134,25 @@ const Map = ({ track, waypoints, onLoad, onMarkerMove }) => {
 
   return (
     <>
-      {mapRef.current && waypoints.length > 0 && waypoints.map((waypoint, i) => (
-        <WaypointMarker key={i} coordinates={waypoint} map={mapRef.current} />
-      ))}
-      <div ref={mapContainer} className='w-full h-full rounded-md'/>
+      {mapRef.current &&
+        waypoints.length > 0 &&
+        waypoints.map((waypoint, i) => (
+          <WaypointMarker key={i} coordinates={waypoint} map={mapRef.current} />
+        ))}
+      <div ref={mapContainer} className='w-full h-full rounded-md' />
       {mapLoaded && <TruckMarker map={mapRef.current} onMove={onMarkerMove} />}
     </>
   )
 }
 
 Map.propTypes = {
-  onLoad: PropTypes.func
+  onLoad: PropTypes.func,
+  onMarkerMove: PropTypes.any,
+  track: PropTypes.any,
+  waypoints: PropTypes.shape({
+    length: PropTypes.number,
+    map: PropTypes.func
+  })
 }
 
 export default Map
