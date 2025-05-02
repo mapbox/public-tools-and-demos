@@ -1,15 +1,15 @@
 import PropTypes from 'prop-types'
 import { useRef, useEffect, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
-
 import Marker from '../Marker'
 import Card from '../Card'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
+// This demo imports accessToken from your .env file and it's exported for use in App.jsx by SearchBox. To use this demo rename your .env.sample file to .env and add your Mapbox access token.
 export const accessToken = (mapboxgl.accessToken =
-  'pk.eyJ1IjoibGFicy1zYW5kYm94IiwiYSI6ImNrMTZuanRmZDA2eGQzYmxqZTlnd21qY3EifQ.Q7DM5HqE5QJzDEnCx8BGFw')
+  import.meta.env.VITE_YOUR_MAPBOX_ACCESS_TOKEN)
 
 const Map = ({ data, onLoad, onFeatureClick }) => {
   const mapContainer = useRef(null)

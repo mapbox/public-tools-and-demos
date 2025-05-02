@@ -37,9 +37,11 @@ const Map = (
 
   let mapRef = ref
 
+  /* eslint-disable react-hooks/rules-of-hooks */
   if (!mapRef) {
     mapRef = useRef(null)
   }
+  /* eslint-enable react-hooks/rules-of-hooks */
 
   useEffect(() => {
     if (mapRef.current) {

@@ -8,6 +8,9 @@ This purpose of this repo is to establish a framework for what makes a good publ
 
 Each project included in this repo is a react vite app.  React projects allow us to make use of reusable components, such as the UI components in `demo-components`, as well as `@mapbox/mr-ui` which includes buttons, icons, and other complex components used in Mapbox Studio, the Mapbox Docs, and other frontend things.
 
+## Setup: Adding Your Public Access Token
+Running these projects locally require a Mapbox public access token which you can get for free from your [Mapbox account](https://console.mapbox.com).  This repository uses a [Vite environment variable](https://vite.dev/guide/env-and-mode#env-variables) to share your access token across all the projects.  Rename the `projects/.env.sample` file to `.env` and replace `YOUR_MAPBOX_ACCESS_TOKEN` with the token from your account.  Now when you run any of the projects you'll be using your token.
+
 ## Local Development
 
 We use yarn workspaces to allow projects to consume shared components without having to publish them as a package to npm.  
@@ -17,7 +20,6 @@ After cloning the repository, install dependencies with `yarn`:
 ```
 > cd public-tools-and-demos && yarn
 ```
-
 This will install dependencies at the top level of the monorepo as well as in the individual project directories.
 
 Next, cd into the project directory you would like to work on, and start the dev server:
@@ -65,12 +67,4 @@ Be sure to add the `import.meta.env.BASE_URL` globally injected variable when re
     }/${imageUrl}")`
   }}
 />
-```
-
-## Public AccessToken
-
-All projects should use the common accessToken from the `labs-sandbox` account, which can be imported from `demo-components`.  For projects that only need the access token to instantiate a map or add `mapbox-gl-geocoder`, this is handled for you in the `Map` component.
-
-```
-import AccessToken from 'demo-components'
 ```
