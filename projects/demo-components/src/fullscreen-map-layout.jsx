@@ -5,7 +5,7 @@ const FullscreenMapLayout = ({
   headerProps,
   mapComponent,
   children,
-  sidebarSize = 'w320'
+  sidebarSize = 'w300'
 }) => {
   return (
     <div
@@ -35,7 +35,8 @@ const FullscreenMapLayout = ({
 FullscreenMapLayout.propTypes = {
   children: PropTypes.node,
   headerProps: PropTypes.object,
-  mapComponent: PropTypes.node
+  mapComponent: PropTypes.node,
+  sidebarSize: PropTypes.string
 }
 
 export default FullscreenMapLayout

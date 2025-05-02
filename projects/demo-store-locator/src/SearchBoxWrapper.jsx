@@ -3,13 +3,16 @@
 
 'use client'
 
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { SearchBox } from '@mapbox/search-js-react'
 import mapboxgl from 'mapbox-gl'
-import { accessToken } from 'mapbox-demo-components'
 import { AppContext } from './Context/AppContext'
+import PropTypes from 'prop-types'
 
 const SearchBoxWrapper = ({ mapInstanceRef }) => {
+  // Imported access token from your .env file
+  const accessToken = import.meta.env.VITE_YOUR_MAPBOX_ACCESS_TOKEN
+
   const {
     searchValue,
     setSearchValue,
@@ -72,3 +75,7 @@ const SearchBoxWrapper = ({ mapInstanceRef }) => {
 }
 
 export default SearchBoxWrapper
+
+SearchBoxWrapper.propTypes = {
+  mapInstanceRef: PropTypes.object
+}

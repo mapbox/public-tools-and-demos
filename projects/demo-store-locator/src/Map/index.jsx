@@ -13,7 +13,6 @@ import mapboxgl from 'mapbox-gl'
 import Marker from '../Marker'
 import { AppContext } from '../Context/AppContext'
 import { addUserLocationPulse } from './pulse'
-import { accessToken } from 'mapbox-demo-components'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
@@ -34,11 +33,10 @@ const Map = ({ onLoad }) => {
   let mapRef = useRef(null)
   const pulseRef = useRef(null)
 
-  // This demo imports accessToken from  `demo-components/accessToken`, to use this project
-  // for your purposes, replace `accessToken` below with your own Access Token available
-  // at (https://account.mapbox.com/) - This token is also used in SearchBoxWrapper
+  // This demo imports accessToken from your .env file, to use this project
+  // for your purposes, rename the .env.example file to .env and add your Mapbox access token.
 
-  mapboxgl.accessToken = accessToken
+  mapboxgl.accessToken = import.meta.env.VITE_YOUR_MAPBOX_ACCESS_TOKEN
 
   useEffect(() => {
     if (mapRef.current) return // map already initialized

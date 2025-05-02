@@ -3,5 +3,6 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/what-the-tile'
+  base: '/what-the-tile',
+  envDir: '../'
 })
