@@ -5,7 +5,7 @@ import tCenter from '@turf/center'
 import tPointsWithinPolygon from '@turf/points-within-polygon'
 import tArea from '@turf/area'
 
-const accessToken = import.meta.env.VITE_YOUR_MAPBOX_ACCESS_TOKEN
+import { accessToken } from 'mapbox-demo-components'
 
 const urlBase = 'https://api.mapbox.com/isochrone/v1/mapbox/'
 
