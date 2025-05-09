@@ -64,7 +64,22 @@ Implementation is available via [React components](https://docs.mapbox.com/mapbo
     content: `
   Want to learn how we built this?
   
-  [Full source code](https://github.com/mapbox/public-tools-and-demos/tree/main/projects/demo-store-locator) for this demo is available on Github.
+  [Full source code](https://github.com/mapbox/public-tools-and-demos/tree/main/projects/demo-delivery) for this demo is available on Github.
       `
+  },
+  {
+    title: 'Geocoding API',
+    content: `
+The [Mapbox Geocoding API](https://docs.mapbox.com/api/search/geocoding/) is a web service that allows you to convert addresses into geographic coordinates (latitude and longitude) and vice versa. It can be used to search for places, addresses, and points of interest, and it returns structured data about the locations found. 
+
+Use the [Geocoding API Playground](https://docs.mapbox.com/playground/geocoding) to test out the API and see how it works.
+    `
+  },
+  {
+    title: 'Static Images API',
+    content: `
+The [Mapbox Static Images API](https://docs.mapbox.com/api/navigation/static-images/) is a web service that allows you to generate static images of maps and is less resource-intensive alternative to loading an interactive map. You can customize the map style, size, and other parameters to create images that fit your needs. The API returns a URL for the generated image, which can be used in your application.
+
+Use the [Static Images API Playground](https://docs.mapbox.com/playground/static-images) to test out the API and see how it works.`
   }
 ]
