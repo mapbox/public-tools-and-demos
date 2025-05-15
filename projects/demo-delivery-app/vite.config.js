@@ -2,5 +2,6 @@ import react from '@vitejs/plugin-react'
 
 export default {
   plugins: [react()],
-  base: '/demo-delivery-app/'
+  base: '/demo-delivery-app/',
+  envDir: '../'
 }
