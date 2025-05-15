@@ -33,7 +33,7 @@ export default function DeliveryAppUI({ location, point }) {
       <div className='flex flex-col  justify-between bg-white p-4 rounded-lg shadow mb-4'>
         <div className='mb-3'>
           <h3 className='text-lg font-semibold text-neutral-700 text-sm mb-1'>
-            Current Shipment
+            Your Shipment
           </h3>
           <p className='text-xs text-slate-600'>
             On the way • Expected on Friday
