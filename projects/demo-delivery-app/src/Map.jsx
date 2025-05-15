@@ -104,7 +104,7 @@ const Map = ({ track, waypoints, onLoad, onMarkerMove }) => {
 
   // This demo imports accessToken from  `demo-components/accessToken`, to use this project
   // for your purposes, replace `accessToken` below with your own Access Token available
-  // at (https://account.mapbox.com/) - This token is also used in SearchBoxWrapper
+  // at (https://account.mapbox.com/) 
 
   mapboxgl.accessToken = accessToken
 
