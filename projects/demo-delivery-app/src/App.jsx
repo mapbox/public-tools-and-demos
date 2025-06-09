@@ -12,12 +12,23 @@ import PhoneFrame from './PhoneFrame'
 import Map from './Map'
 import DeliveryAppUI from './DeliveryAppUI'
 import Instructions from './Instructions'
+import AdminMockUI from './AdminMockUI'
 
 import './styles.css'
 
 export const ORIGIN_COORDINATES = [-118.2096765, 33.7699914] // Los Angeles, CA
 
 export default function Home() {
+  const [adminPanelData, setAdminPanelData] = useState([
+    {
+      timestamp: '2025-06-09 08:30',
+      location: 'Los Angeles, CA',
+      fuelStatus: '100%',
+      averageSpeed: '--',
+      legDistance: '--'
+    }
+  ])
+
   const [status, setStatus] = useState('ready to ship')
   const [location, setLocation] = useState('In warehouse')
   const [point, setPoint] = useState({
@@ -50,78 +61,86 @@ export default function Home() {
     })
   }
 
-  const fetchDirectionsAPI = async (start, end) => {
-    const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${start[0]},${start[1]};${end[0]},${end[1]}?alternatives=false&geometries=geojson&overview=simplified&steps=false&notifications=none&access_token=${accessToken}`
-    try {
-      const response = await fetch(url)
-      const data = await response.json()
-      return data.routes[0].geometry
-    } catch (error) {
-      console.error('Error fetching directions:', error)
-    }
-  }
-
-  const handleMarkerMove = async (point) => {
+  const handleMarkerMove = (point) => {
     setPoint(point)
     setPointMoved(true)
-    setWaypoints((prevWaypoints) => [...prevWaypoints, point.coordinates])
-
-    // Use a function to get the latest coordinates yourself
-    setTrack((prevTrack) => {
-      const lastCoord =
-        prevTrack.geometry.coordinates[
-          prevTrack.geometry.coordinates.length - 1
-        ]
-
-      // Call the API *within* the updater
-      fetchDirectionsAPI(lastCoord, point.coordinates).then(
-        (routeLineString) => {
-          setTrack((innerPrev) => ({
-            ...innerPrev,
-            geometry: {
-              ...innerPrev.geometry,
-              coordinates: [
-                ...innerPrev.geometry.coordinates,
-                ...routeLineString.coordinates
-              ]
-            }
-          }))
-        }
-      )
-
-      // Return the original track unchanged for now
-      return prevTrack
+    setWaypoints((prev) => {
+      return [...prev, point.coordinates]
     })
   }
-
   useEffect(() => {
-    if (!point?.coordinates) return
+    if (!pointMoved || !point?.coordinates) return
 
-    if (!pointMoved) return
+    const run = async () => {
+      const newCoords = point.coordinates
+      const prevCoords = waypoints[waypoints.length - 2]
 
-    const [lng, lat] = point.coordinates
-
-    const fetchReverseGeocode = async () => {
       try {
-        const res = await fetch(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${accessToken}`
-        )
+        const [geoRes, directionsRes] = await Promise.all([
+          fetch(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${newCoords[0]},${newCoords[1]}.json?access_token=${accessToken}`
+          ),
+          fetch(
+            `https://api.mapbox.com/directions/v5/mapbox/driving/${prevCoords[0]},${prevCoords[1]};${newCoords[0]},${newCoords[1]}?alternatives=false&geometries=geojson&overview=simplified&steps=false&access_token=${accessToken}`
+          )
+        ])
 
-        const data = await res.json()
+        const geoData = await geoRes.json()
+        const dirData = await directionsRes.json()
 
-        // get the 'place' feature (2nd in the array)
-        // and use it to set the location state
-        // if there is no place, set it to "Unknown location"
-        const place = data?.features?.[1]?.place_name || 'Unknown location'
-        setLocation(place)
+        const locationContext = geoData?.features[0]?.context
+
+        const city =
+          locationContext?.find((context) => context.id.startsWith('place'))
+            ?.text || 'Unknown City'
+
+        const state =
+          locationContext
+            ?.find((context) => context.id.startsWith('region'))
+            ?.short_code.slice(-2) || 'Unknown State'
+
+        const locationName = `${city}, ${state}`
+
+        const legDistance = Math.round(dirData.routes[0].distance / 1000)
+        const routeGeometry = dirData.routes[0].geometry
+
+        const currentTime = new Date()
+        const lastEntry = adminPanelData[adminPanelData.length - 1]
+        const lastTime = lastEntry ? new Date(lastEntry.timestamp) : currentTime
+        const addedHours = Math.floor(Math.random() * 12) + 12
+        currentTime.setHours(lastTime.getHours() + addedHours)
+
+        const newEntry = {
+          timestamp: currentTime.toISOString().slice(0, 16).replace('T', ' '),
+          location: locationName,
+          fuelStatus: `${Math.floor(Math.random() * 40) + 20}%`,
+          averageSpeed: `${Math.floor(Math.random() * 30) + 60}`,
+          legDistance: legDistance.toString()
+        }
+
+        setAdminPanelData((prev) => [...prev, newEntry])
+        setTrack((prev) => ({
+          ...prev,
+          geometry: {
+            ...prev.geometry,
+            coordinates: [
+              ...prev.geometry.coordinates,
+              ...routeGeometry.coordinates
+            ]
+          }
+        }))
+
+        setLocation(locationName)
         setStatus('In transit')
       } catch (err) {
-        console.error('Reverse geocoding error:', err)
+        console.error('Error processing marker move:', err)
+      } finally {
+        setPointMoved(false)
       }
     }
 
-    fetchReverseGeocode()
-  }, [point])
+    run()
+  }, [waypoints])
 
   return (
     <>
@@ -130,9 +149,10 @@ export default function Home() {
 
         {/* Main Content Wrapper */}
         <div className='grow relative min-h-0 p-6 flex flex-col sm:flex-row gap-6 overflow-hidden'>
-          <div className='grow relative min-w-0 h-1/2 sm:h-auto flex gap-6 flex-col sm:flex-row'>
+          <div className='grow relative min-w-0 h-1/2 sm:h-auto flex gap-6 flex-col'>
+            {/* left side  */}
             <Instructions />
-            <div className='w-full grow sm:h-full'>
+            <div className='w-full grow h-full sm:h-1/2'>
               <Map
                 track={track}
                 waypoints={waypoints}
@@ -140,8 +160,14 @@ export default function Home() {
                 onMarkerMove={handleMarkerMove}
               />
             </div>
+            <div className='block hidden sm:block h-1/2 w-full'>
+              <AdminMockUI data={adminPanelData} />
+            </div>
           </div>
-          <div className='w-128 overflow-scroll h-1/2 sm:h-auto'>
+          <div
+            className='overflow-scroll h-1/2 sm:h-auto'
+            style={{ minWidth: 306 }}
+          >
             <PhoneFrame>
               <DeliveryAppUI
                 location={location}
