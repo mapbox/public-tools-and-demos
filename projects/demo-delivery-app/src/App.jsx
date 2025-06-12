@@ -22,7 +22,7 @@ export default function Home() {
   const [adminPanelData, setAdminPanelData] = useState([
     {
       timestamp: '2025-06-09 08:30',
-      location: 'Los Angeles, CA',
+      location: '130 Pico Avenue, Long Beach, California 90802, United States',
       fuelStatus: '100%',
       averageSpeed: '--',
       legDistance: '--'
@@ -112,7 +112,7 @@ export default function Home() {
 
         const newEntry = {
           timestamp: currentTime.toISOString().slice(0, 16).replace('T', ' '),
-          location: locationName,
+          location: geoData.features[0].place_name,
           fuelStatus: `${Math.floor(Math.random() * 40) + 20}%`,
           averageSpeed: `${Math.floor(Math.random() * 30) + 60}`,
           legDistance: legDistance.toString()
