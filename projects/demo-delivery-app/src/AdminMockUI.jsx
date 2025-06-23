@@ -1,6 +1,10 @@
 import PropTypes from 'prop-types'
 
 const AdminMockUI = ({ data }) => {
+  const tableHeaderClassnames =
+    'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
+  const tableRowClassnames = 'px-6 py-2 whitespace-nowrap text-xs text-gray-700'
+
   return (
     <div className=' bg-gray-100 p-3 rounded-md h-full flex flex-col '>
       {/* Header Row */}
@@ -48,21 +52,11 @@ const AdminMockUI = ({ data }) => {
             {/* Fixed header */}
             <thead className='bg-gray-50 sticky top-0 z-10'>
               <tr>
-                <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                  Timestamp
-                </th>
-                <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                  Location
-                </th>
-                <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                  Fuel Status (%)
-                </th>
-                <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                  Average Speed (km/h)
-                </th>
-                <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                  Leg Distance (km)
-                </th>
+                <th className={tableHeaderClassnames}>Timestamp</th>
+                <th className={tableHeaderClassnames}>Location</th>
+                <th className={tableHeaderClassnames}>Fuel Status (%)</th>
+                <th className={tableHeaderClassnames}>Average Speed (km/h)</th>
+                <th className={tableHeaderClassnames}>Leg Distance (km)</th>
               </tr>
             </thead>
             {/* Scrollable body */}
@@ -79,12 +73,8 @@ const AdminMockUI = ({ data }) => {
                   i
                 ) => (
                   <tr key={i}>
-                    <td className='px-6 py-2 whitespace-nowrap text-xs text-gray-700'>
-                      {timestamp}
-                    </td>
-                    <td className='px-6 py-2 whitespace-nowrap text-xs text-gray-700'>
-                      {location}
-                    </td>
+                    <td className={tableRowClassnames}>{timestamp}</td>
+                    <td className={tableRowClassnames}>{location}</td>
                     <td
                       className={`px-6 py-2 whitespace-nowrap text-xs ${
                         parseInt(fuelStatus) > 60
@@ -96,12 +86,8 @@ const AdminMockUI = ({ data }) => {
                     >
                       {fuelStatus}
                     </td>
-                    <td className='px-6 py-2 whitespace-nowrap text-xs text-gray-700'>
-                      {averageSpeed}
-                    </td>
-                    <td className='px-6 py-2 whitespace-nowrap text-xs text-gray-700'>
-                      {legDistance}
-                    </td>
+                    <td className={tableRowClassnames}>{averageSpeed}</td>
+                    <td className={tableRowClassnames}>{legDistance}</td>
                   </tr>
                 )
               )}
