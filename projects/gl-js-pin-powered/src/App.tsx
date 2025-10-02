@@ -1,13 +1,19 @@
 import React from 'react'
+
 import { AppProvider } from './context/AppContext'
 import MapContainer from './components/MapContainer'
+import Navbar from './components/NavBar'
+
 import './style.css'
 
 const App: React.FC = () => {
   return (
-    <AppProvider>
-      <MapContainer />
-    </AppProvider>
+    <>
+      <Navbar />
+      <AppProvider>
+        <MapContainer />
+      </AppProvider>
+    </>
   )
 }
 

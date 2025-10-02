@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 
@@ -22,4 +26,31 @@ body {
 
 .hidden {
   display: none;
+}
+
+.react-tooltip {
+  pointer-events: auto !important;
+}
+
+/* Toggle for Mapbox tooltips */
+.info {
+  bottom: -40px;
+  right: 5%;
+}
+
+.info:hover {
+  padding-top: 1rem;
+  bottom: -47px;
+}
+
+@media (max-width: 640px) {
+  .info {
+    bottom: -30px;
+    right: 5%;
+  }
+
+  .info:hover {
+    padding-top: 1rem;
+    bottom: -37px;
+  }
 }
