@@ -7,18 +7,6 @@
   right: 0;
 }
 
-@media (min-width: 1024px) {
-  :global(.poiCard[data-opened='true']) + .filters {
-    max-width: calc(100vw - 4% - 436px);
-  }
-}
-
-@media (min-width: 1024px) and (max-width: 1440px) {
-  :global(.poiCard[data-opened='true']) + .filters {
-    display: none;
-  }
-}
-
 .container {
   margin-top: 36px;
   position: relative;

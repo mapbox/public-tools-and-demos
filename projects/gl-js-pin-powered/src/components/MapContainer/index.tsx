@@ -50,6 +50,10 @@ const MapContainer: React.FC = () => {
   }, [clearSelectedBuildings, mapRef, selectedBuildingsRef])
 
   useEffect(() => {
+    console.log('ShowFilters: ', showFilters)
+  }, [showFilters])
+
+  useEffect(() => {
     if (!mapContainerRef.current) return
 
     const map = new mapboxgl.Map({
@@ -593,7 +597,7 @@ const MapContainer: React.FC = () => {
   ])
 
   const handlePOICardClose = () => {
-    setShowFilters(categoryRef.current === 'food_and_drink')
+    // setShowFilters(categoryRef.current === 'food_and_drink')
     setSelectedFeatureId(-1)
     setSelectedFeature(null)
     if (mapRef.current) {
