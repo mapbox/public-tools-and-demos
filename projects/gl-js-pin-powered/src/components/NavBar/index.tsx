@@ -9,11 +9,13 @@ const Navbar = () => {
     <>
       <MapboxTooltips
         products={[
-          'Geocoding API',
+          'Search Box API',
+          'Details API',
           'Mapbox GL JS',
           'Mapbox Standard Style',
           'Source Code'
         ]}
+        projectFolder='gl-js-pin-powered'
       />
 
       <div className='flex shrink-0 h-16 py-6 items-center border-b border-gray-200 bg-white z-10 font-bold text-md sm:text-xl'>
