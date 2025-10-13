@@ -18,7 +18,7 @@ const Navbar = () => {
         projectFolder='gl-js-pin-powered'
       />
 
-      <div className='flex shrink-0 h-16 py-6 items-center border-b border-gray-200 bg-white z-10 font-bold text-md sm:text-xl'>
+      <div className='flex shrink-0 h-16 py-12 md:py-6 items-center border-b border-gray-200 bg-white z-10 font-bold text-md sm:text-xl'>
         <div
           className='bg-contain bg-center bg-no-repeat ml-8 mr-3'
           style={{
