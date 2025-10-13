@@ -11,28 +11,20 @@
   background-color: white;
   color: black;
   width: 100%;
-  border-radius: 12px;
+  border-radius: 12px 12px 0 0;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 :global(.poiCard[data-opened='true']) {
-  height: 40%;
+  height: auto;
+  max-height: 50%;
+  transition: transform 0.3s ease;
+  transform: translateY(0);
+  overflow-y: scroll;
 }
+
 :global(.poiCard[data-opened='false']) {
   height: 0;
-}
-
-@media (min-width: 1024px) {
-  :global(.poiCard) {
-    width: 436px;
-    transform: translateX(-100%);
-  }
-
-  :global(.poiCard[data-opened='true']) {
-    height: auto;
-    margin-left: 2%;
-    transform: translateY(-20px);
-  }
 }
 
 .content {
@@ -193,10 +185,20 @@
   background-position: center;
 }
 
-:global(.poiCard[data-opened='true']) {
-  transition: transform 0.3s ease;
-  transform: translateY(-20px);
-  min-height: 30%;
+@media (min-width: 1024px) {
+  :global(.poiCard) {
+    width: 436px;
+    transform: translateX(-100%);
+    border-radius: 12px;
+  }
+
+  :global(.poiCard[data-opened='true']) {
+    height: auto;
+    margin-left: 2%;
+    transform: translateY(-20px);
+    min-height: 30%;
+    max-height: 70%;
+  }
 }
 
 .handler {

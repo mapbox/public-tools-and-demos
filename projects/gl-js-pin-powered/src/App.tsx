@@ -8,12 +8,10 @@ import './style.css'
 
 const App: React.FC = () => {
   return (
-    <>
+    <AppProvider>
       <Navbar />
-      <AppProvider>
-        <MapContainer />
-      </AppProvider>
-    </>
+      <MapContainer />
+    </AppProvider>
   )
 }
 
