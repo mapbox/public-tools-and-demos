@@ -1,3 +1,7 @@
+//
+// The Details API https://docs.mapbox.com/api/search/details/ is currently in
+// private preview.
+//
 import { SESSION_ID, ACCESS_TOKEN } from '../constants'
 
 export async function getDetails(mapboxId: string) {
