@@ -6,12 +6,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronUp } from '@fortawesome/free-solid-svg-icons'
 import { tooltipData } from './tooltipData'
 
-const MapboxTooltips = ({ products }) => {
+const MapboxTooltips = ({ products, projectFolder }) => {
   const [isToggled, setIsToggled] = useState(false)
 
-  const productsToShow = tooltipData.filter((product) =>
-    products.includes(product.title)
-  )
+  const productsToShow = tooltipData
+    .filter((product) => products.includes(product.title))
+    .map((product) => {
+      // If this is the Source Code tooltip and we have a projectFolder, update the URL
+      if (product.title === 'Source Code' && projectFolder) {
+        return {
+          ...product,
+          content: product.content.replace(
+            'https://github.com/mapbox/public-tools-and-demos/tree/main/projects/',
+            `https://github.com/mapbox/public-tools-and-demos/tree/main/projects/${projectFolder}`
+          )
+        }
+      }
+      return product
+    })
 
   function handleClick() {
     setIsToggled((prevState) => !prevState)
@@ -52,5 +64,6 @@ export default MapboxTooltips
 
 MapboxTooltips.propTypes = {
   products: PropTypes.array,
-  bgColor: PropTypes.string // desired color needs to match map colorVariants. Add additional colors in colorVariants
+  bgColor: PropTypes.string, // desired color needs to match map colorVariants. Add additional colors in colorVariants
+  projectFolder: PropTypes.string
 }

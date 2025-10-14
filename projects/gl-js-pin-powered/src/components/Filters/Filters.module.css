@@ -1,0 +1,139 @@
+.filters {
+  z-index: 1;
+  display: flex;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  right: 0;
+}
+
+.container {
+  margin-top: 36px;
+  position: relative;
+  display: flex;
+  z-index: -1;
+  flex-grow: 1;
+  display: grid;
+  margin-left: 16px;
+  margin-right: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.searchBox {
+  display: flex;
+  margin-top: 36px;
+  margin-right: 24px;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 360px;
+}
+
+.searchBoxWrapper {
+  flex-grow: 1;
+  display: flex;
+  position: relative;
+}
+
+.searchBoxInput::placeholder {
+  color: #b4bac6;
+}
+
+.searchBoxInput {
+  pointer-events: all;
+  background-image: url('../../assets/search.svg');
+  background-size: 18px 18px;
+  background-position: 11px center;
+  background-repeat: no-repeat;
+  flex-grow: 1;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 120%;
+  letter-spacing: 0px;
+  vertical-align: middle;
+  width: 100%;
+  height: 40px;
+  border: none;
+  margin-left: 16px;
+  margin-right: 16px;
+  border-radius: 16px;
+  padding-right: 12px;
+  padding-left: 38px;
+  box-shadow: 0px 4px 8px 0px #0000001f;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1024px) {
+  .searchBoxInput {
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+}
+
+.filterIcon {
+  display: flex;
+  height: 23px;
+  margin-right: 12px;
+}
+
+.filterLabel {
+  pointer-events: all;
+  cursor: pointer;
+  position: relative;
+}
+
+.filterCheckbox {
+  position: absolute;
+  left: -9999px;
+}
+
+.filterButton {
+  user-select: none;
+  box-sizing: border-box;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 13px;
+  background-color: white;
+  color: #333;
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 130%;
+  letter-spacing: 0px;
+  transition: all 0.2s ease;
+  box-shadow: 0px 4px 8px 0px #0000001f;
+}
+
+.filterLabel:hover .filterButton {
+  background-color: #f5f5f5;
+}
+
+.filterCheckbox:checked + .filterButton {
+  background-color: #0f38bf;
+  color: white;
+  border-color: #2563eb;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.filterCheckbox:checked + .filterButton .filterIcon {
+  filter: brightness(0) invert(1);
+}
+
+@media (max-width: 1024px) {
+  .filters {
+    flex-direction: column-reverse;
+    gap: 16px;
+  }
+
+  .container {
+    margin-top: 0px;
+  }
+
+  .searchBox {
+    margin-left: 0px;
+    width: 100%;
+  }
+}

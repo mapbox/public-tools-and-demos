@@ -1,0 +1,26 @@
+import React from 'react'
+import { AppProvider } from './context/AppContext'
+import { Header, MapboxTooltips } from 'mapbox-demo-components'
+import MapContainer from './components/MapContainer'
+import './style.css'
+
+const App: React.FC = () => {
+  return (
+    <AppProvider>
+      <div className="app-container">
+        <Header 
+          title="GL JS Pin Powered Demo" 
+          githubLink="https://github.com/mapbox/public-tools-and-demos/tree/main/projects/gl-js-pin-powered"
+        />
+        
+        <MapboxTooltips 
+          products={["Mapbox GL JS"]}
+        />
+        
+        <MapContainer />
+      </div>
+    </AppProvider>
+  )
+}
+
+export default App
