@@ -82,8 +82,9 @@ The [Search Box API](https://docs.mapbox.com/api/search/search-box) is the easie
 Use the [Search Box API Playground](https://docs.mapbox.com/playground/search-box/suggest-retrieve) to test out the API and see how it works or see our [tutorials](https://docs.mapbox.com/help/tutorials/?product=Search+Box+API) on implementing the Search Box API in your project.`
   },
   {
-    title: 'Details API',
-    content: `
+    title: `Details API`,
+    content: `⚠️ The [Details API](https://docs.mapbox.com/api/search/details/) is currently in private preview. 
+
 The [Details API](https://docs.mapbox.com/api/search/details/) provides access to POI (Points of Interest) metadata, boundary details, addresses and places. The Details API provides developers with a streamlined solution for incorporating comprehensive location data into their applications, enhancing user experience with more detailed and context-aware mapping information.
 
 Use the [Details API Playground](https://docs.mapbox.com/playground/details/) to test out the API.`

@@ -50,10 +50,6 @@ const MapContainer: React.FC = () => {
   }, [clearSelectedBuildings, mapRef, selectedBuildingsRef])
 
   useEffect(() => {
-    console.log('ShowFilters: ', showFilters)
-  }, [showFilters])
-
-  useEffect(() => {
     if (!mapContainerRef.current) return
 
     const map = new mapboxgl.Map({
