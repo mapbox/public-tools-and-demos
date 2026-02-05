@@ -432,5 +432,21 @@ export default [
     subTitle: 'contribute changes and corrections to our base map data',
     link: 'https://www.mapbox.com/contribute/',
     icon: 'playground'
+  },
+  {
+    type: 'tile',
+    category: 'tools-and-resources',
+    title: 'Mapbox MCP Server',
+    subTitle: 'MCP to work with Mapbox web service APIs',
+    link: 'https://docs.mapbox.com/api/guides/mcp-server/',
+    icon: 'playground'
+  },
+  {
+    type: 'tile',
+    category: 'tools-and-resources',
+    title: 'Mapbox Devkit MCP Server',
+    subTitle: 'Build Mapbox applications more efficiently with AI tools',
+    link: 'https://docs.mapbox.com/api/guides/devkit-mcp-server/',
+    icon: 'playground'
   }
 ]
