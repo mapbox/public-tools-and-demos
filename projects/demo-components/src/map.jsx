@@ -2,53 +2,12 @@ import PropTypes from 'prop-types'
 import React, { useRef, useEffect } from 'react'
 import mapboxgl from 'mapbox-gl'
 import mapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
-import { createPortal } from "react-dom";
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import accessToken from './access-token'
 
 mapboxgl.accessToken = accessToken
-
-
-const WaypointMarker = ({ coordinates }) => {
-    // a ref for the mapboxgl.Marker instance
-    const markerRef = useRef(null);
-    // a ref for an element to hold the marker's content
-    const contentRef = useRef(document.createElement("div"));
-
-    // instantiate the marker on mount, remove it on unmount
-    useEffect(() => {
-        markerRef.current = new mapboxgl.Marker(contentRef.current)
-            .setLngLat(coordinates)
-            .addTo(map);
-
-        return () => {
-            markerRef.current.remove();
-        };
-    }, []); 
-
-    return (
-        <>
-            {createPortal(
-                <div
-                    onClick={() => onClick(feature)}
-                    style={{
-                      backgroundImage: `url(/demo-delivery-app/img/waypoint.svg)`,
-                      height: 16,
-                      width: 16,
-                      backgroundSize: "contain",
-                      backgroundRepeat: "no-repeat",
-                    }}
-                >
-                    {properties.mag}
-                </div>,
-                contentRef.current
-            )}
-        </>
-    );
-};
-
 
 const Map = (
   {
@@ -70,7 +29,6 @@ const Map = (
     accessToken,
     projection = 'globe',
     hash = false,
-    waypoints,
     children
   },
   ref
@@ -84,8 +42,6 @@ const Map = (
     mapRef = useRef(null)
   }
   /* eslint-enable react-hooks/rules-of-hooks */
-
-  // useEffect(() => {
 
   useEffect(() => {
     if (mapRef.current) {
@@ -154,14 +110,9 @@ const Map = (
     }
   })
   return (
-    <>
-   {waypoints.length > 0 && waypoints.map((waypoint, i) => (
-        <WaypointMarker key={i} coordinates={waypoint} />
-    ))}
     <div ref={mapContainer} className='map-container h-full'>
       {children}
     </div>
-    </>
   )
 }
 
