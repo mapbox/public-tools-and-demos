@@ -1,6 +1,6 @@
 // eslint-disable-next-line
 export const config = {
-  style: 'mapbox://styles/labs-sandbox/cle6ecgky007t01lja19luc67',
+  style: 'mapbox://styles/examples/cmlqpbccj000e01qk91p3hzve',
   accessToken: import.meta.env.VITE_YOUR_MAPBOX_ACCESS_TOKEN,
   showMarkers: false,
   theme: 'dark',
