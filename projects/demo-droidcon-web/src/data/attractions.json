@@ -1,0 +1,348 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-81.4631, 28.4775] },
+      "properties": {
+        "id": 1,
+        "name": "Mystic Springs Water Park",
+        "description": "Central Florida's premier water park featuring 22 slides, a lazy river, and a 500,000-gallon wave pool. A family favorite since 1998.",
+        "tags": ["water park", "family", "outdoor", "thrill"],
+        "category": "Amusement",
+        "rating": 4.5,
+        "reviewCount": 8432,
+        "priceRange": "$$",
+        "openHours": "9:00 AM – 7:00 PM",
+        "phone": "(407) 555-0192",
+        "website": "https://example.com/mysticsprings",
+        "imageUrl": "https://images.unsplash.com/photo-1530053969600-caed2596d242?w=800&q=80",
+        "address": "4200 International Dr, Orlando, FL 32819"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-81.3906, 28.5623] },
+      "properties": {
+        "id": 2,
+        "name": "Orlando Science & Space Center",
+        "description": "Interactive science museum with a full-scale rocket exhibit, planetarium shows, and hands-on STEM labs for all ages.",
+        "tags": ["museum", "science", "education", "indoor", "kids"],
+        "category": "Museum",
+        "rating": 4.7,
+        "reviewCount": 5210,
+        "priceRange": "$",
+        "openHours": "10:00 AM – 6:00 PM",
+        "phone": "(407) 555-0341",
+        "website": "https://example.com/orlandoscience",
+        "imageUrl": "https://images.unsplash.com/photo-1518152006812-edab29b069ac?w=800&q=80",
+        "address": "777 E Princeton St, Orlando, FL 32803"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-81.5002, 28.4155] },
+      "properties": {
+        "id": 3,
+        "name": "Gatorland Adventure Ranch",
+        "description": "Sprawling wildlife ranch with over 2,000 alligators and crocodiles, zipline tours over gator pits, and live wrestling shows.",
+        "tags": ["wildlife", "outdoor", "adventure", "family", "unique"],
+        "category": "Nature",
+        "rating": 4.6,
+        "reviewCount": 11872,
+        "priceRange": "$$",
+        "openHours": "10:00 AM – 5:00 PM",
+        "phone": "(407) 555-0874",
+        "website": "https://example.com/gatorlandranch",
+        "imageUrl": "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?w=800&q=80",
+        "address": "14501 S Orange Blossom Trail, Orlando, FL 32837"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-81.3531, 28.5007] },
+      "properties": {
+        "id": 4,
+        "name": "Lake Eola Botanical Garden",
+        "description": "A serene 50-acre botanical garden surrounding Orlando's iconic swan lake. Features themed garden rooms, koi ponds, and weekend farmers markets.",
+        "tags": ["garden", "nature", "romantic", "outdoor", "relaxing"],
+        "category": "Park",
+        "rating": 4.4,
+        "reviewCount": 3965,
+        "priceRange": "Free",
+        "openHours": "6:00 AM – 11:00 PM",
+        "phone": "(407) 555-0023",
+        "website": "https://example.com/lakeeolabotanical",
+        "imageUrl": "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&q=80",
+        "address": "512 E Washington St, Orlando, FL 32801"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-81.4189, 28.5301] },
+      "properties": {
+        "id": 5,
+        "name": "The Painted Palette Art District",
+        "description": "Orlando's most vibrant arts district with over 40 galleries, murals by world-renowned street artists, and an open-air sculpture walk.",
+        "tags": ["art", "culture", "walkable", "photography", "local"],
+        "category": "Arts & Culture",
+        "rating": 4.3,
+        "reviewCount": 2108,
+        "priceRange": "Free",
+        "openHours": "Open 24 hrs (galleries 11 AM – 8 PM)",
+        "phone": "(407) 555-0567",
+        "website": "https://example.com/paintedpalette",
+        "imageUrl": "https://images.unsplash.com/photo-1501084291732-13b1ba8f0ebc?w=800&q=80",
+        "address": "300 N Orange Ave, Orlando, FL 32801"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-81.4782, 28.4641] },
+      "properties": {
+        "id": 6,
+        "name": "Starlight Drive-In & Diner",
+        "description": "A nostalgic 1950s-style drive-in theater showing double features nightly, paired with an on-site diner serving classic American comfort food.",
+        "tags": ["entertainment", "food", "nostalgia", "date night", "movies"],
+        "category": "Entertainment",
+        "rating": 4.8,
+        "reviewCount": 6730,
+        "priceRange": "$",
+        "openHours": "Diner: 4:00 PM – 1:00 AM | Theater: Dusk",
+        "phone": "(407) 555-0289",
+        "website": "https://example.com/starlightdrivein",
+        "imageUrl": "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&q=80",
+        "address": "9991 W Colonial Dr, Orlando, FL 32818"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-81.3724, 28.5890] },
+      "properties": {
+        "id": 7,
+        "name": "Orlando Aerial Adventures",
+        "description": "An elevated ropes course and zipline park with 9 courses ranging from beginner to expert. Night courses available on weekends.",
+        "tags": ["adventure", "outdoor", "fitness", "thrill", "teens"],
+        "category": "Adventure",
+        "rating": 4.5,
+        "reviewCount": 4421,
+        "priceRange": "$$",
+        "openHours": "9:00 AM – 8:00 PM",
+        "phone": "(407) 555-0712",
+        "website": "https://example.com/orlandoaerial",
+        "imageUrl": "https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&q=80",
+        "address": "1800 Lee Rd, Winter Park, FL 32789"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-81.4410, 28.5448] },
+      "properties": {
+        "id": 8,
+        "name": "Cacao & Craft Chocolate Museum",
+        "description": "Trace the journey of chocolate from bean to bar in this immersive museum. Tasting flights, chocolate-making workshops, and a café on-site.",
+        "tags": ["food", "museum", "unique", "indoor", "workshop"],
+        "category": "Museum",
+        "rating": 4.6,
+        "reviewCount": 1893,
+        "priceRange": "$$",
+        "openHours": "11:00 AM – 7:00 PM",
+        "phone": "(407) 555-0445",
+        "website": "https://example.com/cacaocraft",
+        "imageUrl": "https://images.unsplash.com/photo-1481391243133-f96216dcb5d2?w=800&q=80",
+        "address": "624 E Central Blvd, Orlando, FL 32801"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-81.3601, 28.5193] },
+      "properties": {
+        "id": 9,
+        "name": "Thornton Park Night Market",
+        "description": "Weekly Thursday-through-Sunday outdoor market with 80+ local vendors, live jazz, craft beer, and international street food.",
+        "tags": ["food", "market", "local", "nightlife", "live music"],
+        "category": "Market",
+        "rating": 4.4,
+        "reviewCount": 7215,
+        "priceRange": "Free entry",
+        "openHours": "Thu–Sun 5:00 PM – 11:00 PM",
+        "phone": "(407) 555-0198",
+        "website": "https://example.com/thorntonmarket",
+        "imageUrl": "https://images.unsplash.com/photo-1533900298318-6b8da08a523e?w=800&q=80",
+        "address": "800 E Washington St, Orlando, FL 32801"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-81.5198, 28.5032] },
+      "properties": {
+        "id": 10,
+        "name": "Florida Wetlands Kayak Tours",
+        "description": "Guided kayak and paddleboard tours through pristine Central Florida wetlands. Spot manatees, ospreys, and otters in their natural habitat.",
+        "tags": ["nature", "outdoor", "kayak", "wildlife", "eco-tour"],
+        "category": "Nature",
+        "rating": 4.9,
+        "reviewCount": 2934,
+        "priceRange": "$$",
+        "openHours": "7:00 AM – 3:00 PM",
+        "phone": "(407) 555-0603",
+        "website": "https://example.com/flwetlands",
+        "imageUrl": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80",
+        "address": "5501 Clarcona Ocoee Rd, Orlando, FL 32810"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-81.4055, 28.5712] },
+      "properties": {
+        "id": 11,
+        "name": "Neon Vault Arcade & Bar",
+        "description": "Three floors of vintage and modern arcade games, pinball machines, and VR pods. Full bar menu and late-night hours on weekends.",
+        "tags": ["nightlife", "gaming", "bar", "indoor", "adults"],
+        "category": "Entertainment",
+        "rating": 4.5,
+        "reviewCount": 5601,
+        "priceRange": "$",
+        "openHours": "3:00 PM – 2:00 AM",
+        "phone": "(407) 555-0876",
+        "website": "https://example.com/neonvault",
+        "imageUrl": "https://images.unsplash.com/photo-1511882150382-421056c89033?w=800&q=80",
+        "address": "55 W Church St, Orlando, FL 32801"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-81.3846, 28.4503] },
+      "properties": {
+        "id": 12,
+        "name": "Kissimmee Heritage Village",
+        "description": "A living history museum recreating early 20th-century Florida frontier life. Costumed interpreters, blacksmithing demos, and heritage cattle drives.",
+        "tags": ["history", "museum", "education", "family", "outdoor"],
+        "category": "Museum",
+        "rating": 4.2,
+        "reviewCount": 1540,
+        "priceRange": "$",
+        "openHours": "10:00 AM – 4:00 PM (Tue–Sat)",
+        "phone": "(407) 555-0334",
+        "website": "https://example.com/kissimmeeheritage",
+        "imageUrl": "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?w=800&q=80",
+        "address": "2491 Babb Rd, Kissimmee, FL 34744"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-81.4285, 28.6112] },
+      "properties": {
+        "id": 13,
+        "name": "Rooftop Stargazing Observatory",
+        "description": "A public observatory atop the Winter Park Cultural Center with a 24-inch Cassegrain telescope. Monthly astronomy events and guided tours.",
+        "tags": ["science", "astronomy", "romantic", "unique", "educational"],
+        "category": "Attraction",
+        "rating": 4.7,
+        "reviewCount": 872,
+        "priceRange": "$",
+        "openHours": "Fri–Sat 8:00 PM – Midnight",
+        "phone": "(407) 555-0091",
+        "website": "https://example.com/rooftopstars",
+        "imageUrl": "https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=800&q=80",
+        "address": "1050 W Morse Blvd, Winter Park, FL 32789"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-81.4933, 28.5589] },
+      "properties": {
+        "id": 14,
+        "name": "Hammock Grove Treetop Retreat",
+        "description": "Luxury glamping and treetop cabins nestled in a 200-acre private hammock forest. Spa services, guided forest baths, and fire-pit dining.",
+        "tags": ["nature", "luxury", "relaxing", "unique", "romantic"],
+        "category": "Nature",
+        "rating": 4.8,
+        "reviewCount": 1205,
+        "priceRange": "$$$",
+        "openHours": "Check-in 3:00 PM / Check-out 11:00 AM",
+        "phone": "(407) 555-0759",
+        "website": "https://example.com/hammockgrove",
+        "imageUrl": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&q=80",
+        "address": "3310 Apopka Vineland Rd, Orlando, FL 32835"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-81.3319, 28.5541] },
+      "properties": {
+        "id": 15,
+        "name": "Citrus & Craft Brewing Co.",
+        "description": "Award-winning craft brewery specializing in Florida-inspired citrus ales and sours. Taproom tours, brewery merchandise, and live music Saturdays.",
+        "tags": ["brewery", "food", "local", "adults", "live music"],
+        "category": "Food & Drink",
+        "rating": 4.6,
+        "reviewCount": 4388,
+        "priceRange": "$$",
+        "openHours": "12:00 PM – 10:00 PM",
+        "phone": "(407) 555-0512",
+        "website": "https://example.com/citruscraft",
+        "imageUrl": "https://images.unsplash.com/photo-1559526324-593bc073d938?w=800&q=80",
+        "address": "2601 E Robinson St, Orlando, FL 32803"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-81.4560, 28.5215] },
+      "properties": {
+        "id": 16,
+        "name": "Sand Dollar Surf Simulator",
+        "description": "Central Florida's only inland surf wave. Take lessons on the FlowRider surf simulator, then relax at the poolside tiki bar.",
+        "tags": ["water", "adventure", "outdoor", "lessons", "thrill"],
+        "category": "Adventure",
+        "rating": 4.4,
+        "reviewCount": 3102,
+        "priceRange": "$$",
+        "openHours": "10:00 AM – 9:00 PM",
+        "phone": "(407) 555-0633",
+        "website": "https://example.com/sanddollarsurf",
+        "imageUrl": "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=800&q=80",
+        "address": "5890 Turkey Lake Rd, Orlando, FL 32819"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-81.3700, 28.4780] },
+      "properties": {
+        "id": 17,
+        "name": "The Orange Peel Comedy Club",
+        "description": "Top-rated comedy club hosting nationally touring stand-up acts, open mic nights, and improv shows in a 350-seat intimate venue.",
+        "tags": ["comedy", "nightlife", "entertainment", "adults", "date night"],
+        "category": "Entertainment",
+        "rating": 4.5,
+        "reviewCount": 2890,
+        "priceRange": "$$",
+        "openHours": "Doors 6:00 PM | Shows 8:00 PM",
+        "phone": "(407) 555-0418",
+        "website": "https://example.com/orangepeelcomedy",
+        "imageUrl": "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=800&q=80",
+        "address": "100 S Eola Dr, Orlando, FL 32801"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-81.5088, 28.4392] },
+      "properties": {
+        "id": 18,
+        "name": "Sunshine Hot Air Balloon Rides",
+        "description": "Drift over Central Florida's patchwork of lakes and orange groves at sunrise. FAA-certified pilots, champagne toast included.",
+        "tags": ["adventure", "romantic", "scenic", "outdoor", "unique"],
+        "category": "Adventure",
+        "rating": 4.9,
+        "reviewCount": 1670,
+        "priceRange": "$$$",
+        "openHours": "Sunrise departures (seasonal)",
+        "phone": "(407) 555-0822",
+        "website": "https://example.com/sunshineballoon",
+        "imageUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80",
+        "address": "8900 Vineland Ave, Orlando, FL 32821"
+      }
+    }
+  ]
+}
+
