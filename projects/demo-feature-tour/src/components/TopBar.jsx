@@ -96,6 +96,15 @@ const COLOR_THEMES = [
   { id: 'vivid', label: 'Vivid', swatches: ['#FF4D4D', '#4DFF91', '#4D79FF'] }
 ]
 
+function ControlField({ label, className, children }) {
+  return (
+    <div className={`tb-field${className ? ` ${className}` : ''}`}>
+      <span className='tb-field-label'>{label}</span>
+      {children}
+    </div>
+  )
+}
+
 function Dropdown({
   dropdownRef,
   open,
@@ -109,7 +118,10 @@ function Dropdown({
       className={`tb-dropdown${className ? ' ' + className : ''}`}
       ref={dropdownRef}
     >
-      <button className='tb-dropdown-btn' onClick={onToggle}>
+      <button
+        className={`tb-dropdown-btn${open ? ' open' : ''}`}
+        onClick={onToggle}
+      >
         {trigger}
         <svg
           className={`tb-chevron${open ? ' open' : ''}`}
@@ -157,38 +169,38 @@ export default function TopBar({
 
   return (
     <div className='top-bar'>
-      {/* Scene — primary, prominent */}
-      <Dropdown
-        className='tb-scene-dropdown'
-        dropdownRef={sceneRef}
-        open={openMenu === 'scene'}
-        onToggle={() => setOpenMenu((o) => (o === 'scene' ? null : 'scene'))}
-        trigger={
-          <>
-            <span className='tb-scene-icon'>{activeScene?.icon}</span>
-            <span className='tb-scene-label'>{activeScene?.label}</span>
-          </>
-        }
-      >
-        {USE_CASES.map((uc) => (
-          <button
-            key={uc.id}
-            className={`tb-menu-item${activeId === uc.id ? ' active' : ''}`}
-            onClick={() => {
-              onSelect(uc.id)
-              setOpenMenu(null)
-            }}
-          >
-            <span className='tb-scene-icon'>{uc.icon}</span>
-            <span>{uc.label}</span>
-          </button>
-        ))}
-      </Dropdown>
+      <ControlField label='Scenes' className='tb-scene-field'>
+        <Dropdown
+          className='tb-scene-dropdown'
+          dropdownRef={sceneRef}
+          open={openMenu === 'scene'}
+          onToggle={() => setOpenMenu((o) => (o === 'scene' ? null : 'scene'))}
+          trigger={
+            <>
+              <span className='tb-scene-icon'>{activeScene?.icon}</span>
+              <span className='tb-scene-label'>{activeScene?.label}</span>
+            </>
+          }
+        >
+          {USE_CASES.map((uc) => (
+            <button
+              key={uc.id}
+              className={`tb-menu-item${activeId === uc.id ? ' active' : ''}`}
+              onClick={() => {
+                onSelect(uc.id)
+                setOpenMenu(null)
+              }}
+            >
+              <span className='tb-scene-icon'>{uc.icon}</span>
+              <span>{uc.label}</span>
+            </button>
+          ))}
+        </Dropdown>
+      </ControlField>
 
-      {/* Secondary controls — grouped so they wrap together */}
-      <div className='tb-secondary'>
-        <div className='tb-divider' />
+      <div className='tb-divider' />
 
+      <ControlField label='Lighting'>
         <Dropdown
           dropdownRef={lightingRef}
           open={openMenu === 'lighting'}
@@ -197,7 +209,6 @@ export default function TopBar({
           }
           trigger={
             <>
-              <span className='tb-meta-label'>Lighting</span>
               <span className='tb-preset-icon'>{activeLight?.icon}</span>
               <span className='tb-value'>{activeLight?.label}</span>
             </>
@@ -217,14 +228,17 @@ export default function TopBar({
             </button>
           ))}
         </Dropdown>
+      </ControlField>
 
+      <div className='tb-divider' />
+
+      <ControlField label='Color'>
         <Dropdown
           dropdownRef={themeRef}
           open={openMenu === 'theme'}
           onToggle={() => setOpenMenu((o) => (o === 'theme' ? null : 'theme'))}
           trigger={
             <>
-              <span className='tb-meta-label'>Color</span>
               <span className='tb-swatch'>
                 {activeTheme?.swatches.map((c, i) => (
                   <span
@@ -260,7 +274,7 @@ export default function TopBar({
             </button>
           ))}
         </Dropdown>
-      </div>
+      </ControlField>
     </div>
   )
 }
