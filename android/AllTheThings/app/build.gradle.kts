@@ -13,6 +13,7 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+        resValue("string", "mapbox_access_token", providers.gradleProperty("MAPBOX_ACCESS_TOKEN").get())
     }
 
     buildTypes {
@@ -30,6 +31,7 @@ android {
       aidl = false
       buildConfig = false
       shaders = false
+      resValues = true
     }
 
     packaging {
@@ -81,4 +83,13 @@ dependencies {
   implementation(libs.androidx.navigation3.ui)
   implementation(libs.androidx.navigation3.runtime)
   implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+
+  // Mapbox Navigation UX Framework
+  implementation(libs.mapbox.navigationux)
+
+  // Mapbox Maps Compose extension
+  implementation(libs.mapbox.maps.compose)
+
+  // Mapbox Search Autocomplete extension
+  implementation(libs.mapbox.search.place.autocomplete)
 }
