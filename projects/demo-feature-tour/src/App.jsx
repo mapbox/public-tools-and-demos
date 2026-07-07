@@ -46,14 +46,18 @@ export default function App() {
   // ─── Map Init ──────────────────────────────────────────────────────────────
 
   useEffect(() => {
-    mapboxgl.accessToken = import.meta.env.VITE_YOUR_MAPBOX_ACCESS_TOKEN
+    const cooperativeGestures =
+      new URLSearchParams(window.location.search).get('cooperativeGestures') ===
+      'true'
+
     mapRef.current = new mapboxgl.Map({
+      accessToken: import.meta.env.VITE_YOUR_MAPBOX_ACCESS_TOKEN,
       container: mapContainerRef.current,
       style: 'mapbox://styles/mapbox/standard',
       bounds: GLOBE_BOUNDS,
       pitch: 0,
       bearing: 0,
-      cooperativeGestures: true
+      cooperativeGestures
     })
 
     const startCameraRotation = () => {
