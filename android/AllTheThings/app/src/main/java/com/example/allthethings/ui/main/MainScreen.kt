@@ -56,6 +56,7 @@ fun MainScreen(
 internal fun MainScreen(attractions: List<Feature>, modifier: Modifier = Modifier) {
   var isSatellite by rememberSaveable { mutableStateOf(false) }
   var isPlaying by remember { mutableStateOf(false) }
+  var isSearchOpen by remember { mutableStateOf(false) }
   var selectedAttraction by remember { mutableStateOf<Feature?>(null) }
   val mapViewportState = rememberMapViewportState {
     setCameraOptions {
@@ -109,8 +110,13 @@ internal fun MainScreen(attractions: List<Feature>, modifier: Modifier = Modifie
       onStyleToggle = { isSatellite = !isSatellite },
       isPlaying = isPlaying,
       onPlayPauseToggle = { isPlaying = !isPlaying },
+      onSearchClick = { isSearchOpen = true },
     )
   }
 
   selectedAttraction?.let { attraction -> AttractionBottomSheet(attraction = attraction, onDismiss = { selectedAttraction = null }) }
+
+  if (isSearchOpen) {
+    SearchBottomSheet(proximity = OrlandoCenter, onDismiss = { isSearchOpen = false })
+  }
 }
