@@ -93,6 +93,9 @@ dependencies {
   // Mapbox Java Services (REST APIs, e.g. Isochrone)
   implementation(libs.mapbox.java.services)
 
+  // Coil for image loading
+  implementation(libs.coil.compose)
+
   // Mapbox Search Autocomplete extension
   implementation(libs.mapbox.search.place.autocomplete)
 }

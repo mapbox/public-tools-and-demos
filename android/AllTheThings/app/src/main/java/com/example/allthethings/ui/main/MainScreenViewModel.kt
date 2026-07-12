@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.allthethings.data.DataRepository
 import com.example.allthethings.ui.main.MainScreenUiState.Success
+import com.mapbox.geojson.Feature
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -13,7 +14,7 @@ import kotlinx.coroutines.flow.stateIn
 class MainScreenViewModel(dataRepository: DataRepository) : ViewModel() {
   val uiState: StateFlow<MainScreenUiState> =
     dataRepository.data
-      .map<List<String>, MainScreenUiState>(::Success)
+      .map<List<Feature>, MainScreenUiState>(::Success)
       .catch { emit(MainScreenUiState.Error(it)) }
       .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MainScreenUiState.Loading)
 }
@@ -23,5 +24,5 @@ sealed interface MainScreenUiState {
 
   data class Error(val throwable: Throwable) : MainScreenUiState
 
-  data class Success(val data: List<String>) : MainScreenUiState
+  data class Success(val data: List<Feature>) : MainScreenUiState
 }

@@ -5,19 +5,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
 import com.example.allthethings.data.DefaultDataRepository
+import com.mapbox.geojson.Feature
 import com.mapbox.geojson.Point
+import com.mapbox.maps.EdgeInsets
 import com.mapbox.maps.Style
+import com.mapbox.maps.coroutine.awaitCameraForCoordinates
 import com.mapbox.maps.dsl.cameraOptions
+import com.mapbox.maps.extension.compose.MapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import com.mapbox.maps.extension.compose.style.MapStyle
@@ -29,7 +34,7 @@ private val OrlandoCenter: Point = Point.fromLngLat(-81.38, 28.54)
 fun MainScreen(
   onItemClick: (NavKey) -> Unit,
   modifier: Modifier = Modifier,
-  viewModel: MainScreenViewModel = viewModel { MainScreenViewModel(DefaultDataRepository()) },
+  viewModel: MainScreenViewModel = viewModel { MainScreenViewModel(DefaultDataRepository(checkNotNull(this[APPLICATION_KEY]))) },
 ) {
   val state by viewModel.uiState.collectAsStateWithLifecycle()
   when (state) {
@@ -37,7 +42,7 @@ fun MainScreen(
       // Blank
     }
     is MainScreenUiState.Success -> {
-      MainScreen(modifier = modifier)
+      MainScreen(attractions = (state as MainScreenUiState.Success).data, modifier = modifier)
     }
     is MainScreenUiState.Error -> {
       Text("Error loading data: ${(state as MainScreenUiState.Error).throwable.message}")
@@ -46,23 +51,14 @@ fun MainScreen(
 }
 
 @Composable
-internal fun MainScreen(modifier: Modifier = Modifier) {
+internal fun MainScreen(attractions: List<Feature>, modifier: Modifier = Modifier) {
   var isSatellite by rememberSaveable { mutableStateOf(false) }
+  var selectedAttraction by remember { mutableStateOf<Feature?>(null) }
   val mapViewportState = rememberMapViewportState {
     setCameraOptions {
       center(OrlandoCenter)
       zoom(0.0)
     }
-  }
-
-  LaunchedEffect(Unit) {
-    mapViewportState.flyTo(
-      cameraOptions {
-        center(OrlandoCenter)
-        zoom(11.0)
-      },
-      MapAnimationOptions.mapAnimationOptions { duration(2000) },
-    )
   }
 
   Column(modifier = modifier.fillMaxSize()) {
@@ -73,7 +69,21 @@ internal fun MainScreen(modifier: Modifier = Modifier) {
       scaleBar = { ScaleBar(Modifier.statusBarsPadding()) },
     ) {
       IsochroneLayer(center = OrlandoCenter)
+      AttractionMarkers(attractions = attractions, onAttractionClick = { selectedAttraction = it })
+      MapEffect(attractions) { mapView ->
+        val points = attractions.mapNotNull { it.geometry() as? Point }
+        if (points.isEmpty()) return@MapEffect
+        val camera =
+          mapView.mapboxMap.awaitCameraForCoordinates(
+            coordinates = points,
+            camera = cameraOptions {},
+            coordinatesPadding = EdgeInsets(100.0, 100.0, 100.0, 100.0),
+          )
+        camera?.let { mapViewportState.flyTo(it, MapAnimationOptions.mapAnimationOptions { duration(2000) }) }
+      }
     }
     StyleToggleBottomBar(isSatellite = isSatellite, onToggle = { isSatellite = !isSatellite })
   }
+
+  selectedAttraction?.let { attraction -> AttractionBottomSheet(attraction = attraction, onDismiss = { selectedAttraction = null }) }
 }
