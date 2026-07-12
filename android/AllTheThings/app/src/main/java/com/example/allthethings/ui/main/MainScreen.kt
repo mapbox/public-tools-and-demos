@@ -12,10 +12,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
+import com.example.allthethings.NavigationActivity
 import com.example.allthethings.data.DefaultDataRepository
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.Point
@@ -54,6 +56,7 @@ fun MainScreen(
 
 @Composable
 internal fun MainScreen(attractions: List<Feature>, modifier: Modifier = Modifier) {
+  val context = LocalContext.current
   var isSatellite by rememberSaveable { mutableStateOf(false) }
   var isPlaying by remember { mutableStateOf(false) }
   var isSearchOpen by remember { mutableStateOf(false) }
@@ -114,9 +117,19 @@ internal fun MainScreen(attractions: List<Feature>, modifier: Modifier = Modifie
     )
   }
 
-  selectedAttraction?.let { attraction -> AttractionBottomSheet(attraction = attraction, onDismiss = { selectedAttraction = null }) }
+  selectedAttraction?.let { attraction ->
+    AttractionBottomSheet(
+      attraction = attraction,
+      onDismiss = { selectedAttraction = null },
+      onNavigate = { NavigationActivity.start(context, it) },
+    )
+  }
 
   if (isSearchOpen) {
-    SearchBottomSheet(proximity = OrlandoCenter, onDismiss = { isSearchOpen = false })
+    SearchBottomSheet(
+      proximity = OrlandoCenter,
+      onDismiss = { isSearchOpen = false },
+      onNavigate = { NavigationActivity.start(context, it) },
+    )
   }
 }

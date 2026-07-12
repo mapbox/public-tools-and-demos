@@ -11,6 +11,10 @@
         android:windowSoftInputMode="adjustResize"
         android:theme="@style/Theme.AllTheThings">
         <activity
+            android:name=".NavigationActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
