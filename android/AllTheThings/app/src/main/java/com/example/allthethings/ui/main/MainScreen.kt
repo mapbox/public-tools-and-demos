@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +28,7 @@ import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import com.mapbox.maps.extension.compose.style.MapStyle
 import com.mapbox.maps.plugin.animation.MapAnimationOptions
+import kotlinx.coroutines.delay
 
 private val OrlandoCenter: Point = Point.fromLngLat(-81.38, 28.54)
 
@@ -53,11 +55,31 @@ fun MainScreen(
 @Composable
 internal fun MainScreen(attractions: List<Feature>, modifier: Modifier = Modifier) {
   var isSatellite by rememberSaveable { mutableStateOf(false) }
+  var isPlaying by remember { mutableStateOf(false) }
   var selectedAttraction by remember { mutableStateOf<Feature?>(null) }
   val mapViewportState = rememberMapViewportState {
     setCameraOptions {
       center(OrlandoCenter)
       zoom(0.0)
+    }
+  }
+
+  LaunchedEffect(isPlaying, attractions) {
+    if (!isPlaying || attractions.isEmpty()) return@LaunchedEffect
+    var index = 0
+    while (true) {
+      (attractions[index].geometry() as? Point)?.let { point ->
+        mapViewportState.flyTo(
+          cameraOptions {
+            center(point)
+            zoom(15.0)
+            pitch(45.0)
+          },
+          MapAnimationOptions.mapAnimationOptions { duration(2500) },
+        )
+      }
+      delay(5000)
+      index = (index + 1) % attractions.size
     }
   }
 
@@ -82,7 +104,12 @@ internal fun MainScreen(attractions: List<Feature>, modifier: Modifier = Modifie
         camera?.let { mapViewportState.flyTo(it, MapAnimationOptions.mapAnimationOptions { duration(2000) }) }
       }
     }
-    StyleToggleBottomBar(isSatellite = isSatellite, onToggle = { isSatellite = !isSatellite })
+    MapControlsBottomBar(
+      isSatellite = isSatellite,
+      onStyleToggle = { isSatellite = !isSatellite },
+      isPlaying = isPlaying,
+      onPlayPauseToggle = { isPlaying = !isPlaying },
+    )
   }
 
   selectedAttraction?.let { attraction -> AttractionBottomSheet(attraction = attraction, onDismiss = { selectedAttraction = null }) }
