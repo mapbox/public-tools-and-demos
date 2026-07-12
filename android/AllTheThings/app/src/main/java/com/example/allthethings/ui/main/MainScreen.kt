@@ -1,16 +1,19 @@
 package com.example.allthethings.ui.main
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
 import com.example.allthethings.data.DefaultDataRepository
-import com.example.allthethings.theme.AllTheThingsTheme
+import com.mapbox.geojson.Point
+import com.mapbox.maps.extension.compose.MapboxMap
+import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 
 @Composable
 fun MainScreen(
@@ -24,7 +27,7 @@ fun MainScreen(
       // Blank
     }
     is MainScreenUiState.Success -> {
-      MainScreen(data = (state as MainScreenUiState.Success).data, modifier = modifier)
+      MainScreen(modifier = modifier)
     }
     is MainScreenUiState.Error -> {
       Text("Error loading data: ${(state as MainScreenUiState.Error).throwable.message}")
@@ -33,23 +36,18 @@ fun MainScreen(
 }
 
 @Composable
-internal fun MainScreen(data: List<String>, modifier: Modifier = Modifier) {
-  Column(modifier) { data.forEach { Greeting(it) } }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-  Text(text = "Hello $name!", modifier = modifier)
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MainScreenPreview() {
-  AllTheThingsTheme { MainScreen(listOf("Android")) }
-}
-
-@Preview(showBackground = true, widthDp = 340)
-@Composable
-fun MainScreenPortraitPreview() {
-  AllTheThingsTheme { MainScreen(listOf("Android")) }
+internal fun MainScreen(modifier: Modifier = Modifier) {
+  MapboxMap(
+    modifier = modifier.fillMaxSize(),
+    mapViewportState =
+      rememberMapViewportState {
+        setCameraOptions {
+          center(Point.fromLngLat(-81.38, 28.54))
+          zoom(0.0)
+        }
+      },
+    scaleBar = { ScaleBar(Modifier.statusBarsPadding()) },
+    logo = { Logo(Modifier.navigationBarsPadding()) },
+    attribution = { Attribution(Modifier.navigationBarsPadding()) },
+  )
 }
