@@ -23,6 +23,8 @@ import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportS
 import com.mapbox.maps.extension.compose.style.MapStyle
 import com.mapbox.maps.plugin.animation.MapAnimationOptions
 
+private val OrlandoCenter: Point = Point.fromLngLat(-81.38, 28.54)
+
 @Composable
 fun MainScreen(
   onItemClick: (NavKey) -> Unit,
@@ -48,7 +50,7 @@ internal fun MainScreen(modifier: Modifier = Modifier) {
   var isSatellite by rememberSaveable { mutableStateOf(false) }
   val mapViewportState = rememberMapViewportState {
     setCameraOptions {
-      center(Point.fromLngLat(-81.38, 28.54))
+      center(OrlandoCenter)
       zoom(0.0)
     }
   }
@@ -56,7 +58,7 @@ internal fun MainScreen(modifier: Modifier = Modifier) {
   LaunchedEffect(Unit) {
     mapViewportState.flyTo(
       cameraOptions {
-        center(Point.fromLngLat(-81.38, 28.54))
+        center(OrlandoCenter)
         zoom(11.0)
       },
       MapAnimationOptions.mapAnimationOptions { duration(2000) },
@@ -69,7 +71,9 @@ internal fun MainScreen(modifier: Modifier = Modifier) {
       mapViewportState = mapViewportState,
       style = { MapStyle(style = if (isSatellite) Style.STANDARD_SATELLITE else Style.STANDARD) },
       scaleBar = { ScaleBar(Modifier.statusBarsPadding()) },
-    )
+    ) {
+      IsochroneLayer(center = OrlandoCenter)
+    }
     StyleToggleBottomBar(isSatellite = isSatellite, onToggle = { isSatellite = !isSatellite })
   }
 }

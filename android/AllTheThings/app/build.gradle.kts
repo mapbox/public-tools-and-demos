@@ -90,6 +90,9 @@ dependencies {
   // Mapbox Maps Compose extension
   implementation(libs.mapbox.maps.compose)
 
+  // Mapbox Java Services (REST APIs, e.g. Isochrone)
+  implementation(libs.mapbox.java.services)
+
   // Mapbox Search Autocomplete extension
   implementation(libs.mapbox.search.place.autocomplete)
 }
