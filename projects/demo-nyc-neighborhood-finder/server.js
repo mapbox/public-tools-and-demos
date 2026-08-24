@@ -154,12 +154,6 @@ app.post('/api/chat', async (req, res) => {
         'calls:',
         step.toolCalls?.map((tc) => tc.toolName).join(', ') || 'none'
       )
-      for (const call of step.toolCalls ?? []) {
-        console.log(
-          `[step] ${call.toolName} input:`,
-          JSON.stringify(call.input)
-        )
-      }
     }
   })
   result.pipeUIMessageStreamToResponse(res)
