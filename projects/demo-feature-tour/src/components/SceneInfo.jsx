@@ -26,7 +26,7 @@ const SCENE_BODY = {
   buildings: (
     <>
       The{' '}
-      <A href='https://docs.mapbox.com/mapbox-gl-js/guides/standard/'>
+      <A href='https://docs.mapbox.com/map-styles/guides/standard-styles/'>
         Mapbox Standard Style
       </A>{' '}
       includes realistic 3D buildings, landmarks, and trees — a rich foundation
@@ -70,7 +70,7 @@ const SCENE_BODY = {
   navigation: (
     <>
       Mapbox powers turn-by-turn navigation through the{' '}
-      <A href='https://docs.mapbox.com/navigation/'>
+      <A href='https://docs.mapbox.com/#navigation'>
         Navigation SDKs for iOS and Android
       </A>
       . End users receive turn by turn instructions and voice guidance.
@@ -96,7 +96,9 @@ const SCENE_BODY = {
         Mapbox Terrain DEM
       </A>{' '}
       — a global elevation dataset. The{' '}
-      <A href='https://docs.mapbox.com/maps/satellite/'>Mapbox Satellite</A>{' '}
+      <A href='https://docs.mapbox.com/map-styles/reference/standard-satellite/'>
+        Mapbox Satellite
+      </A>{' '}
       raster tileset can be draped over terrain for a photorealistic landscape.
     </>
   )
