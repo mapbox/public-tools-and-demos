@@ -1,0 +1,54 @@
+.neighborhood-card {
+  border: 1px solid #e5e7eb;
+  border-left: 4px solid;
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: box-shadow 0.15s, background 0.15s;
+  background: #fff;
+}
+
+.neighborhood-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: #f9fafb;
+}
+
+.neighborhood-card-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 5px;
+}
+
+.neighborhood-card-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.neighborhood-card-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: #111827;
+}
+
+.neighborhood-card-borough {
+  font-size: 11px;
+  color: #9ca3af;
+  text-transform: capitalize;
+  margin-left: auto;
+}
+
+.neighborhood-card-reason {
+  font-size: 12px;
+  color: #4b5563;
+  margin: 0 0 6px;
+  line-height: 1.5;
+}
+
+.neighborhood-card-cta {
+  font-size: 11px;
+  color: #6b7280;
+  font-weight: 500;
+}
