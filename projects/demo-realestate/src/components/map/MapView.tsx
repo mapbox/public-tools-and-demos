@@ -3,8 +3,9 @@ import { createPortal } from 'react-dom'
 import mapboxgl from 'mapbox-gl'
 import accessToken from '../../lib/mapbox'
 
+import type { SearchedLocation } from '../layout/SearchBar'
+import { MAP_CENTER, MAP_ZOOM } from '../../lib/map-defaults'
 import type { Listing } from '../../types/listing'
-import MapLegend from './MapLegend'
 import PriceLabelPin from './PriceLabelPin'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -19,10 +20,14 @@ interface MarkerEntry {
 export default function MapView({
   listings,
   selectedId,
+  favorites,
+  flyTo,
   onSelect
 }: {
   listings: Listing[]
   selectedId: string | null
+  favorites: Set<string>
+  flyTo: SearchedLocation | null
   onSelect: (id: string) => void
 }) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -33,13 +38,14 @@ export default function MapView({
   const [, syncPortals] = useReducer((count: number) => count + 1, 0)
 
   useEffect(() => {
-    if (!containerRef.current) return
+    const container = containerRef.current
+    if (!container) return
 
     const map = new mapboxgl.Map({
-      container: containerRef.current,
+      container,
       style: 'mapbox://styles/mapbox/standard',
-      center: [-73.7695, 41.024],
-      zoom: 13
+      center: MAP_CENTER,
+      zoom: MAP_ZOOM
     })
     map.addControl(
       new mapboxgl.NavigationControl({ showCompass: true }),
@@ -47,7 +53,14 @@ export default function MapView({
     )
     mapRef.current = map
 
+    // GL JS only reacts to *window* resizes, so switching Split to Map — which
+    // widens this container without the window changing — would otherwise leave
+    // the canvas stranded at its old size.
+    const observer = new ResizeObserver(() => map.resize())
+    observer.observe(container)
+
     return () => {
+      observer.disconnect()
       markersRef.current.clear()
       map.remove()
       mapRef.current = null
@@ -79,6 +92,11 @@ export default function MapView({
     syncPortals()
   }, [listings])
 
+  useEffect(() => {
+    if (!mapRef.current || !flyTo) return
+    mapRef.current.flyTo({ center: flyTo.center, zoom: 14, duration: 1200 })
+  }, [flyTo])
+
   // Keep the selected listing in view without yanking the map on every change.
   useEffect(() => {
     const map = mapRef.current
@@ -98,18 +116,13 @@ export default function MapView({
           <PriceLabelPin
             listing={listing}
             selected={listing.id === selectedId}
+            favorited={favorites.has(listing.id)}
             onSelect={() => onSelect(listing.id)}
           />,
           entry.element,
           listing.id
         )
       })}
-
-      <div className='pointer-events-none absolute inset-x-0 bottom-4 flex justify-end px-4'>
-        <div className='pointer-events-auto'>
-          <MapLegend />
-        </div>
-      </div>
     </div>
   )
 }

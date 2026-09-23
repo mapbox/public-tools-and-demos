@@ -5,6 +5,7 @@ import LearnMapbox from './components/layout/LearnMapbox'
 import Header from './components/layout/Header'
 import ListingsPanel from './components/listings/ListingsPanel'
 import MapView from './components/map/MapView'
+import type { SearchedLocation } from './components/layout/SearchBar'
 import { listings as allListings } from './data/listings'
 import type { PropertyType } from './types/listing'
 import type { ViewMode } from './types/view'
@@ -18,7 +19,8 @@ const PRICE_BOUNDS = {
 
 export default function App() {
   const [view, setView] = useState<ViewMode>('split')
-  const [search, setSearch] = useState('')
+  const [searchedLocation, setSearchedLocation] =
+    useState<SearchedLocation | null>(null)
   const [price] = useState(PRICE_BOUNDS)
   const [priceOpen, setPriceOpen] = useState(false)
   const [beds, setBeds] = useState<number | null>(null)
@@ -26,20 +28,17 @@ export default function App() {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
 
-  const visible = useMemo(() => {
-    const query = search.trim().toLowerCase()
-    return allListings.filter((listing) => {
-      if (listing.price < price.min || listing.price > price.max) return false
-      if (beds !== null && listing.beds < beds) return false
-      if (!types.includes(listing.type)) return false
-      if (query) {
-        const haystack =
-          `${listing.name} ${listing.address} ${listing.neighborhood}`.toLowerCase()
-        if (!haystack.includes(query)) return false
-      }
-      return true
-    })
-  }, [search, price, beds, types])
+  // Search moves the map rather than filtering: it queries the Search Box API
+  // for places, not this demo's listings.
+  const visible = useMemo(
+    () =>
+      allListings.filter((listing) => {
+        if (listing.price < price.min || listing.price > price.max) return false
+        if (beds !== null && listing.beds < beds) return false
+        return types.includes(listing.type)
+      }),
+    [price, beds, types]
+  )
 
   const toggleType = (type: PropertyType) =>
     setTypes((current) =>
@@ -58,16 +57,12 @@ export default function App() {
 
   return (
     <div className='relative flex h-full flex-col overflow-hidden bg-surface-sunken'>
-      <Header
-        view={view}
-        onViewChange={setView}
-        search={search}
-        onSearchChange={setSearch}
-      />
+      <Header view={view} onViewChange={setView} />
 
       <main className='min-h-0 flex-1 px-6 pb-6'>
         <div className='flex h-full min-h-0 flex-col gap-4 rounded-xl border border-line bg-white p-6'>
           <FilterBar
+            onSearchSelect={setSearchedLocation}
             price={price}
             priceBounds={PRICE_BOUNDS}
             priceOpen={priceOpen}
@@ -76,6 +71,7 @@ export default function App() {
             onBedsChange={setBeds}
             types={types}
             onToggleType={toggleType}
+            savedCount={favorites.size}
             resultCount={visible.length}
             showResultCount={view === 'map'}
           />
@@ -105,6 +101,8 @@ export default function App() {
                 <MapView
                   listings={visible}
                   selectedId={selectedId}
+                  favorites={favorites}
+                  flyTo={searchedLocation}
                   onSelect={setSelectedId}
                 />
               </div>

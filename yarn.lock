@@ -1273,15 +1273,6 @@
     "@types/geojson" "^7946.0.8"
     "@types/react" "^17.0.43"
 
-"@mapbox/search-js-react@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@mapbox/search-js-react/-/search-js-react-1.6.0.tgz#2522705e5d0df500a80a0a0f0585ab6762a3fc60"
-  integrity sha512-J7/f/j71wp2Djs/6lSfbT4uy02mGqPWF3AzdYluiiTOshLhYEmwVYFbnrwpU0VHa/pvlRoJxuzyxlxYctpnvIA==
-  dependencies:
-    "@mapbox/search-js-core" "^1.6.0"
-    "@mapbox/search-js-web" "^1.6.0"
-    "@types/geojson" "^7946.0.8"
-
 "@mapbox/search-js-web@^1.0.0-beta.24":
   version "1.0.0-beta.24"
   resolved "https://registry.yarnpkg.com/@mapbox/search-js-web/-/search-js-web-1.0.0-beta.24.tgz#5e3a79683342e53dfe24257cd7aca68fe2748c26"
@@ -1289,18 +1280,6 @@
   dependencies:
     "@floating-ui/dom" "^0.5.2"
     "@mapbox/search-js-core" "^1.0.0-beta.24"
-    "@mapbox/sphericalmercator" "^1.2.0"
-    focus-trap "^6.7.3"
-    no-scroll "^2.1.1"
-    subtag "^0.5.0"
-
-"@mapbox/search-js-web@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@mapbox/search-js-web/-/search-js-web-1.6.0.tgz#0b3cce2317253976aab078ebb8d8b89aaaf87401"
-  integrity sha512-H/dAlsDsXNLykAwm5OHgW0pqnk3IVl9e26hLhYAp5TvG8WyAu3/njrTmZYw1s3Utp4NjrRSCCgQE+4aJo7taWQ==
-  dependencies:
-    "@floating-ui/dom" "^0.5.2"
-    "@mapbox/search-js-core" "^1.6.0"
     "@mapbox/sphericalmercator" "^1.2.0"
     focus-trap "^6.7.3"
     no-scroll "^2.1.1"
@@ -9358,6 +9337,7 @@ stop-iteration-iterator@^1.0.0:
     internal-slot "^1.1.0"
 
 "string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0:
+  name string-width-cjs
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==

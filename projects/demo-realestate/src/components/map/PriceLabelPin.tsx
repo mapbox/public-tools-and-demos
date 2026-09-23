@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react'
 import clsx from 'clsx'
 
+import heartActive from '../../img/icons/heart-active.svg'
 import labelTail from '../../img/pins/label-tail.svg'
 import pinCondo from '../../img/pins/pin-condo.svg'
 import pinHouse from '../../img/pins/pin-house.svg'
@@ -8,33 +9,22 @@ import pinTownhouse from '../../img/pins/pin-townhouse.svg'
 import { formatPriceShort } from '../../lib/format'
 import type { Listing, PropertyType } from '../../types/listing'
 
+/** The circle below the label is what encodes property type. */
 const PIN_ICON: Record<PropertyType, string> = {
   house: pinHouse,
   condo: pinCondo,
   townhouse: pinTownhouse
 }
 
-/** Unselected labels are neutral; selecting one tints it with the type colour. */
-const LABEL_BG: Record<PropertyType, string> = {
-  house: 'bg-house',
-  condo: 'bg-accent-dark',
-  townhouse: 'bg-success-dark'
-}
-
-/** The tail is masked, so it takes its fill from `currentColor`. */
-const TAIL_FG: Record<PropertyType, string> = {
-  house: 'text-house',
-  condo: 'text-accent-dark',
-  townhouse: 'text-success-dark'
-}
-
 export default function PriceLabelPin({
   listing,
   selected,
+  favorited,
   onSelect
 }: {
   listing: Listing
   selected: boolean
+  favorited: boolean
   onSelect: () => void
 }) {
   return (
@@ -42,25 +32,29 @@ export default function PriceLabelPin({
       type='button'
       onClick={onSelect}
       aria-pressed={selected}
-      aria-label={`${listing.name}, ${formatPriceShort(listing.price)}`}
+      aria-label={`${listing.name}, ${formatPriceShort(listing.price)}${
+        favorited ? ', saved' : ''
+      }`}
       className='flex cursor-pointer flex-col items-center gap-2'
     >
+      {/* Two states only — selected or not. Colouring the label by property
+          type as well would just repeat what the circle underneath says. The
+          `text-*` here feeds the tail's currentColor mask. */}
       <span
         className={clsx(
           'flex flex-col items-center drop-shadow-[0px_0px_1.2px_rgba(0,0,0,0.18)]',
-          selected ? TAIL_FG[listing.type] : 'text-surface-inverse'
+          selected ? 'text-brand' : 'text-surface-inverse'
         )}
       >
         <span
           className={clsx(
-            'rounded-lg px-3.5 py-2.5 text-xl font-medium leading-none text-white',
-            selected ? LABEL_BG[listing.type] : 'bg-surface-inverse'
+            'flex items-center gap-1 rounded-lg px-3.5 py-2.5 text-xl font-medium leading-none text-white',
+            selected ? 'bg-brand' : 'bg-surface-inverse'
           )}
         >
+          {favorited && <img src={heartActive} alt='' width={14} height={14} />}
           {formatPriceShort(listing.price)}
         </span>
-        {/* Figma wraps this polygon in scaleY(-1): the exported asset points up,
-            and the design flips it so it aims down at the property. */}
         <span
           className='mask-icon -mt-1.5 -scale-y-100'
           style={

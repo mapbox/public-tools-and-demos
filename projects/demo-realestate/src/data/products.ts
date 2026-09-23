@@ -18,7 +18,9 @@ export const products: Product[] = [
   {
     title: 'Mapbox Search JS',
     body: [
-      'Powers the address autocomplete in the header. Typing an address, neighborhood, or ZIP returns suggestions from the Mapbox Search Service and recentres the map on the chosen result.'
+      'Powers the location search in the filter row, using the Search JS Core classes directly rather than the prebuilt React component.',
+      'It is the two-step interactive flow: SearchBoxCore.suggest() as you type, debounced and cancellable via AbortController, then retrieve() once you pick a result, which is the call that returns coordinates. Both share a SessionToken, because the Search Box API bills a session rather than individual keystrokes, and a new session starts after each selection. Results are biased toward the listings area with the proximity option.',
+      'Note this searches places, not the listings on this page — choosing a result moves the map.'
     ],
     links: [
       {
@@ -62,7 +64,7 @@ export const products: Product[] = [
   {
     title: 'Map Markers',
     body: [
-      'Each listing is a custom HTML marker showing its price. Marker colour encodes property type — blue for houses, orange for condos, green for townhouses — matching the type filters and the map legend.'
+      'Each listing is a custom HTML marker: a price label over a circle. The circle encodes property type — blue for houses, orange for condos, green for townhouses — matching the type filters, while the label itself only shows whether the listing is selected. Saved listings carry a heart on the label.'
     ],
     links: [
       {
