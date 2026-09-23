@@ -1,6 +1,101 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+/* Typography mirrors docs.mapbox.com: the family is registered as `Cera` (not
+   "Cera PRO") with Open Sans as its designed fallback, served from the same CDNs
+   the docs site uses. Weights 400/500/700 are the three the designs call for. */
+@font-face {
+  font-family: 'Cera';
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://assets.website-files.com/5f291534dceb6cd8f0e7a02f/5f2a9eb37e663459fc064f54_CeraPRO-Regular.ttf')
+    format('truetype');
+}
+@font-face {
+  font-family: 'Cera';
+  font-weight: 500;
+  font-display: swap;
+  src: url('https://assets.website-files.com/6050a76fa6a633d5d54ae714/6050ab4346858de0e05420ae_Cera%20Pro%20Medium.woff2')
+    format('woff2');
+}
+@font-face {
+  font-family: 'Cera';
+  font-weight: 700;
+  font-display: swap;
+  src: url('https://api.mapbox.com/mapbox-assembly/fonts/CeraPRO-Bold.v1.woff2')
+      format('woff2'),
+    url('https://api.mapbox.com/mapbox-assembly/fonts/CeraPRO-Bold.v1.woff')
+      format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://api.mapbox.com/mapbox-assembly/fonts/opensans-regular.v1.woff2')
+      format('woff2'),
+    url('https://api.mapbox.com/mapbox-assembly/fonts/opensans-regular.v1.woff')
+      format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-weight: 700;
+  font-display: swap;
+  src: url('https://api.mapbox.com/mapbox-assembly/fonts/opensans-bold.v1.woff2')
+      format('woff2'),
+    url('https://api.mapbox.com/mapbox-assembly/fonts/opensans-bold.v1.woff')
+      format('woff');
+}
+
+/* mapbox-demo-components ships Tailwind utility classes inside untyped JSX and no
+   CSS of its own. Tailwind's automatic source detection does not cross into a
+   sibling workspace package, so shared components render unstyled without this. */
+@source '../../demo-components/src';
+
+/* Design tokens mirrored from the Figma file "Mapbox Docs Real Estate Listing
+   Playground". Names are semantic; the Figma variable each one came from is noted
+   where the mapping is not obvious. */
+@theme {
+  --font-sans: 'Cera', 'Open Sans', sans-serif;
+  /* The small uppercase listing tags are the one place the designs call for
+     Open Sans directly rather than Cera. */
+  --font-label: 'Open Sans', sans-serif;
+
+  --color-ink: #23262d; /* text/primary */
+  --color-ink-muted: #566171; /* text/secondary */
+  --color-ink-inverse: #ffffff; /* text/inverse */
+
+  --color-brand: #007afc; /* mapbox/brand blue 50, docsearch/primary 50 */
+  --color-brand-dark: #006cc5; /* docsearch/primary 60 */
+  --color-brand-tint: #c7e7ff; /* docsearch/primary 10 */
+  --color-brand-wash: #e6f2ff; /* docsearch/primary 05 */
+
+  --color-accent: #fc8200; /* mapbox/orange/50 */
+  --color-accent-light: #ff9b31; /* mapbox/orange/40 */
+  --color-accent-dark: #ca6800; /* mapbox/orange/60 */
+  --color-accent-deep: #8d5b00; /* mapbox/orange/70 */
+  --color-accent-wash: #fff5ea; /* mapbox/orange/5 */
+
+  --color-success: #2fc078; /* docsearch/green/green50 */
+  --color-success-dark: #007a43; /* docsearch/green/green60 */
+  --color-success-wash: #e9faf1; /* docsearch/green/green05 */
+
+  --color-danger: #eb1414; /* red */
+
+  --color-line: #d5dae2; /* stroke/light-grey1, docsearch/nudge-background */
+  --color-line-strong: #8b96aa; /* docsearch/border */
+  --color-surface: #ffffff; /* docsearch/modal-background */
+  --color-surface-sunken: #f5f7fb; /* docsearch/hit-background */
+  --color-surface-inverse: #1e2136; /* docsearch/footer-background */
+}
+
+/* Property type is colour-coded identically across the type filter chips, the map
+   pins, and the map legend. `static` because Tailwind 4 tree-shakes theme variables
+   that no utility class references, and map markers read these as raw `var()` from
+   code rather than through a utility. */
+@theme static {
+  --color-house: #007afc;
+  --color-condo: #fc8200;
+  --color-townhouse: #2fc078;
+}
 
 html,
 body,
@@ -9,32 +104,20 @@ body,
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  margin: 0;
+  background-color: var(--color-surface-sunken);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-}
-
-.mapboxgl-popup-content {
-  padding: 0 !important;
-  border: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
-}
-
-.mapboxgl-popup-tip {
-  display: none;
-}
-
-.react-tooltip {
-  pointer-events: auto !important;
+/* Painting an icon in `currentColor` by masking it. The mask lives here rather
+   than in an inline style because React silently drops `mask-image` when it is
+   assigned through the CSSOM; a custom property survives that path intact. */
+.mask-icon {
+  display: inline-block;
+  flex: none;
+  background-color: currentColor;
+  -webkit-mask: var(--mask-url) center / contain no-repeat;
+  mask: var(--mask-url) center / contain no-repeat;
 }
