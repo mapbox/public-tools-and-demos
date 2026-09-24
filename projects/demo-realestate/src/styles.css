@@ -94,7 +94,7 @@
    references, and map markers read these as raw `var()` from code. */
 @theme static {
   --color-house: #007afc;
-  --color-condo: #fc8200;
+  --color-multifamily: #fc8200;
   --color-townhouse: #2fc078;
 }
 

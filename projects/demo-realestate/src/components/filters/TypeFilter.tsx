@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 
-import checkCondo from '../../img/icons/check-condo.svg'
+import checkMultifamily from '../../img/icons/check-multifamily.svg'
 import checkHouse from '../../img/icons/check-house.svg'
 import checkTownhouse from '../../img/icons/check-townhouse.svg'
 import type { PropertyType } from '../../types/listing'
@@ -12,7 +12,12 @@ const TYPES: {
   ring: string
 }[] = [
   { value: 'house', label: 'House', check: checkHouse, ring: 'border-house' },
-  { value: 'condo', label: 'Condo', check: checkCondo, ring: 'border-condo' },
+  {
+    value: 'multi-family',
+    label: 'Multi-family',
+    check: checkMultifamily,
+    ring: 'border-multifamily'
+  },
   {
     value: 'townhouse',
     label: 'Townhouse',

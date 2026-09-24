@@ -64,7 +64,7 @@ export const products: Product[] = [
   {
     title: 'Map Markers',
     body: [
-      'Each listing is a custom HTML marker: a price label over a circle. The circle encodes property type — blue for houses, orange for condos, green for townhouses — matching the type filters, while the label itself only shows whether the listing is selected. Saved listings carry a heart on the label.'
+      'Each listing is a custom HTML marker: a price label over a circle. The circle encodes property type — blue for single-family homes, orange for multi-family, green for townhouses — matching the type filters, while the label itself only shows whether the listing is selected. Saved listings carry a heart on the label.'
     ],
     links: [
       {

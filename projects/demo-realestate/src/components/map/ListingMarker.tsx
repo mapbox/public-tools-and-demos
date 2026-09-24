@@ -9,7 +9,7 @@ import type { MarkerVariant } from './labelSelection'
 
 const DOT_COLOR: Record<PropertyType, string> = {
   house: 'bg-house',
-  condo: 'bg-condo',
+  'multi-family': 'bg-multifamily',
   townhouse: 'bg-townhouse'
 }
 

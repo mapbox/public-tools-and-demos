@@ -12,7 +12,7 @@ import type { Listing } from './types/listing'
 import type { PropertyType } from './types/listing'
 import type { ViewMode } from './types/view'
 
-const ALL_TYPES: PropertyType[] = ['house', 'condo', 'townhouse']
+const ALL_TYPES: PropertyType[] = ['house', 'multi-family', 'townhouse']
 
 /** King County sale prices; fixed so the control does not jump as data loads. */
 const PRICE_BOUNDS = { min: 75000, max: 7700000 }

@@ -1,4 +1,4 @@
-export type PropertyType = 'house' | 'condo' | 'townhouse'
+export type PropertyType = 'house' | 'multi-family' | 'townhouse'
 
 export type ListingTag = 'new' | 'price-drop' | 'featured'
 
