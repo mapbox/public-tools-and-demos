@@ -1,6 +1,7 @@
 import type { PropertyType } from '../../types/listing'
 import BedsFilter from '../filters/BedsFilter'
-import PriceFilter, { type PriceRange } from '../filters/PriceFilter'
+import PriceFilter from '../filters/PriceFilter'
+import type { PriceRange } from '../../lib/price'
 import SavedIndicator from '../filters/SavedIndicator'
 import TypeFilter from '../filters/TypeFilter'
 import SearchBar, { type SearchedLocation } from './SearchBar'
@@ -12,9 +13,10 @@ const Divider = () => (
 export default function FilterBar({
   onSearchSelect,
   price,
-  priceBounds,
+  priceCounts,
   priceOpen,
   onPriceOpenChange,
+  onPriceChange,
   beds,
   onBedsChange,
   types,
@@ -25,9 +27,10 @@ export default function FilterBar({
 }: {
   onSearchSelect: (location: SearchedLocation) => void
   price: PriceRange
-  priceBounds: PriceRange
+  priceCounts: number[]
   priceOpen: boolean
   onPriceOpenChange: (open: boolean) => void
+  onPriceChange: (range: PriceRange) => void
   beds: number | null
   onBedsChange: (beds: number | null) => void
   types: PropertyType[]
@@ -44,9 +47,10 @@ export default function FilterBar({
       <Divider />
       <PriceFilter
         range={price}
-        bounds={priceBounds}
+        counts={priceCounts}
         open={priceOpen}
         onOpenChange={onPriceOpenChange}
+        onChange={onPriceChange}
       />
       <BedsFilter value={beds} onChange={onBedsChange} />
       <TypeFilter selected={types} onToggle={onToggleType} />

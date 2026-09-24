@@ -8,14 +8,17 @@ import MapView from './components/map/MapView'
 import type { SearchedLocation } from './components/layout/SearchBar'
 import { loadListings, withinBounds, type Bounds } from './lib/listings-source'
 import { MARKER_CAP } from './components/map/labelSelection'
+import {
+  FULL_RANGE,
+  bucketPrices,
+  matchesPrice,
+  type PriceRange
+} from './lib/price'
 import type { Listing } from './types/listing'
 import type { PropertyType } from './types/listing'
 import type { ViewMode } from './types/view'
 
 const ALL_TYPES: PropertyType[] = ['house', 'multi-family', 'townhouse']
-
-/** King County sale prices; fixed so the control does not jump as data loads. */
-const PRICE_BOUNDS = { min: 75000, max: 7700000 }
 
 export default function App() {
   const [allListings, setAllListings] = useState<Listing[]>([])
@@ -23,7 +26,7 @@ export default function App() {
   const [view, setView] = useState<ViewMode>('split')
   const [searchedLocation, setSearchedLocation] =
     useState<SearchedLocation | null>(null)
-  const [price] = useState(PRICE_BOUNDS)
+  const [price, setPrice] = useState<PriceRange>(FULL_RANGE)
   const [priceOpen, setPriceOpen] = useState(false)
   const [beds, setBeds] = useState<number | null>(null)
   const [types, setTypes] = useState<PropertyType[]>(ALL_TYPES)
@@ -37,17 +40,25 @@ export default function App() {
   // Everything currently in the viewport that passes the filters. Search moves
   // the map rather than filtering: it queries the Search Box API for places,
   // not this demo's listings.
-  const visible = useMemo(() => {
+  // Everything in view that passes every filter except price. The histogram is
+  // drawn from this, so its bars stay put while the price handles move.
+  const priceFacet = useMemo(() => {
     if (!bounds) return []
     return allListings.filter((listing) => {
       if (!withinBounds(listing, bounds)) return false
-      if (listing.price < price.min || listing.price > price.max) return false
       if (beds !== null && listing.beds < beds) return false
       // Dataset listings carry no property type, so the type chips cannot
       // exclude them.
       return listing.type === undefined || types.includes(listing.type)
     })
-  }, [allListings, bounds, price, beds, types])
+  }, [allListings, bounds, beds, types])
+
+  const priceCounts = useMemo(() => bucketPrices(priceFacet), [priceFacet])
+
+  const visible = useMemo(
+    () => priceFacet.filter((listing) => matchesPrice(listing.price, price)),
+    [priceFacet, price]
+  )
 
   // Only this many are ever drawn; 500 DOM markers pan at 60fps, 1000 does not.
   const rendered = useMemo(() => visible.slice(0, MARKER_CAP), [visible])
@@ -78,9 +89,10 @@ export default function App() {
           <FilterBar
             onSearchSelect={setSearchedLocation}
             price={price}
-            priceBounds={PRICE_BOUNDS}
+            priceCounts={priceCounts}
             priceOpen={priceOpen}
             onPriceOpenChange={setPriceOpen}
+            onPriceChange={setPrice}
             beds={beds}
             onBedsChange={setBeds}
             types={types}

@@ -87,11 +87,10 @@
   --color-surface-inverse: #1e2136; /* docsearch/footer-background */
 }
 
-/* Property type is colour-coded identically across the type filter chips and the
-   circular map pins. The price label above each pin deliberately does NOT use these
-   — it only shows selected state, so it does not repeat what the circle says.
-   `static` because Tailwind 4 tree-shakes theme variables that no utility class
-   references, and map markers read these as raw `var()` from code. */
+/* Property type colours. Used by the type filter chips only — map markers
+   deliberately encode selection rather than type, so the two do not disagree.
+   `static` keeps them emitted even when no utility references them, so they stay
+   available if a future marker treatment wants them back. */
 @theme static {
   --color-house: #007afc;
   --color-multifamily: #fc8200;
