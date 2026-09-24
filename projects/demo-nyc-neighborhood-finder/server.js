@@ -30,7 +30,7 @@ await mcpClient.connect(
     env: {
       ...process.env,
       MAPBOX_ACCESS_TOKEN:
-        process.env.MAPBOX_TOKEN ?? process.env.VITE_MAPBOX_TOKEN
+        process.env.VITE_YOUR_MAPBOX_ACCESS_TOKEN
     }
   })
 )

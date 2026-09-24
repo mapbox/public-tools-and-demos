@@ -20,7 +20,7 @@ function getCentroid(geometry: GeoJSON.Geometry): [number, number] | null {
   return count > 0 ? [sumLng / count, sumLat / count] : null
 }
 
-const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN
+const MAPBOX_TOKEN = import.meta.env.VITE_YOUR_MAPBOX_ACCESS_TOKEN
 
 const NYC_CENTER: [number, number] = [-73.9857, 40.7484]
 const NYC_ZOOM = 11
@@ -248,7 +248,7 @@ export default function MapView({ recommendedNeighborhoods, hoveredNeighborhood,
   if (!MAPBOX_TOKEN) {
     return (
       <div className="map-panel map-missing-token">
-        <p>Add <code>VITE_MAPBOX_TOKEN</code> to your <code>.env</code> file to load the map.</p>
+        <p>Add <code>VITE_YOUR_MAPBOX_ACCESS_TOKEN</code> to your <code>.env</code> file to load the map.</p>
       </div>
     )
   }
