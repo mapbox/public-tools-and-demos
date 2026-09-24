@@ -3,3 +3,6 @@
 .DS_Store
 .env
 **/yarn-error.log
+
+# Cached Geocoding API responses from scripts/geocode-listings.mjs
+.geocode-cache

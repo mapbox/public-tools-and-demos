@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import FilterBar from './components/layout/FilterBar'
 import LearnMapbox from './components/layout/LearnMapbox'
@@ -6,18 +6,20 @@ import Header from './components/layout/Header'
 import ListingsPanel from './components/listings/ListingsPanel'
 import MapView from './components/map/MapView'
 import type { SearchedLocation } from './components/layout/SearchBar'
-import { listings as allListings } from './data/listings'
+import { loadListings, withinBounds, type Bounds } from './lib/listings-source'
+import { MARKER_CAP } from './components/map/markerDetail'
+import type { Listing } from './types/listing'
 import type { PropertyType } from './types/listing'
 import type { ViewMode } from './types/view'
 
 const ALL_TYPES: PropertyType[] = ['house', 'condo', 'townhouse']
 
-const PRICE_BOUNDS = {
-  min: Math.min(...allListings.map((listing) => listing.price)),
-  max: Math.max(...allListings.map((listing) => listing.price))
-}
+/** King County sale prices; fixed so the control does not jump as data loads. */
+const PRICE_BOUNDS = { min: 75000, max: 7700000 }
 
 export default function App() {
+  const [allListings, setAllListings] = useState<Listing[]>([])
+  const [bounds, setBounds] = useState<Bounds | null>(null)
   const [view, setView] = useState<ViewMode>('split')
   const [searchedLocation, setSearchedLocation] =
     useState<SearchedLocation | null>(null)
@@ -28,17 +30,29 @@ export default function App() {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
 
-  // Search moves the map rather than filtering: it queries the Search Box API
-  // for places, not this demo's listings.
-  const visible = useMemo(
-    () =>
-      allListings.filter((listing) => {
-        if (listing.price < price.min || listing.price > price.max) return false
-        if (beds !== null && listing.beds < beds) return false
-        return types.includes(listing.type)
-      }),
-    [price, beds, types]
-  )
+  useEffect(() => {
+    loadListings().then(setAllListings)
+  }, [])
+
+  // Everything currently in the viewport that passes the filters. Search moves
+  // the map rather than filtering: it queries the Search Box API for places,
+  // not this demo's listings.
+  const visible = useMemo(() => {
+    if (!bounds) return []
+    return allListings.filter((listing) => {
+      if (!withinBounds(listing, bounds)) return false
+      if (listing.price < price.min || listing.price > price.max) return false
+      if (beds !== null && listing.beds < beds) return false
+      // Dataset listings carry no property type, so the type chips cannot
+      // exclude them.
+      return listing.type === undefined || types.includes(listing.type)
+    })
+  }, [allListings, bounds, price, beds, types])
+
+  // Only this many are ever drawn; 500 DOM markers pan at 60fps, 1000 does not.
+  const rendered = useMemo(() => visible.slice(0, MARKER_CAP), [visible])
+
+  const handleBoundsChange = useCallback((next: Bounds) => setBounds(next), [])
 
   const toggleType = (type: PropertyType) =>
     setTypes((current) =>
@@ -86,7 +100,8 @@ export default function App() {
                 }
               >
                 <ListingsPanel
-                  listings={visible}
+                  listings={rendered}
+                  totalInView={visible.length}
                   layout={view === 'split' ? 'horizontal' : 'vertical'}
                   selectedId={selectedId}
                   favorites={favorites}
@@ -99,11 +114,13 @@ export default function App() {
             {view !== 'list' && (
               <div className='min-h-0 min-w-0 flex-1'>
                 <MapView
-                  listings={visible}
+                  listings={rendered}
                   selectedId={selectedId}
                   favorites={favorites}
                   flyTo={searchedLocation}
+                  totalInView={visible.length}
                   onSelect={setSelectedId}
+                  onBoundsChange={handleBoundsChange}
                 />
               </div>
             )}

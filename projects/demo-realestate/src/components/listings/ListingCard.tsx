@@ -30,6 +30,12 @@ export default function ListingCard({
   onToggleFavorite
 }: ListingCardProps) {
   const isVertical = layout === 'vertical'
+  const photo = listing.images?.[0]
+  // Dataset rows have no name; the price is the only stable human label.
+  const title = listing.name ?? formatPrice(listing.price)
+  const place = [listing.address, listing.neighborhood]
+    .filter(Boolean)
+    .join(', ')
 
   return (
     <article
@@ -48,19 +54,29 @@ export default function ListingCard({
           isVertical ? 'h-[206px] w-full' : 'h-28 w-[130px]'
         )}
       >
-        <img
-          src={listing.images[0]}
-          alt={listing.name}
-          className={clsx(
-            'pointer-events-none absolute inset-0 size-full object-cover',
-            !isVertical && 'rounded-lg'
-          )}
-        />
+        {photo ? (
+          <img
+            src={photo}
+            alt={title}
+            className={clsx(
+              'pointer-events-none absolute inset-0 size-full object-cover',
+              !isVertical && 'rounded-lg'
+            )}
+            loading='lazy'
+          />
+        ) : (
+          <div
+            className={clsx(
+              'absolute inset-0 bg-surface-sunken',
+              !isVertical && 'rounded-lg'
+            )}
+          />
+        )}
         <div className='absolute right-1.5 top-1.5 z-10'>
           <FavoriteButton
             active={favorited}
             onToggle={onToggleFavorite}
-            label={listing.name}
+            label={title}
           />
         </div>
       </div>
@@ -84,7 +100,10 @@ export default function ListingCard({
         </div>
 
         <p className='truncate text-xs text-gray-500'>
-          {listing.address}, {listing.neighborhood}
+          {place ||
+            [listing.zip, listing.built && `Built ${listing.built}`]
+              .filter(Boolean)
+              .join(' · ')}
         </p>
 
         {listing.tag && (
@@ -98,7 +117,7 @@ export default function ListingCard({
           control is not a nested interactive element. */}
       <button
         type='button'
-        aria-label={`View ${listing.name}, ${formatPrice(listing.price)}`}
+        aria-label={`View ${title}, ${formatPrice(listing.price)}`}
         aria-current={selected}
         onClick={onSelect}
         className='absolute inset-0 cursor-pointer rounded-[inherit] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand'
