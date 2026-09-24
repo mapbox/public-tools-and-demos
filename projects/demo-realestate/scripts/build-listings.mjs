@@ -82,6 +82,20 @@ for (const line of lines) {
   })
 }
 
+// The CSV is sales records: one property can appear more than once. Keep only
+// the most recent sale per id, or the app ends up with duplicate marker keys.
+const latest = new Map()
+for (const feature of features) {
+  const existing = latest.get(feature.properties.id)
+  if (!existing || feature.properties.sold > existing.properties.sold) {
+    latest.set(feature.properties.id, feature)
+  }
+}
+const unique = [...latest.values()]
+console.log(`${features.length} rows -> ${unique.length} unique properties`)
+features.length = 0
+features.push(...unique)
+
 await mkdir(path.dirname(OUT), { recursive: true })
 const out = createWriteStream(OUT)
 out.write('{"type":"FeatureCollection","features":[\n')

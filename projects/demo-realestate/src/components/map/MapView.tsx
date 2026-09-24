@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef } from 'react'
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import mapboxgl from 'mapbox-gl'
 import accessToken from '../../lib/mapbox'
@@ -8,7 +8,7 @@ import type { SearchedLocation } from '../layout/SearchBar'
 import { MAP_CENTER, MAP_ZOOM } from '../../lib/map-defaults'
 import type { Listing } from '../../types/listing'
 import ListingMarker from './ListingMarker'
-import { detailForCount } from './markerDetail'
+import { selectLabelled, type MarkerVariant } from './labelSelection'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
@@ -17,6 +17,9 @@ mapboxgl.accessToken = accessToken
 interface MarkerEntry {
   marker: mapboxgl.Marker
   element: HTMLDivElement
+  /** A label hangs above its point; a dot sits on it. Changing one means
+      recreating the marker, since the anchor is fixed at construction. */
+  variant: MarkerVariant
 }
 
 export default function MapView({
@@ -37,8 +40,9 @@ export default function MapView({
   onBoundsChange: (bounds: Bounds) => void
 }) {
   const rendered = listings
-  const detail = detailForCount(rendered.length)
+  const [labelled, setLabelled] = useState<Set<string>>(new Set())
 
+  const [splitVersion, setSplitVersion] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
   const onBoundsChangeRef = useRef(onBoundsChange)
   onBoundsChangeRef.current = onBoundsChange
@@ -63,6 +67,7 @@ export default function MapView({
       'top-right'
     )
     mapRef.current = map
+    const markers = markersRef.current
 
     const report = () => {
       const bounds = map.getBounds()
@@ -78,7 +83,9 @@ export default function MapView({
     // finish loading (a restricted token does exactly that) and the listings
     // would then never appear, even though the bounds are already known.
     report()
+    const bumpSplit = () => setSplitVersion((value) => value + 1)
     map.on('moveend', report)
+    map.on('moveend', bumpSplit)
 
     // GL JS only reacts to *window* resizes, so switching Split to Map — which
     // widens this container without the window changing — would otherwise leave
@@ -88,12 +95,33 @@ export default function MapView({
 
     return () => {
       map.off('moveend', report)
+      map.off('moveend', bumpSplit)
       observer.disconnect()
-      markersRef.current.clear()
+      markers.clear()
       map.remove()
       mapRef.current = null
     }
   }, [])
+
+  // Which listings show a price depends on where they land on screen, so it is
+  // recomputed whenever the set changes or the map settles.
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map) return
+    setLabelled(
+      selectLabelled(rendered, (coordinates) => map.project(coordinates))
+    )
+  }, [rendered, splitVersion])
+
+  // Selection and favourites only ever *add* a label. Clicking a dot promotes
+  // that one marker and leaves every other marker exactly as it was.
+  const variantFor = useCallback(
+    (id: string): MarkerVariant =>
+      labelled.has(id) || id === selectedId || favorites.has(id)
+        ? 'label'
+        : 'dot',
+    [labelled, selectedId, favorites]
+  )
 
   useEffect(() => {
     const map = mapRef.current
@@ -101,8 +129,12 @@ export default function MapView({
 
     const entries = markersRef.current
 
+    const wanted = new Map(rendered.map((listing) => [listing.id, listing]))
+
     for (const [id, entry] of entries) {
-      if (!rendered.some((listing) => listing.id === id)) {
+      // Dropped from view, or switched between dot and label — either way the
+      // existing marker cannot be reused.
+      if (!wanted.has(id) || entry.variant !== variantFor(id)) {
         entry.marker.remove()
         entries.delete(id)
       }
@@ -110,28 +142,37 @@ export default function MapView({
 
     for (const listing of rendered) {
       if (entries.has(listing.id)) continue
+      const variant = variantFor(listing.id)
       const element = document.createElement('div')
-      const marker = new mapboxgl.Marker({ element, anchor: 'bottom' })
+      const marker = new mapboxgl.Marker({
+        element,
+        anchor: variant === 'label' ? 'bottom' : 'center'
+      })
         .setLngLat(listing.coordinates)
         .addTo(map)
-      entries.set(listing.id, { marker, element })
+      entries.set(listing.id, { marker, element, variant })
+    }
+
+    // Labels are only collision-tested against other labels, so a neighbour's
+    // dot can land inside one; and a promoted label is not tested at all.
+    // Paint order resolves both: selected on top, then labels, then dots.
+    for (const [id, entry] of entries) {
+      entry.element.style.zIndex =
+        id === selectedId ? '3' : entry.variant === 'label' ? '2' : '1'
     }
 
     syncPortals()
-  }, [rendered])
+  }, [rendered, variantFor, selectedId])
 
   useEffect(() => {
     if (!mapRef.current || !flyTo) return
     mapRef.current.flyTo({ center: flyTo.center, zoom: 14, duration: 1200 })
   }, [flyTo])
 
-  // Keep the selected listing in view without yanking the map on every change.
-  useEffect(() => {
-    const map = mapRef.current
-    const listing = listings.find((item) => item.id === selectedId)
-    if (!map || !listing) return
-    map.easeTo({ center: listing.coordinates, duration: 600 })
-  }, [selectedId, listings])
+  // Selecting a listing deliberately does NOT move the map. Panning fires
+  // 'moveend', which recomputes the viewport set and hands back a new listings
+  // array, which would re-trigger the pan — an endless loop that rebuilt every
+  // marker each time. Search still moves the map, because the user asked it to.
 
   return (
     <div className='relative size-full overflow-hidden rounded-lg'>
@@ -150,7 +191,7 @@ export default function MapView({
         return createPortal(
           <ListingMarker
             listing={listing}
-            detail={detail}
+            variant={variantFor(listing.id)}
             selected={listing.id === selectedId}
             favorited={favorites.has(listing.id)}
             onSelect={() => onSelect(listing.id)}

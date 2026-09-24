@@ -24,12 +24,21 @@ export const loadListings = (): Promise<Listing[]> => {
       if (!response.ok) throw new Error(`listings.json: ${response.status}`)
       return response.json()
     })
-    .then((collection: { features: ListingFeature[] }) =>
-      collection.features.map((feature) => ({
-        ...feature.properties,
-        coordinates: feature.geometry.coordinates
-      }))
-    )
+    .then((collection: { features: ListingFeature[] }) => {
+      // Ids must be unique: markers are tracked in a Map keyed by id, so a
+      // repeat silently overwrites the entry and strands the previous marker
+      // on the map forever. The source data is sales records, where one
+      // property can appear several times, so this is enforced at the boundary
+      // rather than trusted.
+      const byId = new Map<string, Listing>()
+      for (const feature of collection.features) {
+        byId.set(feature.properties.id, {
+          ...feature.properties,
+          coordinates: feature.geometry.coordinates
+        })
+      }
+      return [...byId.values()]
+    })
   return cache
 }
 
