@@ -4,6 +4,7 @@ import FilterBar from './components/layout/FilterBar'
 import LearnMapbox from './components/layout/LearnMapbox'
 import Header from './components/layout/Header'
 import ListingsPanel from './components/listings/ListingsPanel'
+import PropertyCard from './components/listings/PropertyCard'
 import MapView from './components/map/MapView'
 import type { SearchedLocation } from './components/layout/SearchBar'
 import { loadListings, withinBounds, type Bounds } from './lib/listings-source'
@@ -64,6 +65,14 @@ export default function App() {
   const rendered = useMemo(() => visible.slice(0, MARKER_CAP), [visible])
 
   const handleBoundsChange = useCallback((next: Bounds) => setBounds(next), [])
+  const closeCard = useCallback(() => setSelectedId(null), [])
+
+  // Looked up from the full set, not the rendered slice, so the card stays open
+  // when a pan pushes its listing past the marker cap.
+  const selected = useMemo(
+    () => allListings.find((listing) => listing.id === selectedId) ?? null,
+    [allListings, selectedId]
+  )
 
   const toggleType = (type: PropertyType) =>
     setTypes((current) =>
@@ -124,7 +133,7 @@ export default function App() {
             )}
 
             {view !== 'list' && (
-              <div className='min-h-0 min-w-0 flex-1'>
+              <div className='relative min-h-0 min-w-0 flex-1'>
                 <MapView
                   listings={rendered}
                   selectedId={selectedId}
@@ -134,6 +143,17 @@ export default function App() {
                   onSelect={setSelectedId}
                   onBoundsChange={handleBoundsChange}
                 />
+                {selected && (
+                  <div className='absolute left-3 top-3 z-20 max-h-[calc(100%-24px)] max-w-[calc(100%-24px)] overflow-y-auto rounded-2xl'>
+                    <PropertyCard
+                      key={selected.id}
+                      listing={selected}
+                      favorited={favorites.has(selected.id)}
+                      onToggleFavorite={() => toggleFavorite(selected.id)}
+                      onClose={closeCard}
+                    />
+                  </div>
+                )}
               </div>
             )}
           </div>

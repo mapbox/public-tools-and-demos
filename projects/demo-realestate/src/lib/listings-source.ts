@@ -1,4 +1,5 @@
 import type { Listing } from '../types/listing'
+import { base } from './base-url'
 
 interface ListingFeature {
   geometry: { coordinates: [number, number] }
@@ -11,12 +12,6 @@ interface ListingFeature {
  * which is far cheaper than re-requesting per view.
  */
 let cache: Promise<Listing[]> | null = null
-
-// vite.config sets `base` without a trailing slash, so BASE_URL needs
-// normalising. Getting this wrong is quiet in dev: the SPA fallback answers an
-// unknown path with index.html and a 200, so it surfaces as a JSON parse error
-// rather than a 404.
-const base = import.meta.env.BASE_URL.replace(/\/?$/, '/')
 
 export const loadListings = (): Promise<Listing[]> => {
   cache ??= fetch(`${base}data/listings.json`)

@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 
 import { formatArea, formatPrice } from '../../lib/format'
+import { photosFor, ROOM_LABEL } from '../../lib/photos'
 import type { Listing } from '../../types/listing'
 import Tag from '../ui/Tag'
 import AmenityLabel from './AmenityLabel'
@@ -30,7 +31,7 @@ export default function ListingCard({
   onToggleFavorite
 }: ListingCardProps) {
   const isVertical = layout === 'vertical'
-  const photo = listing.images?.[0]
+  const [photo] = photosFor(listing)
   // Dataset rows have no name; the price is the only stable human label.
   const title = listing.name ?? formatPrice(listing.price)
   const place = [listing.address, listing.neighborhood]
@@ -54,24 +55,17 @@ export default function ListingCard({
           isVertical ? 'h-[206px] w-full' : 'h-28 w-[130px]'
         )}
       >
-        {photo ? (
-          <img
-            src={photo}
-            alt={title}
-            className={clsx(
-              'pointer-events-none absolute inset-0 size-full object-cover',
-              !isVertical && 'rounded-lg'
-            )}
-            loading='lazy'
-          />
-        ) : (
-          <div
-            className={clsx(
-              'absolute inset-0 bg-surface-sunken',
-              !isVertical && 'rounded-lg'
-            )}
-          />
-        )}
+        <img
+          src={photo.src}
+          srcSet={photo.srcSet}
+          sizes={isVertical ? '420px' : '130px'}
+          alt={ROOM_LABEL[photo.room]}
+          className={clsx(
+            'pointer-events-none absolute inset-0 size-full bg-surface-sunken object-cover',
+            !isVertical && 'rounded-lg'
+          )}
+          loading='lazy'
+        />
         <div className='absolute right-1.5 top-1.5 z-10'>
           <FavoriteButton
             active={favorited}

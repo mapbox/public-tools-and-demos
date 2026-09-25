@@ -14,16 +14,16 @@ export interface Listing {
 
   /**
    * Everything below is absent from the King County dataset, which carries only
-   * price, size, location and physical attributes. The hand-authored demo
-   * listings still supply them, so they stay optional rather than being
-   * invented for 21k rows.
+   * price, size, location and physical attributes. Address and neighbourhood
+   * were recovered by reverse geocoding and type by joining the county parcel
+   * extract; whatever could not be recovered stays absent rather than invented.
+   * Photos are not a field at all: see `photosFor` in lib/photos.
    */
   name?: string
   address?: string
   neighborhood?: string
   type?: PropertyType
   tag?: ListingTag
-  images?: string[]
 
   /** King County attributes, present only on dataset listings. */
   zip?: string

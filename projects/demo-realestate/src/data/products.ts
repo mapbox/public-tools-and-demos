@@ -64,7 +64,8 @@ export const products: Product[] = [
   {
     title: 'Map Markers',
     body: [
-      'Each listing is a custom HTML marker: a price label over a circle. The circle encodes property type — blue for single-family homes, orange for multi-family, green for townhouses — matching the type filters, while the label itself only shows whether the listing is selected. Saved listings carry a heart on the label.'
+      'Each listing is a custom HTML marker, drawn as either a price label or a small dot. Which listings get a price is decided in screen space: a label is placed only where it would not collide with one already on the map, so prices stay evenly scattered at any zoom and density. Selecting or saving a listing always promotes it to a label, and saved listings carry a heart.',
+      'Markers are near-black by default and brand blue when selected. At most 500 are drawn per view, because DOM markers stay smooth when panning at that count and not at 1,000.'
     ],
     links: [
       {
@@ -76,7 +77,8 @@ export const products: Product[] = [
   {
     title: 'Static Images API',
     body: [
-      'The small location preview inside the property card is a single Static Images API request rather than a second interactive map — cheaper to render and it never steals scroll from the page.'
+      'The last photo in the property card gallery is an aerial view of the actual parcel: a single Static Images API request for the Satellite Streets style, centred on the listing with a pin and sized to the card at @2x. It is one image rather than a second interactive map, so it is cheap to render and never steals scroll from the page.',
+      'The image keeps the logo and attribution the API draws into it, which is why the thumbnail strip sits below the photo instead of on top of it.'
     ],
     links: [
       {

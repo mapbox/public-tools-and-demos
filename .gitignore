@@ -6,3 +6,5 @@
 
 # Cached Geocoding API responses from scripts/geocode-listings.mjs
 .geocode-cache
+# Original downloads from scripts/build-interiors.mjs
+.interiors-cache
