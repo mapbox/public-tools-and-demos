@@ -8,3 +8,5 @@
 .geocode-cache
 # Original downloads from scripts/build-interiors.mjs
 .interiors-cache
+# King County address point responses from scripts/add-address-points.mjs
+.address-points-cache

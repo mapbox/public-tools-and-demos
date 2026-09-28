@@ -6,10 +6,13 @@
 //   node scripts/geocode-listings.mjs --limit 1000
 //
 // Results are cached per chunk under .geocode-cache/, so a re-run resumes
-// rather than re-billing work that already succeeded.
+// rather than re-billing work that already succeeded. Each chunk's file name
+// carries a hash of its coordinates, so moving listings (add-address-points.mjs)
+// can never silently reuse answers for the old points.
 
 import { readFile, writeFile, mkdir, readdir } from 'node:fs/promises'
 import path from 'node:path'
+import { createHash } from 'node:crypto'
 
 const DATA = 'public/data/listings.json'
 const CACHE = '.geocode-cache'
@@ -55,8 +58,16 @@ async function postChunk(chunk, attempt = 1) {
 }
 
 const chunkCount = Math.ceil(features.length / CHUNK)
+const chunkName = (i) => {
+  const coordinates = features
+    .slice(i * CHUNK, (i + 1) * CHUNK)
+    .map((feature) => feature.geometry.coordinates)
+  const hash = createHash('sha1').update(JSON.stringify(coordinates)).digest('hex')
+  return `chunk-${String(i).padStart(3, '0')}-${hash.slice(0, 10)}.json`
+}
+
 for (let i = 0; i < chunkCount; i++) {
-  const name = `chunk-${String(i).padStart(3, '0')}.json`
+  const name = chunkName(i)
   if (done.has(name)) {
     console.log(`[${i + 1}/${chunkCount}] cached`)
     continue
@@ -70,14 +81,16 @@ for (let i = 0; i < chunkCount; i++) {
 
 let matched = 0
 for (let i = 0; i < chunkCount; i++) {
-  const name = `chunk-${String(i).padStart(3, '0')}.json`
+  const name = chunkName(i)
   const { batch } = JSON.parse(await readFile(path.join(CACHE, name), 'utf8'))
   batch.forEach((entry, index) => {
     const feature = features[i * CHUNK + index]
     const props = entry.features?.[0]?.properties
     if (!props) return
     const context = props.context ?? {}
-    feature.properties.address = context.address?.name ?? props.name
+    // add-address-points.mjs has already set the county's authoritative
+    // address where it has one; reverse geocoding only fills the rest.
+    feature.properties.address ??= context.address?.name ?? props.name
     feature.properties.neighborhood =
       context.neighborhood?.name ?? context.place?.name ?? null
     matched += 1

@@ -21,7 +21,11 @@ if (!source) {
 // the extension, and .geojson yields application/geo+json, which is not on
 // CloudFront's compressible list — it would ship ~6.5MB uncompressed.
 const OUT = 'public/data/listings.json'
-/** ~1.1m of precision; the source data is no better than this anyway. */
+/**
+ * ~1.1m of precision, though the Kaggle source is far coarser: 3 decimals of
+ * longitude (~75m here) and 4 of latitude. add-address-points.mjs replaces
+ * these with King County's surveyed points afterwards.
+ */
 const COORD_DP = 5
 
 const round = (value, dp) => Number(Number(value).toFixed(dp))
