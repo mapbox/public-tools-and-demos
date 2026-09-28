@@ -88,6 +88,8 @@ export default function App() {
     () => allListings.find((listing) => listing.id === selectedId) ?? null,
     [allListings, selectedId]
   )
+  // The small card gives way to the full listing while that is open.
+  const card = panelOpen ? null : selected
 
   const toggleType = (type: PropertyType) =>
     setTypes((current) =>
@@ -148,7 +150,7 @@ export default function App() {
             )}
 
             {view !== 'list' && (
-              <div className='relative min-h-0 min-w-0 flex-1'>
+              <div className='min-h-0 min-w-0 flex-1'>
                 <MapView
                   listings={rendered}
                   selectedId={selectedId}
@@ -157,19 +159,21 @@ export default function App() {
                   totalInView={visible.length}
                   onSelect={setSelectedId}
                   onBoundsChange={handleBoundsChange}
+                  cardAt={card ? card.coordinates : null}
+                  card={
+                    card && (
+                      <PropertyCard
+                        key={card.id}
+                        listing={card}
+                        favorited={favorites.has(card.id)}
+                        onToggleFavorite={() => toggleFavorite(card.id)}
+                        onClose={closeCard}
+                        onViewListing={() => setPanelOpen(true)}
+                      />
+                    )
+                  }
+                  onBackgroundClick={closeCard}
                 />
-                {selected && !panelOpen && (
-                  <div className='absolute left-3 top-3 z-20 max-h-[calc(100%-24px)] max-w-[calc(100%-24px)] overflow-y-auto rounded-2xl'>
-                    <PropertyCard
-                      key={selected.id}
-                      listing={selected}
-                      favorited={favorites.has(selected.id)}
-                      onToggleFavorite={() => toggleFavorite(selected.id)}
-                      onClose={closeCard}
-                      onViewListing={() => setPanelOpen(true)}
-                    />
-                  </div>
-                )}
               </div>
             )}
           </div>

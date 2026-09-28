@@ -4,8 +4,8 @@ import accessToken from './mapbox'
  * An aerial view of the parcel from the Static Images API. Unlike the stock
  * interiors, this is the real lot at the listing's coordinates.
  *
- * The image keeps the API's default logo and attribution burned into its
- * bottom corners, so nothing may be laid over them.
+ * The image keeps the logo and attribution the API burns into its bottom
+ * corners, so nothing may be laid over them.
  */
 export const aerialUrl = (
   [lng, lat]: [number, number],

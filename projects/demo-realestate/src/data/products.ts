@@ -38,6 +38,7 @@ export const products: Product[] = [
     title: 'Mapbox GL JS',
     body: [
       'Renders the map in the split and map views. The map instance is created once and held in a ref, then listings drive markers imperatively as filters change, so React owns the UI and GL JS owns the canvas.',
+      'The property card is a GL JS Popup anchored to the selected marker. It opens below the marker, moving above or beside it only when there is not room, then follows the marker as the map pans. It comes in two sizes, picked by a container query on the map rather than the screen, since the map is much narrower in split view than in map view.',
       'The full listing starts its map as a static image and only creates a second GL JS map when it is clicked, at the same centre and zoom, so opening a listing never costs a WebGL context nobody uses.'
     ],
     links: [
@@ -82,7 +83,7 @@ export const products: Product[] = [
     body: [
       'The last photo in the property card gallery is an aerial view of the actual parcel: a single Static Images API request for the Satellite Streets style, centred on the listing with a pin and sized to the card at @2x. It is one image rather than a second interactive map, so it is cheap to render and never steals scroll from the page.',
       'The full listing adds a second request: a map of the surrounding neighborhood with a home pin, requested at the exact width of its frame so nothing is cropped. It stands in for the interactive map until someone clicks it. It uses the Streets style, because Static Images cannot render Mapbox Standard.',
-      'Both images keep the logo and attribution the API draws into them, which is why the thumbnail strips sit below the photos instead of on top of them.'
+      'Both images keep the Mapbox logo and attribution the API draws into their bottom corners, which is why the thumbnail strips sit below the images instead of over them.'
     ],
     links: [
       {

@@ -1,6 +1,13 @@
-import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+  type ReactNode
+} from 'react'
 import { createPortal } from 'react-dom'
-import mapboxgl from 'mapbox-gl'
+import mapboxgl, { type Anchor } from 'mapbox-gl'
 import accessToken from '../../lib/mapbox'
 
 import {
@@ -13,6 +20,7 @@ import type { SearchedLocation } from '../../lib/search'
 import { MAP_CENTER, MAP_ZOOM } from '../../lib/map-defaults'
 import type { Listing } from '../../types/listing'
 import ListingMarker from './ListingMarker'
+import { CARD_OFFSETS, chooseAnchor } from './cardPlacement'
 import { selectLabelled, type MarkerVariant } from './labelSelection'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -34,7 +42,10 @@ export default function MapView({
   flyTo,
   totalInView,
   onSelect,
-  onBoundsChange
+  onBoundsChange,
+  card,
+  cardAt,
+  onBackgroundClick
 }: {
   listings: Listing[]
   selectedId: string | null
@@ -43,6 +54,11 @@ export default function MapView({
   totalInView: number
   onSelect: (id: string) => void
   onBoundsChange: (bounds: Bounds) => void
+  /** The selected listing's card, hosted in a Popup anchored at `cardAt`. */
+  card: ReactNode
+  cardAt: [number, number] | null
+  /** A click on the map itself, not on a marker or the card. */
+  onBackgroundClick: () => void
 }) {
   const rendered = listings
   const [labelled, setLabelled] = useState<Set<string>>(new Set())
@@ -51,6 +67,12 @@ export default function MapView({
   const containerRef = useRef<HTMLDivElement>(null)
   const onBoundsChangeRef = useRef(onBoundsChange)
   onBoundsChangeRef.current = onBoundsChange
+  const onBackgroundClickRef = useRef(onBackgroundClick)
+  onBackgroundClickRef.current = onBackgroundClick
+  // One host element for the card's portal, handed to each Popup in turn, so
+  // re-anchoring the Popup never remounts the card inside it.
+  const [popupHost] = useState(() => document.createElement('div'))
+  const popupRef = useRef<mapboxgl.Popup | null>(null)
   const mapRef = useRef<mapboxgl.Map | null>(null)
   const markersRef = useRef(new Map<string, MarkerEntry>())
   // Markers are created imperatively, so a render is needed once their host
@@ -112,6 +134,19 @@ export default function MapView({
     // 'idle' is the first moment they can be queried.
     const onIdle = () => refreshHighlightRef.current()
     map.on('idle', onIdle)
+    // Clicking empty map dismisses the card, as on Zillow. Markers and the
+    // card itself sit inside the map's container, so their clicks are ignored.
+    const onClick = (event: mapboxgl.MapMouseEvent) => {
+      const target = event.originalEvent.target
+      if (
+        target instanceof Element &&
+        target.closest('.mapboxgl-marker, .mapboxgl-popup')
+      ) {
+        return
+      }
+      onBackgroundClickRef.current()
+    }
+    map.on('click', onClick)
 
     // GL JS only reacts to *window* resizes, so switching Split to Map — which
     // widens this container without the window changing — would otherwise leave
@@ -123,6 +158,9 @@ export default function MapView({
       map.off('moveend', report)
       map.off('moveend', bumpSplit)
       map.off('idle', onIdle)
+      map.off('click', onClick)
+      popupRef.current?.remove()
+      popupRef.current = null
       observer.disconnect()
       markers.clear()
       map.remove()
@@ -207,6 +245,50 @@ export default function MapView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedId])
 
+  // Opens the card's Popup below the marker, then measures it and re-anchors
+  // above or beside the marker if it would not fit. Hidden for that one frame
+  // so a card that needs to move never flashes in the wrong place.
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map) return
+    if (!cardAt) {
+      popupRef.current?.remove()
+      popupRef.current = null
+      return
+    }
+
+    const open = (anchor: Anchor) => {
+      popupRef.current?.remove()
+      popupRef.current = new mapboxgl.Popup({
+        anchor,
+        offset: CARD_OFFSETS,
+        className: 'listing-popup',
+        maxWidth: 'none',
+        closeButton: false,
+        closeOnClick: false,
+        closeOnMove: false,
+        focusAfterOpen: false
+      })
+        .setLngLat(cardAt)
+        .setDOMContent(popupHost)
+        .addTo(map)
+    }
+
+    popupHost.style.visibility = 'hidden'
+    open('top')
+    const frame = requestAnimationFrame(() => {
+      const container = map.getContainer()
+      const anchor = chooseAnchor(
+        map.project(cardAt),
+        { width: popupHost.offsetWidth, height: popupHost.offsetHeight },
+        { width: container.clientWidth, height: container.clientHeight }
+      )
+      if (anchor !== 'top') open(anchor)
+      popupHost.style.visibility = ''
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [cardAt, popupHost])
+
   useEffect(() => {
     if (!mapRef.current || !flyTo) return
     mapRef.current.flyTo({ center: flyTo.center, zoom: 14, duration: 1200 })
@@ -218,7 +300,9 @@ export default function MapView({
   // marker each time. Search still moves the map, because the user asked it to.
 
   return (
-    <div className='relative size-full overflow-hidden rounded-lg'>
+    // A size container named `map`: the property card picks its tier from the
+    // map's dimensions (the `roomy` variant in styles.css).
+    <div className='relative size-full overflow-hidden rounded-lg [container:map/size]'>
       <div ref={containerRef} className='size-full' />
 
       {totalInView > rendered.length && (
@@ -243,6 +327,7 @@ export default function MapView({
           listing.id
         )
       })}
+      {card && createPortal(card, popupHost)}
     </div>
   )
 }

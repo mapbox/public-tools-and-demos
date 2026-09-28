@@ -4,9 +4,11 @@ import type { Listing } from '../../types/listing'
 import { slideLabel, slideSrc, type useGallery } from './useGallery'
 
 /**
- * Sits below the hero, not overlaid as in the Figma: the aerial slide has the
- * Static Images API logo and attribution burned into its bottom corners, and
- * an overlaid strip would cover both.
+ * Both sizes sit below their hero, not over it as in the Figma: the Static
+ * Images aerial carries its logo and attribution burned into its bottom
+ * corners, and the strip would hide them. `lg` is the full listing's; `card`
+ * is the property card's, sized by its tier (the Figma small card's 37×28
+ * thumbnails, or 56×42 when roomy).
  */
 export default function GalleryStrip({
   listing,
@@ -20,7 +22,7 @@ export default function GalleryStrip({
   gallery: ReturnType<typeof useGallery>
   heroWidth: number
   heroHeight: number
-  size: 'sm' | 'lg'
+  size: 'card' | 'lg'
   className?: string
 }) {
   const { slides, active, setActive, onAerialError } = gallery
@@ -37,7 +39,7 @@ export default function GalleryStrip({
             'relative shrink-0 cursor-pointer overflow-hidden',
             size === 'lg'
               ? 'h-20 w-[106.667px] rounded-[11.429px] border-[1.905px]'
-              : 'h-[42px] w-14 rounded-md border',
+              : 'h-7 w-[37.333px] rounded-[4px] border roomy:h-[42px] roomy:w-14 roomy:rounded-md',
             index === active
               ? 'border-brand ring-1 ring-brand'
               : 'border-gray-200 hover:border-line-strong'

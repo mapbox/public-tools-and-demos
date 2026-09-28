@@ -98,6 +98,30 @@
   --color-townhouse: #2fc078;
 }
 
+/* The property card is sized by the map it sits on, not the screen: the map is
+   far narrower in Split than in Map view on the same monitor. Container
+   variants in Tailwind are width-only, and a 13" screen runs out of height
+   first, so this one tests both. */
+@custom-variant roomy {
+  @container map (min-width: 960px) and (min-height: 700px) {
+    @slot;
+  }
+}
+
+/* The property card lives in a GL JS Popup; the card draws its own chrome. */
+.listing-popup {
+  z-index: 10;
+}
+.listing-popup .mapboxgl-popup-content {
+  padding: 0;
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+.listing-popup .mapboxgl-popup-tip {
+  display: none;
+}
+
 html,
 body,
 #root {
