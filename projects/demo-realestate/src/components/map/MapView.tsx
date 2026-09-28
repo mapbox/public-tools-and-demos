@@ -3,6 +3,11 @@ import { createPortal } from 'react-dom'
 import mapboxgl from 'mapbox-gl'
 import accessToken from '../../lib/mapbox'
 
+import {
+  BUILDING_SELECT_COLOR,
+  buildingAt,
+  setBuildingSelected
+} from '../../lib/buildings'
 import type { Bounds } from '../../lib/listings-source'
 import type { SearchedLocation } from '../../lib/search'
 import { MAP_CENTER, MAP_ZOOM } from '../../lib/map-defaults'
@@ -52,6 +57,22 @@ export default function MapView({
   // elements exist for the portals below to attach to.
   const [, syncPortals] = useReducer((count: number) => count + 1, 0)
 
+  // The selected listing's building, highlighted in red once Standard draws
+  // buildings. Held in refs because it is driven by both selection changes and
+  // the map's own 'idle' event, which is registered once at creation.
+  const selectedPointRef = useRef<[number, number] | null>(null)
+  const highlightRef = useRef<ReturnType<typeof buildingAt>>(undefined)
+  const refreshHighlightRef = useRef(() => {})
+  refreshHighlightRef.current = () => {
+    const map = mapRef.current
+    const point = selectedPointRef.current
+    if (!map || !point || highlightRef.current) return
+    const building = buildingAt(map, point)
+    if (!building) return
+    setBuildingSelected(map, building, true)
+    highlightRef.current = building
+  }
+
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
@@ -60,7 +81,8 @@ export default function MapView({
       container,
       style: 'mapbox://styles/mapbox/standard',
       center: MAP_CENTER,
-      zoom: MAP_ZOOM
+      zoom: MAP_ZOOM,
+      config: { basemap: { colorBuildingSelect: BUILDING_SELECT_COLOR } }
     })
     map.addControl(
       new mapboxgl.NavigationControl({ showCompass: true }),
@@ -86,6 +108,10 @@ export default function MapView({
     const bumpSplit = () => setSplitVersion((value) => value + 1)
     map.on('moveend', report)
     map.on('moveend', bumpSplit)
+    // Selecting at a low zoom finds no building; zooming in draws them, and
+    // 'idle' is the first moment they can be queried.
+    const onIdle = () => refreshHighlightRef.current()
+    map.on('idle', onIdle)
 
     // GL JS only reacts to *window* resizes, so switching Split to Map — which
     // widens this container without the window changing — would otherwise leave
@@ -96,6 +122,7 @@ export default function MapView({
     return () => {
       map.off('moveend', report)
       map.off('moveend', bumpSplit)
+      map.off('idle', onIdle)
       observer.disconnect()
       markers.clear()
       map.remove()
@@ -163,6 +190,22 @@ export default function MapView({
 
     syncPortals()
   }, [rendered, variantFor, selectedId])
+
+  // A new selection clears the old building before looking for its own. It
+  // only queries the map; like selection generally, it never moves it.
+  useEffect(() => {
+    const map = mapRef.current
+    if (highlightRef.current && map) {
+      setBuildingSelected(map, highlightRef.current, false)
+    }
+    highlightRef.current = undefined
+    selectedPointRef.current =
+      rendered.find((listing) => listing.id === selectedId)?.coordinates ?? null
+    refreshHighlightRef.current()
+    // `rendered` is read, not tracked: it is rebuilt on every pan, and the
+    // selected listing's coordinates do not change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedId])
 
   useEffect(() => {
     if (!mapRef.current || !flyTo) return

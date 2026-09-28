@@ -54,7 +54,8 @@ export const products: Product[] = [
   {
     title: 'Mapbox Standard Style',
     body: [
-      'The basemap. Mapbox Standard is a professionally designed general-purpose style with dynamic lighting and 3D landmarks, used here as the backdrop for the listing pins and for the interactive map in the full listing.'
+      'The basemap. Mapbox Standard is a professionally designed general-purpose style with dynamic lighting and 3D landmarks, used here as the backdrop for the listing pins and for the interactive map in the full listing.',
+      'Selecting a listing also highlights its building in red once you are zoomed in far enough for buildings to draw. It queries the style’s built-in buildings featureset at the listing’s coordinates and sets that building’s select feature state, with the colour set through the colorBuildingSelect configuration property.'
     ],
     links: [
       {
