@@ -16,3 +16,12 @@ export const newSession = () => new SessionToken()
 
 /** Bias results toward the listings area rather than the whole world. */
 export const SEARCH_PROXIMITY = MAP_CENTER
+
+export interface SearchedLocation {
+  center: [number, number]
+  name: string
+  /** The Search Box id, stable per place, so the same place can be recognised. */
+  id: string
+  /** Secondary line, e.g. "Seattle, Washington 98109, United States". */
+  place?: string
+}

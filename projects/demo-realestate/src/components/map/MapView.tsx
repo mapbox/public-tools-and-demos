@@ -4,7 +4,7 @@ import mapboxgl from 'mapbox-gl'
 import accessToken from '../../lib/mapbox'
 
 import type { Bounds } from '../../lib/listings-source'
-import type { SearchedLocation } from '../layout/SearchBar'
+import type { SearchedLocation } from '../../lib/search'
 import { MAP_CENTER, MAP_ZOOM } from '../../lib/map-defaults'
 import type { Listing } from '../../types/listing'
 import ListingMarker from './ListingMarker'

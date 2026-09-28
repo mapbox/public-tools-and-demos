@@ -4,7 +4,8 @@ import PriceFilter from '../filters/PriceFilter'
 import type { PriceRange } from '../../lib/price'
 import SavedIndicator from '../filters/SavedIndicator'
 import TypeFilter from '../filters/TypeFilter'
-import SearchBar, { type SearchedLocation } from './SearchBar'
+import type { SearchedLocation } from '../../lib/search'
+import SearchBar from './SearchBar'
 
 const Divider = () => (
   <span className='h-[42px] w-px rounded-full bg-gray-200' />

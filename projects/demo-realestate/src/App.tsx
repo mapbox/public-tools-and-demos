@@ -7,7 +7,8 @@ import ListingsPanel from './components/listings/ListingsPanel'
 import PropertyCard from './components/listings/PropertyCard'
 import PropertyPanel from './components/listings/PropertyPanel'
 import MapView from './components/map/MapView'
-import type { SearchedLocation } from './components/layout/SearchBar'
+import type { Profile } from './lib/directions'
+import type { SearchedLocation } from './lib/search'
 import { loadListings, withinBounds, type Bounds } from './lib/listings-source'
 import { MARKER_CAP } from './components/map/labelSelection'
 import {
@@ -36,6 +37,9 @@ export default function App() {
   // The full listing for the selected home, over everything else.
   const [panelOpen, setPanelOpen] = useState(false)
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
+  // The viewer's own places, so they carry over from one listing to the next.
+  const [destinations, setDestinations] = useState<SearchedLocation[]>([])
+  const [profile, setProfile] = useState<Profile>('driving')
 
   useEffect(() => {
     loadListings().then(setAllListings)
@@ -179,6 +183,21 @@ export default function App() {
           favorited={favorites.has(selected.id)}
           onToggleFavorite={() => toggleFavorite(selected.id)}
           onClose={closePanel}
+          destinations={destinations}
+          profile={profile}
+          onProfileChange={setProfile}
+          onAddDestination={(destination) =>
+            setDestinations((current) =>
+              current.some(({ id }) => id === destination.id)
+                ? current
+                : [...current, destination]
+            )
+          }
+          onRemoveDestination={(id) =>
+            setDestinations((current) =>
+              current.filter((destination) => destination.id !== id)
+            )
+          }
         />
       )}
 

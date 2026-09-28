@@ -20,7 +20,8 @@ export const products: Product[] = [
     body: [
       'Powers the location search in the filter row, using the Search JS Core classes directly rather than the prebuilt React component.',
       'It is the two-step interactive flow: SearchBoxCore.suggest() as you type, debounced and cancellable via AbortController, then retrieve() once you pick a result, which is the call that returns coordinates. Both share a SessionToken, because the Search Box API bills a session rather than individual keystrokes, and a new session starts after each selection. Results are biased toward the listings area with the proximity option.',
-      'Note this searches places, not the listings on this page — choosing a result moves the map.'
+      'Note this searches places, not the listings on this page — choosing a result moves the map.',
+      'The full listing reuses the same flow to add travel destinations. Search Box finds businesses and landmarks as well as addresses, which is how people name the places they commute to.'
     ],
     links: [
       {
@@ -36,7 +37,8 @@ export const products: Product[] = [
   {
     title: 'Mapbox GL JS',
     body: [
-      'Renders the map in the split and map views. The map instance is created once and held in a ref, then listings drive markers imperatively as filters change, so React owns the UI and GL JS owns the canvas.'
+      'Renders the map in the split and map views. The map instance is created once and held in a ref, then listings drive markers imperatively as filters change, so React owns the UI and GL JS owns the canvas.',
+      'The full listing starts its map as a static image and only creates a second GL JS map when it is clicked, at the same centre and zoom, so opening a listing never costs a WebGL context nobody uses.'
     ],
     links: [
       {
@@ -52,7 +54,7 @@ export const products: Product[] = [
   {
     title: 'Mapbox Standard Style',
     body: [
-      'The basemap. Mapbox Standard is a professionally designed general-purpose style with dynamic lighting and 3D landmarks, used here as the backdrop for the listing pins.'
+      'The basemap. Mapbox Standard is a professionally designed general-purpose style with dynamic lighting and 3D landmarks, used here as the backdrop for the listing pins and for the interactive map in the full listing.'
     ],
     links: [
       {
@@ -78,13 +80,26 @@ export const products: Product[] = [
     title: 'Static Images API',
     body: [
       'The last photo in the property card gallery is an aerial view of the actual parcel: a single Static Images API request for the Satellite Streets style, centred on the listing with a pin and sized to the card at @2x. It is one image rather than a second interactive map, so it is cheap to render and never steals scroll from the page.',
-      'The full listing adds a second request: a Streets map of the surrounding neighborhood with a home pin, requested at the exact width of its frame so nothing is cropped.',
+      'The full listing adds a second request: a map of the surrounding neighborhood with a home pin, requested at the exact width of its frame so nothing is cropped. It stands in for the interactive map until someone clicks it. It uses the Streets style, because Static Images cannot render Mapbox Standard.',
       'Both images keep the logo and attribution the API draws into them, which is why the thumbnail strips sit below the photos instead of on top of them.'
     ],
     links: [
       {
         label: 'Static Images API',
         href: 'https://docs.mapbox.com/api/maps/static-images/'
+      }
+    ]
+  },
+  {
+    title: 'Directions API',
+    body: [
+      'Powers the travel times in the full listing. Each destination is one Directions API request from the home, returning the duration, the distance and the route geometry drawn on the map in that destination’s colour.',
+      'Drive, Walk and Bike switch between the driving-traffic, walking and cycling profiles. Driving uses driving-traffic, so drive times reflect current traffic rather than free-flow speeds. Results are cached per profile, so switching back to one is instant and costs no new request.'
+    ],
+    links: [
+      {
+        label: 'Directions API',
+        href: 'https://docs.mapbox.com/api/navigation/directions/'
       }
     ]
   },

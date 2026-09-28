@@ -4,7 +4,7 @@ import clsx from 'clsx'
 import bathIcon from '../../img/icons/bath-lg.svg'
 import bedIcon from '../../img/icons/bed-lg.svg'
 import calendarIcon from '../../img/icons/calendar-lg.svg'
-import backIcon from '../../img/icons/chevron-left.svg'
+import closeIcon from '../../img/icons/close-circle.svg'
 import showMoreIcon from '../../img/icons/chevron-down-brand.svg'
 import heartActiveIcon from '../../img/icons/heart-button-active.svg'
 import heartIcon from '../../img/icons/heart-button.svg'
@@ -15,17 +15,18 @@ import rulerIcon from '../../img/icons/ruler-lg.svg'
 import { describe } from '../../lib/describe'
 import { formatArea, formatLot, formatPrice } from '../../lib/format'
 import { TYPE_LABEL, TYPE_TAG } from '../../lib/labels'
-import { neighborhoodUrl } from '../../lib/static-image'
+import type { Profile } from '../../lib/directions'
+import type { SearchedLocation } from '../../lib/search'
 import type { Listing } from '../../types/listing'
 import Tag from '../ui/Tag'
+import Destinations from './Destinations'
 import GalleryStrip from './GalleryStrip'
+import PropertyMap from './PropertyMap'
+import { useRoutes } from './useRoutes'
 import { slideLabel, slideSrc, useGallery } from './useGallery'
 
 const HERO_WIDTH = 1280
 const HERO_HEIGHT = 502
-const MAP_HEIGHT = 375
-/** Static Images caps each dimension at 1280 logical pixels. */
-const MAX_STATIC_WIDTH = 1280
 
 function SpecBox({
   icon,
@@ -107,49 +108,6 @@ function Description({ paragraphs }: { paragraphs: string[] }) {
 }
 
 /**
- * A stand-in for the location section, which is going to be iterated on:
- * one Static Images request at the frame's measured width. Measured rather
- * than cropped with object-cover, because cropping would cut off the logo and
- * attribution the API draws into the image's corners.
- */
-function LocationMap({ listing }: { listing: Listing }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [width, setWidth] = useState<number | null>(null)
-  const [failed, setFailed] = useState(false)
-
-  useLayoutEffect(() => {
-    const element = ref.current
-    if (!element) return
-    const observer = new ResizeObserver(([entry]) => {
-      setWidth(Math.min(MAX_STATIC_WIDTH, Math.round(entry.contentRect.width)))
-    })
-    observer.observe(element)
-    return () => observer.disconnect()
-  }, [])
-
-  return (
-    <div className='w-full rounded-2xl border border-gray-200 bg-surface-sunken p-2'>
-      <div
-        ref={ref}
-        className='relative w-full overflow-hidden rounded-xl border border-gray-200 bg-surface-sunken'
-        style={{ height: MAP_HEIGHT }}
-      >
-        {width && !failed && (
-          <img
-            src={neighborhoodUrl(listing.coordinates, width, MAP_HEIGHT)}
-            alt={`Map of the area around ${listing.address ?? 'this home'}`}
-            width={width}
-            height={MAP_HEIGHT}
-            onError={() => setFailed(true)}
-            className='absolute left-0 top-0 max-w-none'
-          />
-        )}
-      </div>
-    </div>
-  )
-}
-
-/**
  * The full listing, opened from the property card's "View full listing". A
  * centred sheet over a blurred view of the search, scrolling within itself.
  * Keyed by listing id at the call site, so its state resets per listing.
@@ -158,19 +116,30 @@ export default function PropertyPanel({
   listing,
   favorited,
   onToggleFavorite,
-  onClose
+  onClose,
+  destinations,
+  onAddDestination,
+  onRemoveDestination,
+  profile,
+  onProfileChange
 }: {
   listing: Listing
   favorited: boolean
   onToggleFavorite: () => void
   onClose: () => void
+  destinations: SearchedLocation[]
+  onAddDestination: (destination: SearchedLocation) => void
+  onRemoveDestination: (id: string) => void
+  profile: Profile
+  onProfileChange: (profile: Profile) => void
 }) {
   const gallery = useGallery(listing)
+  const routes = useRoutes(listing.coordinates, destinations, profile)
   const { hero } = gallery
-  const backRef = useRef<HTMLButtonElement>(null)
+  const closeRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
-    backRef.current?.focus()
+    closeRef.current?.focus()
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') onClose()
     }
@@ -209,15 +178,27 @@ export default function PropertyPanel({
             alt={slideLabel(hero)}
             className='pointer-events-none absolute inset-0 size-full object-cover'
           />
-          <div className='absolute left-0 top-0 p-8'>
+          {/* Top right, not the Figma's "Back to Search" pill at top left: this
+              is a dialog over the search, and the small card already closes
+              from the same corner with the same control. */}
+          <div className='absolute right-0 top-0 p-6'>
             <button
-              ref={backRef}
+              ref={closeRef}
               type='button'
+              aria-label='Back to search'
+              title='Back to search'
               onClick={onClose}
-              className='flex h-8 cursor-pointer items-center gap-1 rounded-full bg-white py-1 pl-1 pr-4 text-sm font-medium text-ink-muted drop-shadow-[0px_1.143px_1.143px_rgba(0,0,0,0.08)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand'
+              className='relative block size-8 cursor-pointer rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand'
             >
-              <img src={backIcon} alt='' width={24} height={24} />
-              Back to Search
+              {/* The asset carries its own white circle and shadow, drawn
+                  slightly outside the 32px hit area. */}
+              <img
+                src={closeIcon}
+                alt=''
+                width={37.3333}
+                height={37.3333}
+                className='absolute -left-[2.667px] -top-[1.333px] max-w-none'
+              />
             </button>
           </div>
         </div>
@@ -228,10 +209,10 @@ export default function PropertyPanel({
           heroWidth={HERO_WIDTH}
           heroHeight={HERO_HEIGHT}
           size='lg'
-          className='px-12 pt-6'
+          className='px-9 pt-[18px]'
         />
 
-        <div className='grid grid-cols-[minmax(0,1fr)_184px] gap-12 px-12 pb-12 pt-8'>
+        <div className='grid grid-cols-[minmax(0,1fr)_184px] gap-9 px-9 pb-9 pt-6'>
           <div className='col-start-1 flex flex-col gap-3'>
             <div className='flex flex-col justify-center gap-2'>
               {listing.tag && (
@@ -281,7 +262,7 @@ export default function PropertyPanel({
               type='button'
               aria-pressed={favorited}
               onClick={onToggleFavorite}
-              className='sticky top-8 flex min-h-[34px] cursor-pointer items-center justify-center gap-2 rounded-lg bg-surface-inverse px-4 py-3 text-base font-bold whitespace-nowrap text-ink-inverse hover:bg-brand active:bg-[#004294] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand'
+              className='sticky top-6 flex min-h-[34px] cursor-pointer items-center justify-center gap-2 rounded-lg bg-surface-inverse px-4 py-3 text-base font-bold whitespace-nowrap text-ink-inverse hover:bg-brand active:bg-[#004294] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand'
             >
               <img
                 src={favorited ? heartActiveIcon : heartIcon}
@@ -346,11 +327,25 @@ export default function PropertyPanel({
             <div className='flex flex-col gap-2'>
               <SectionTitle>Location &amp; getting around</SectionTitle>
               <p className='text-base font-medium leading-[1.5] text-ink-muted'>
-                The neighborhood around the home, from the Mapbox Static Images
-                API.
+                Click the map to explore the neighborhood, and add the places
+                you travel to for routes and travel times.
               </p>
             </div>
-            <LocationMap listing={listing} />
+            <div className='grid w-full grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-3 rounded-2xl border border-gray-200 bg-surface-sunken p-2'>
+              <PropertyMap
+                listing={listing}
+                destinations={destinations}
+                routes={routes}
+              />
+              <Destinations
+                destinations={destinations}
+                routes={routes}
+                profile={profile}
+                onProfileChange={onProfileChange}
+                onAdd={onAddDestination}
+                onRemove={onRemoveDestination}
+              />
+            </div>
           </section>
         </div>
       </article>
