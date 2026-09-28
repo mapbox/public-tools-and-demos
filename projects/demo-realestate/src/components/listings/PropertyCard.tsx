@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react'
-import clsx from 'clsx'
+import { useEffect } from 'react'
 
 import bathIcon from '../../img/icons/bath-lg.svg'
 import bedIcon from '../../img/icons/bed-lg.svg'
@@ -7,31 +6,16 @@ import closeIcon from '../../img/icons/close-circle.svg'
 import locationIcon from '../../img/icons/location.svg'
 import rulerIcon from '../../img/icons/ruler-lg.svg'
 import { formatArea, formatPrice } from '../../lib/format'
-import { photosFor, ROOM_LABEL, type Photo } from '../../lib/photos'
-import { aerialUrl } from '../../lib/static-image'
-import type { Listing, PropertyType } from '../../types/listing'
+import { TYPE_LABEL } from '../../lib/labels'
+import type { Listing } from '../../types/listing'
 import Tag from '../ui/Tag'
 import FavoriteButton from './FavoriteButton'
-
-const TYPE_LABEL: Record<PropertyType, string> = {
-  house: 'House',
-  'multi-family': 'Multi-family',
-  townhouse: 'Townhouse'
-}
+import GalleryStrip from './GalleryStrip'
+import { slideLabel, slideSrc, useGallery } from './useGallery'
 
 // Matches the card's rendered hero, so the @2x request is exactly its pixels.
 const HERO_WIDTH = 447
 const HERO_HEIGHT = 250
-
-type Slide = { kind: 'photo'; photo: Photo } | { kind: 'aerial' }
-
-const slideSrc = (slide: Slide, listing: Listing) =>
-  slide.kind === 'photo'
-    ? slide.photo.src
-    : aerialUrl(listing.coordinates, HERO_WIDTH, HERO_HEIGHT)
-
-const slideLabel = (slide: Slide) =>
-  slide.kind === 'photo' ? ROOM_LABEL[slide.photo.room] : 'Aerial view'
 
 function SpecBox({
   icon,
@@ -43,11 +27,15 @@ function SpecBox({
   value: string
 }) {
   return (
-    <div className='flex min-w-0 flex-1 flex-col items-start gap-3 rounded-xl border border-gray-200 p-3'>
-      <img src={icon} alt='' width={24} height={24} />
-      <div className='flex w-full flex-col gap-1'>
-        <p className='text-sm font-medium text-ink-muted'>{label}</p>
-        <p className='truncate text-xl font-bold text-ink'>{value}</p>
+    // Icon beside the text rather than above it, as in the Figma, to free the
+    // height the "View full listing" button needs.
+    <div className='flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-gray-200 px-2.5 py-2.5'>
+      <img src={icon} alt='' width={24} height={24} className='shrink-0' />
+      <div className='flex min-w-0 flex-col gap-0.5'>
+        <p className='text-xs font-medium text-ink-muted'>{label}</p>
+        <p className='truncate text-base font-bold text-ink' title={value}>
+          {value}
+        </p>
       </div>
     </div>
   )
@@ -61,22 +49,17 @@ export default function PropertyCard({
   listing,
   favorited,
   onToggleFavorite,
-  onClose
+  onClose,
+  onViewListing
 }: {
   listing: Listing
   favorited: boolean
   onToggleFavorite: () => void
   onClose: () => void
+  onViewListing: () => void
 }) {
-  // A failed aerial (a URL-restricted token on localhost, say) drops out of the
-  // gallery rather than leaving a broken-image icon in the strip.
-  const [aerialFailed, setAerialFailed] = useState(false)
-  const slides: Slide[] = [
-    ...photosFor(listing).map((photo) => ({ kind: 'photo' as const, photo })),
-    ...(aerialFailed ? [] : [{ kind: 'aerial' as const }])
-  ]
-  const [active, setActive] = useState(0)
-  const hero = slides[active] ?? slides[0]
+  const gallery = useGallery(listing)
+  const { hero } = gallery
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -101,7 +84,7 @@ export default function PropertyCard({
         style={{ height: HERO_HEIGHT }}
       >
         <img
-          src={slideSrc(hero, listing)}
+          src={slideSrc(hero, listing, HERO_WIDTH, HERO_HEIGHT)}
           srcSet={hero.kind === 'photo' ? hero.photo.srcSet : undefined}
           sizes={`${HERO_WIDTH}px`}
           alt={slideLabel(hero)}
@@ -137,39 +120,14 @@ export default function PropertyCard({
         </div>
       </div>
 
-      {/* Below the hero, not overlaid as in the Figma: the aerial slide has the
-          Static Images API logo and attribution burned into its bottom
-          corners, and the strip would sit on top of both. */}
-      <div className='flex gap-3 px-6 pt-3'>
-        {slides.map((slide, index) => (
-          <button
-            key={slide.kind === 'photo' ? slide.photo.src : 'aerial'}
-            type='button'
-            aria-label={`Show ${slideLabel(slide).toLowerCase()}`}
-            aria-current={index === active}
-            onClick={() => setActive(index)}
-            className={clsx(
-              'relative h-[42px] w-14 shrink-0 cursor-pointer overflow-hidden rounded-md border',
-              index === active
-                ? 'border-brand ring-1 ring-brand'
-                : 'border-gray-200 hover:border-line-strong'
-            )}
-          >
-            <img
-              src={slideSrc(slide, listing)}
-              srcSet={slide.kind === 'photo' ? slide.photo.srcSet : undefined}
-              sizes='56px'
-              alt=''
-              onError={
-                slide.kind === 'aerial'
-                  ? () => setAerialFailed(true)
-                  : undefined
-              }
-              className='pointer-events-none absolute inset-0 size-full object-cover'
-            />
-          </button>
-        ))}
-      </div>
+      <GalleryStrip
+        listing={listing}
+        gallery={gallery}
+        heroWidth={HERO_WIDTH}
+        heroHeight={HERO_HEIGHT}
+        size='sm'
+        className='px-6 pt-3'
+      />
 
       <div className='flex w-full flex-col gap-3 px-6 pb-6 pt-4'>
         <div className='flex w-full flex-col gap-2.5'>
@@ -228,6 +186,16 @@ export default function PropertyCard({
             value={formatArea(listing.area)}
           />
         </div>
+
+        {/* The icon-less variant of the Figma `button` component; the heart in
+            the card mock belongs to its "Save to favorites" variant. */}
+        <button
+          type='button'
+          onClick={onViewListing}
+          className='flex min-h-[34px] w-full cursor-pointer items-center justify-center rounded-lg bg-surface-inverse px-4 py-3 text-base font-bold text-ink-inverse hover:bg-brand active:bg-[#004294] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand'
+        >
+          View full listing
+        </button>
       </div>
     </article>
   )

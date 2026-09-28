@@ -1,6 +1,7 @@
 import interiors from '../data/interiors.json'
 import type { Listing } from '../types/listing'
 import { base } from './base-url'
+import { seededRandom } from './random'
 
 export type Room =
   | 'living'
@@ -49,23 +50,6 @@ const tierOf = (listing: Listing): Tier =>
 const roomPool = (room: Room, tier: Tier) =>
   pool.filter((photo) => photo.room === room && (photo.tier ?? tier) === tier)
 
-// FNV-1a, then mulberry32. Parcel ids are near-sequential within a
-// neighbourhood, so the hash is what stops neighbours getting the same photos.
-const seed = (id: string) => {
-  let h = 0x811c9dc5
-  for (let i = 0; i < id.length; i++) {
-    h = Math.imul(h ^ id.charCodeAt(i), 0x01000193)
-  }
-  return h >>> 0
-}
-
-const random = (state: number) => () => {
-  state = (state + 0x6d2b79f5) | 0
-  let t = Math.imul(state ^ (state >>> 15), 1 | state)
-  t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
-  return ((t ^ (t >>> 14)) >>> 0) / 4294967296
-}
-
 const toPhoto = ({ file, room }: Interior): Photo => {
   const url = (width: number) => `${base}img/interiors/${file}-${width}.webp`
   return { src: url(960), srcSet: `${url(480)} 480w, ${url(960)} 960w`, room }
@@ -82,7 +66,7 @@ export const photosFor = (listing: Listing): Photo[] => {
   const cached = cache.get(listing.id)
   if (cached) return cached
 
-  const next = random(seed(listing.id))
+  const next = seededRandom(listing.id)
   const pick = <T>(items: T[]) => items[Math.floor(next() * items.length)]
   const tier = tierOf(listing)
 

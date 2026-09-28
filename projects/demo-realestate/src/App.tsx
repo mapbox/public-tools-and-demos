@@ -5,6 +5,7 @@ import LearnMapbox from './components/layout/LearnMapbox'
 import Header from './components/layout/Header'
 import ListingsPanel from './components/listings/ListingsPanel'
 import PropertyCard from './components/listings/PropertyCard'
+import PropertyPanel from './components/listings/PropertyPanel'
 import MapView from './components/map/MapView'
 import type { SearchedLocation } from './components/layout/SearchBar'
 import { loadListings, withinBounds, type Bounds } from './lib/listings-source'
@@ -32,6 +33,8 @@ export default function App() {
   const [beds, setBeds] = useState<number | null>(null)
   const [types, setTypes] = useState<PropertyType[]>(ALL_TYPES)
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  // The full listing for the selected home, over everything else.
+  const [panelOpen, setPanelOpen] = useState(false)
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
 
   useEffect(() => {
@@ -66,6 +69,14 @@ export default function App() {
 
   const handleBoundsChange = useCallback((next: Bounds) => setBounds(next), [])
   const closeCard = useCallback(() => setSelectedId(null), [])
+  const closePanel = useCallback(() => setPanelOpen(false), [])
+
+  // List view has no map for the small card to float over, so choosing a
+  // listing there goes straight to the full listing.
+  const selectFromList = (id: string) => {
+    setSelectedId(id)
+    if (view === 'list') setPanelOpen(true)
+  }
 
   // Looked up from the full set, not the rendered slice, so the card stays open
   // when a pan pushes its listing past the marker cap.
@@ -126,7 +137,7 @@ export default function App() {
                   layout={view === 'split' ? 'horizontal' : 'vertical'}
                   selectedId={selectedId}
                   favorites={favorites}
-                  onSelect={setSelectedId}
+                  onSelect={selectFromList}
                   onToggleFavorite={toggleFavorite}
                 />
               </div>
@@ -143,7 +154,7 @@ export default function App() {
                   onSelect={setSelectedId}
                   onBoundsChange={handleBoundsChange}
                 />
-                {selected && (
+                {selected && !panelOpen && (
                   <div className='absolute left-3 top-3 z-20 max-h-[calc(100%-24px)] max-w-[calc(100%-24px)] overflow-y-auto rounded-2xl'>
                     <PropertyCard
                       key={selected.id}
@@ -151,6 +162,7 @@ export default function App() {
                       favorited={favorites.has(selected.id)}
                       onToggleFavorite={() => toggleFavorite(selected.id)}
                       onClose={closeCard}
+                      onViewListing={() => setPanelOpen(true)}
                     />
                   </div>
                 )}
@@ -159,6 +171,16 @@ export default function App() {
           </div>
         </div>
       </main>
+
+      {selected && panelOpen && (
+        <PropertyPanel
+          key={selected.id}
+          listing={selected}
+          favorited={favorites.has(selected.id)}
+          onToggleFavorite={() => toggleFavorite(selected.id)}
+          onClose={closePanel}
+        />
+      )}
 
       <LearnMapbox />
     </div>

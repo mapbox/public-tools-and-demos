@@ -78,7 +78,8 @@ export const products: Product[] = [
     title: 'Static Images API',
     body: [
       'The last photo in the property card gallery is an aerial view of the actual parcel: a single Static Images API request for the Satellite Streets style, centred on the listing with a pin and sized to the card at @2x. It is one image rather than a second interactive map, so it is cheap to render and never steals scroll from the page.',
-      'The image keeps the logo and attribution the API draws into it, which is why the thumbnail strip sits below the photo instead of on top of it.'
+      'The full listing adds a second request: a Streets map of the surrounding neighborhood with a home pin, requested at the exact width of its frame so nothing is cropped.',
+      'Both images keep the logo and attribution the API draws into them, which is why the thumbnail strips sit below the photos instead of on top of them.'
     ],
     links: [
       {
