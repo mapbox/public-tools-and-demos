@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 
 export default defineConfig({
+  // @ts-expect-error: nested vite copy in @vitejs/plugin-react causes type mismatch
   plugins: [react()],
   base: '/standard-style-theme-editor',
   envDir: '../',

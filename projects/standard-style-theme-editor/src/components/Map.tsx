@@ -34,6 +34,7 @@ export default function Map({
     if (!mapContainer.current) return
     if (map.current) return
 
+    // @ts-expect-error: @types/mapbox-gl and mapbox-gl both ship types causing Map type conflict
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/standard',
@@ -50,7 +51,7 @@ export default function Map({
       }
     })
 
-    map.current.on('load', () => setMapReady(true))
+    map.current!.on('load', () => setMapReady(true))
 
     return () => {
       if (map.current) {
