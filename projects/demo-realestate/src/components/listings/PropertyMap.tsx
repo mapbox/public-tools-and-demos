@@ -3,6 +3,7 @@ import mapboxgl from 'mapbox-gl'
 import clsx from 'clsx'
 
 import { DESTINATION_STYLES, destinationLetter } from '../../lib/destinations'
+import { BASEMAP_CONFIG } from '../../lib/basemap'
 import accessToken from '../../lib/mapbox'
 import type { SearchedLocation } from '../../lib/search'
 import { NEIGHBORHOOD_ZOOM, neighborhoodUrl } from '../../lib/static-image'
@@ -75,6 +76,7 @@ export default function PropertyMap({
       container,
       accessToken,
       style: 'mapbox://styles/mapbox/standard',
+      config: { basemap: BASEMAP_CONFIG },
       center: listing.coordinates,
       zoom: NEIGHBORHOOD_ZOOM
     })

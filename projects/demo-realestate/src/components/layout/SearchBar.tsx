@@ -45,8 +45,8 @@ export default function SearchBar({
           onKeyDown={onKeyDown}
           onFocus={() => suggestions.length > 0 && setOpen(true)}
           onBlur={() => window.setTimeout(() => setOpen(false), 120)}
-          placeholder='Search an address, neighborhood, or ZIP'
-          aria-label='Search an address, neighborhood, or ZIP'
+          placeholder='Try Bellevue or Sammamish'
+          aria-label='Search a city, address or ZIP code'
           className='min-w-0 flex-1 bg-transparent text-base text-ink outline-none placeholder:text-line-strong'
         />
         <button

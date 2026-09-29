@@ -10,6 +10,7 @@ import { createPortal } from 'react-dom'
 import mapboxgl, { type Anchor } from 'mapbox-gl'
 import accessToken from '../../lib/mapbox'
 
+import { BASEMAP_CONFIG } from '../../lib/basemap'
 import type { Boundary } from '../../lib/boundaries'
 import {
   BUILDING_SELECT_COLOR,
@@ -120,7 +121,12 @@ export default function MapView({
       style: 'mapbox://styles/mapbox/standard',
       center: MAP_CENTER,
       zoom: MAP_ZOOM,
-      config: { basemap: { colorBuildingSelect: BUILDING_SELECT_COLOR } }
+      config: {
+        basemap: {
+          ...BASEMAP_CONFIG,
+          colorBuildingSelect: BUILDING_SELECT_COLOR
+        }
+      }
     })
     map.addControl(
       new mapboxgl.NavigationControl({ showCompass: true }),

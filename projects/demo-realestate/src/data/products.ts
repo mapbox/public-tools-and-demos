@@ -57,7 +57,8 @@ export const products: Product[] = [
     title: 'Mapbox Standard Style',
     body: [
       'The basemap. Mapbox Standard is a professionally designed general-purpose style with dynamic lighting and 3D landmarks, used here as the backdrop for the listing pins and for the interactive map in the full listing.',
-      'Selecting a listing also highlights its building in red once you are zoomed in far enough for buildings to draw. It queries the style’s built-in buildings featureset at the listing’s coordinates and sets that building’s select feature state, with the colour set through the colorBuildingSelect configuration property.'
+      'It is customised entirely through Standard’s configuration properties, with no custom style to maintain: the faded theme softens the whole map, buildings and roads take the app’s cool neutrals, schools take the brand’s light blue, and labels use Manrope. Points of interest are hidden, so the listings, the selected building and route lines carry the attention.',
+      'Selecting a listing also highlights its building in coral once you are zoomed in far enough for buildings to draw. It queries the style’s built-in buildings featureset at the listing’s coordinates and sets that building’s select feature state, with the colour set through the colorBuildingSelect configuration property.'
     ],
     links: [
       {
