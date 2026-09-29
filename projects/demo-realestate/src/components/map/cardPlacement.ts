@@ -20,10 +20,10 @@ const MARGIN = 12
 const CORNER_NUDGE = 24
 
 export const CARD_OFFSETS: Record<Anchor, [number, number]> = {
-  top: [0, GAP],
+  top: [0, GAP * 2],
   'top-left': [-CORNER_NUDGE, GAP],
   'top-right': [CORNER_NUDGE, GAP],
-  bottom: [0, -(LABEL_HEIGHT + GAP)],
+  bottom: [0, -(LABEL_HEIGHT + GAP * 2)],
   'bottom-left': [-CORNER_NUDGE, -(LABEL_HEIGHT + GAP)],
   'bottom-right': [CORNER_NUDGE, -(LABEL_HEIGHT + GAP)],
   left: [LABEL_HALF_WIDTH + GAP, -LABEL_HEIGHT / 2],

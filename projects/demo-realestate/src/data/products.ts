@@ -21,6 +21,7 @@ export const products: Product[] = [
       'Powers the location search in the filter row, using the Search JS Core classes directly rather than the prebuilt React component.',
       'It is the two-step interactive flow: SearchBoxCore.suggest() as you type, debounced and cancellable via AbortController, then retrieve() once you pick a result, which is the call that returns coordinates. Both share a SessionToken, because the Search Box API bills a session rather than individual keystrokes, and a new session starts after each selection. Results are biased toward the listings area with the proximity option.',
       'Note this searches places, not the listings on this page — choosing a result moves the map.',
+      'Choosing an area, such as a city or county, also outlines it on the map and limits the listings to those inside it. The outline comes from a beta Mapbox endpoint that returns a place’s boundary polygon for the same mapbox_id every Search Box result carries. It currently covers cities and counties; for neighborhoods and ZIP codes the map just moves there.',
       'The full listing reuses the same flow to add travel destinations. Search Box finds businesses and landmarks as well as addresses, which is how people name the places they commute to.'
     ],
     links: [
@@ -69,7 +70,8 @@ export const products: Product[] = [
     title: 'Map Markers',
     body: [
       'Each listing is a custom HTML marker, drawn as either a price label or a small dot. Which listings get a price is decided in screen space: a label is placed only where it would not collide with one already on the map, so prices stay evenly scattered at any zoom and density. Selecting or saving a listing always promotes it to a label, and saved listings carry a heart.',
-      'Markers are near-black by default and brand blue when selected. At most 500 are drawn per view, because DOM markers stay smooth when panning at that count and not at 1,000.'
+      'Markers are near-black by default and brand blue when selected. At most 500 are drawn per view, because DOM markers stay smooth when panning at that count and not at 1,000.',
+      'Each marker is also raised to roughly rooftop height with the marker altitude option, so when the map is pitched it floats above the 3D building pointing down at it instead of sinking inside it.'
     ],
     links: [
       {

@@ -24,4 +24,6 @@ export interface SearchedLocation {
   id: string
   /** Secondary line, e.g. "Seattle, Washington 98109, United States". */
   place?: string
+  /** Search Box's feature type: "place", "neighborhood", "poi", "address"… */
+  featureType?: string
 }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import FilterBar from './components/layout/FilterBar'
 import LearnMapbox from './components/layout/LearnMapbox'
@@ -7,6 +7,12 @@ import ListingsPanel from './components/listings/ListingsPanel'
 import PropertyCard from './components/listings/PropertyCard'
 import PropertyPanel from './components/listings/PropertyPanel'
 import MapView from './components/map/MapView'
+import {
+  contains,
+  fetchBoundary,
+  isArea,
+  type Boundary
+} from './lib/boundaries'
 import type { Profile } from './lib/directions'
 import type { SearchedLocation } from './lib/search'
 import { loadListings, withinBounds, type Bounds } from './lib/listings-source'
@@ -29,6 +35,15 @@ export default function App() {
   const [view, setView] = useState<ViewMode>('split')
   const [searchedLocation, setSearchedLocation] =
     useState<SearchedLocation | null>(null)
+  // The searched area's outline, when the boundaries endpoint has one. While
+  // set, listings are limited to what falls inside it.
+  const [boundary, setBoundary] = useState<Boundary | null>(null)
+  // Only the latest search may apply its result; an earlier, slower boundary
+  // lookup arriving afterwards is ignored.
+  const searchRef = useRef(0)
+  // Bumped to remount, and so empty, the search field when the boundary is
+  // removed from the map, keeping the two in step.
+  const [searchKey, setSearchKey] = useState(0)
   const [price, setPrice] = useState<PriceRange>(FULL_RANGE)
   const [priceOpen, setPriceOpen] = useState(false)
   const [beds, setBeds] = useState<number | null>(null)
@@ -45,21 +60,31 @@ export default function App() {
     loadListings().then(setAllListings)
   }, [])
 
-  // Everything currently in the viewport that passes the filters. Search moves
-  // the map rather than filtering: it queries the Search Box API for places,
-  // not this demo's listings.
+  // Worked out once per boundary rather than on every pan: a point-in-polygon
+  // test against a 1,000+ vertex outline is the most expensive filter here.
+  const insideBoundary = useMemo(
+    () =>
+      boundary &&
+      new Set(
+        allListings
+          .filter((listing) => contains(boundary, listing.coordinates))
+          .map((listing) => listing.id)
+      ),
+    [allListings, boundary]
+  )
+
   // Everything in view that passes every filter except price. The histogram is
   // drawn from this, so its bars stay put while the price handles move.
   const priceFacet = useMemo(() => {
     if (!bounds) return []
     return allListings.filter((listing) => {
       if (!withinBounds(listing, bounds)) return false
+      if (insideBoundary && !insideBoundary.has(listing.id)) return false
       if (beds !== null && listing.beds < beds) return false
-      // Dataset listings carry no property type, so the type chips cannot
-      // exclude them.
+      // The few listings with no property type pass every type filter.
       return listing.type === undefined || types.includes(listing.type)
     })
-  }, [allListings, bounds, beds, types])
+  }, [allListings, bounds, insideBoundary, beds, types])
 
   const priceCounts = useMemo(() => bucketPrices(priceFacet), [priceFacet])
 
@@ -72,6 +97,28 @@ export default function App() {
   const rendered = useMemo(() => visible.slice(0, MARKER_CAP), [visible])
 
   const handleBoundsChange = useCallback((next: Bounds) => setBounds(next), [])
+
+  // Searching an area (a city, a county) outlines it and limits listings to
+  // it, as on Zillow. Anything else, or an area the boundaries endpoint does
+  // not cover, just moves the map there.
+  const handleSearchSelect = async (location: SearchedLocation) => {
+    const request = ++searchRef.current
+    setBoundary(null)
+    const found = isArea(location) ? await fetchBoundary(location) : null
+    if (request !== searchRef.current) return
+    if (found) setBoundary(found)
+    else setSearchedLocation(location)
+  }
+
+  const clearSearch = () => {
+    searchRef.current += 1
+    setBoundary(null)
+  }
+
+  const removeBoundary = () => {
+    clearSearch()
+    setSearchKey((key) => key + 1)
+  }
   const closeCard = useCallback(() => setSelectedId(null), [])
   const closePanel = useCallback(() => setPanelOpen(false), [])
 
@@ -113,7 +160,9 @@ export default function App() {
       <main className='min-h-0 flex-1 px-6 pb-6'>
         <div className='flex h-full min-h-0 flex-col gap-4 rounded-xl border border-line bg-white p-6'>
           <FilterBar
-            onSearchSelect={setSearchedLocation}
+            onSearchSelect={handleSearchSelect}
+            onSearchClear={clearSearch}
+            searchKey={searchKey}
             price={price}
             priceCounts={priceCounts}
             priceOpen={priceOpen}
@@ -156,6 +205,8 @@ export default function App() {
                   selectedId={selectedId}
                   favorites={favorites}
                   flyTo={searchedLocation}
+                  boundary={boundary}
+                  onRemoveBoundary={removeBoundary}
                   totalInView={visible.length}
                   onSelect={setSelectedId}
                   onBoundsChange={handleBoundsChange}

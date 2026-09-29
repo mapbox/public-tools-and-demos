@@ -10,9 +10,11 @@ import { createPortal } from 'react-dom'
 import mapboxgl, { type Anchor } from 'mapbox-gl'
 import accessToken from '../../lib/mapbox'
 
+import type { Boundary } from '../../lib/boundaries'
 import {
   BUILDING_SELECT_COLOR,
   buildingAt,
+  MARKER_ALTITUDE_M,
   setBuildingSelected
 } from '../../lib/buildings'
 import type { Bounds } from '../../lib/listings-source'
@@ -23,9 +25,16 @@ import ListingMarker from './ListingMarker'
 import { CARD_OFFSETS, chooseAnchor } from './cardPlacement'
 import { selectLabelled, type MarkerVariant } from './labelSelection'
 
+import closeIcon from '../../img/icons/close.svg'
+import MaskIcon from '../ui/MaskIcon'
+
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 mapboxgl.accessToken = accessToken
+
+const BOUNDARY_SOURCE = 'search-boundary'
+/** The theme's brand blue, --color-brand; paint properties need the raw hex. */
+const BOUNDARY_COLOR = '#007afc'
 
 interface MarkerEntry {
   marker: mapboxgl.Marker
@@ -40,6 +49,8 @@ export default function MapView({
   selectedId,
   favorites,
   flyTo,
+  boundary,
+  onRemoveBoundary,
   totalInView,
   onSelect,
   onBoundsChange,
@@ -51,6 +62,9 @@ export default function MapView({
   selectedId: string | null
   favorites: Set<string>
   flyTo: SearchedLocation | null
+  /** A searched area to outline and fit the map to. */
+  boundary: Boundary | null
+  onRemoveBoundary: () => void
   totalInView: number
   onSelect: (id: string) => void
   onBoundsChange: (bounds: Bounds) => void
@@ -72,6 +86,8 @@ export default function MapView({
   // One host element for the card's portal, handed to each Popup in turn, so
   // re-anchoring the Popup never remounts the card inside it.
   const [popupHost] = useState(() => document.createElement('div'))
+  // Sources and layers can only be added once the style has loaded.
+  const [styleReady, setStyleReady] = useState(false)
   const popupRef = useRef<mapboxgl.Popup | null>(null)
   const mapRef = useRef<mapboxgl.Map | null>(null)
   const markersRef = useRef(new Map<string, MarkerEntry>())
@@ -134,6 +150,32 @@ export default function MapView({
     // 'idle' is the first moment they can be queried.
     const onIdle = () => refreshHighlightRef.current()
     map.on('idle', onIdle)
+
+    // The searched area's outline. The `middle` slot keeps it above roads and
+    // below Standard's labels; the fill is faint enough to leave the map
+    // readable while still marking what is in and out.
+    map.once('load', () => {
+      map.addSource(BOUNDARY_SOURCE, {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features: [] }
+      })
+      map.addLayer({
+        id: 'search-boundary-fill',
+        type: 'fill',
+        source: BOUNDARY_SOURCE,
+        slot: 'middle',
+        paint: { 'fill-color': BOUNDARY_COLOR, 'fill-opacity': 0.06 }
+      })
+      map.addLayer({
+        id: 'search-boundary-line',
+        type: 'line',
+        source: BOUNDARY_SOURCE,
+        slot: 'middle',
+        layout: { 'line-join': 'round' },
+        paint: { 'line-color': BOUNDARY_COLOR, 'line-width': 2.5 }
+      })
+      setStyleReady(true)
+    })
     // Clicking empty map dismisses the card, as on Zillow. Markers and the
     // card itself sit inside the map's container, so their clicks are ignored.
     const onClick = (event: mapboxgl.MapMouseEvent) => {
@@ -211,7 +253,8 @@ export default function MapView({
       const element = document.createElement('div')
       const marker = new mapboxgl.Marker({
         element,
-        anchor: variant === 'label' ? 'bottom' : 'center'
+        anchor: variant === 'label' ? 'bottom' : 'center',
+        altitude: MARKER_ALTITUDE_M
       })
         .setLngLat(listing.coordinates)
         .addTo(map)
@@ -270,6 +313,8 @@ export default function MapView({
         focusAfterOpen: false
       })
         .setLngLat(cardAt)
+        // Level with the raised marker, so the card stays attached to it.
+        .setAltitude(MARKER_ALTITUDE_M)
         .setDOMContent(popupHost)
         .addTo(map)
     }
@@ -290,6 +335,32 @@ export default function MapView({
   }, [cardAt, popupHost])
 
   useEffect(() => {
+    const map = mapRef.current
+    if (!map || !styleReady) return
+    map
+      .getSource<mapboxgl.GeoJSONSource>(BOUNDARY_SOURCE)
+      ?.setData(
+        boundary
+          ? { type: 'Feature', properties: {}, geometry: boundary.geometry }
+          : { type: 'FeatureCollection', features: [] }
+      )
+  }, [boundary, styleReady])
+
+  // Fitting to the area is what brings its listings into view; the viewport
+  // filter then does the rest. Runs only when the boundary itself changes.
+  useEffect(() => {
+    if (!mapRef.current || !boundary) return
+    const [west, south, east, north] = boundary.bbox
+    mapRef.current.fitBounds(
+      [
+        [west, south],
+        [east, north]
+      ],
+      { padding: 48, duration: 1200 }
+    )
+  }, [boundary])
+
+  useEffect(() => {
     if (!mapRef.current || !flyTo) return
     mapRef.current.flyTo({ center: flyTo.center, zoom: 14, duration: 1200 })
   }, [flyTo])
@@ -304,6 +375,19 @@ export default function MapView({
     // map's dimensions (the `roomy` variant in styles.css).
     <div className='relative size-full overflow-hidden rounded-lg [container:map/size]'>
       <div ref={containerRef} className='size-full' />
+
+      {/* Top centre, clear of the listing count (left) and zoom controls. */}
+      {boundary && (
+        <button
+          type='button'
+          onClick={onRemoveBoundary}
+          aria-label={`Remove the ${boundary.name} boundary`}
+          className='absolute transition left-1/2 top-3 z-10 flex -translate-x-1/2 cursor-pointer items-center gap-1.5 rounded-full bg-white py-1.5 pl-3.5 pr-2 text-sm font-bold text-ink shadow-[0_1px_4px_rgba(0,0,0,0.18)] hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand'
+        >
+          Remove boundary
+          <MaskIcon src={closeIcon} size={18} />
+        </button>
+      )}
 
       {totalInView > rendered.length && (
         <div className='pointer-events-none absolute left-3 top-3 z-10 rounded-full bg-white/95 px-3 py-1.5 text-sm text-ink-muted shadow-[0_1px_4px_rgba(0,0,0,0.18)]'>

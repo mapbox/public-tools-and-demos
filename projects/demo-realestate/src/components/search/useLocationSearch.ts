@@ -56,6 +56,7 @@ export function useLocationSearch(
           proximity: SEARCH_PROXIMITY,
           limit: 5
         })
+        console.log('suggestions:', response)
         setSuggestions(response.suggestions)
         setActiveIndex(-1)
         setOpen(true)
@@ -84,7 +85,8 @@ export function useLocationSearch(
       center: [longitude, latitude],
       name: suggestion.name,
       id: suggestion.mapbox_id,
-      place: suggestion.place_formatted
+      place: suggestion.place_formatted,
+      featureType: suggestion.feature_type
     })
   }
 

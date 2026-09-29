@@ -13,6 +13,8 @@ const Divider = () => (
 
 export default function FilterBar({
   onSearchSelect,
+  onSearchClear,
+  searchKey,
   price,
   priceCounts,
   priceOpen,
@@ -27,6 +29,9 @@ export default function FilterBar({
   showResultCount
 }: {
   onSearchSelect: (location: SearchedLocation) => void
+  onSearchClear: () => void
+  /** Changes when the search field must be emptied from outside it. */
+  searchKey: number
   price: PriceRange
   priceCounts: number[]
   priceOpen: boolean
@@ -43,7 +48,11 @@ export default function FilterBar({
   return (
     <div className='flex items-center gap-6'>
       <div className='min-w-[280px] max-w-[460px] flex-1'>
-        <SearchBar onSelect={onSearchSelect} />
+        <SearchBar
+          key={searchKey}
+          onSelect={onSearchSelect}
+          onClear={onSearchClear}
+        />
       </div>
       <Divider />
       <PriceFilter

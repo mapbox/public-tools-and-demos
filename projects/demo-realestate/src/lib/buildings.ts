@@ -69,3 +69,12 @@ export const setBuildingSelected = (
   building: Building,
   selected: boolean
 ) => map.setFeatureState(building, { select: selected })
+
+/**
+ * How high every listing's marker floats, in metres, so that on a pitched map
+ * it sits above the house pointing down at it rather than inside the extruded
+ * building. One height for all: estimating per house from the storey count put
+ * too many pins well above the buildings Standard actually draws. Flat on, the
+ * altitude makes no visible difference.
+ */
+export const MARKER_ALTITUDE_M = 6
