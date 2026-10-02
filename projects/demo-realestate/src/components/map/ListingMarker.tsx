@@ -8,14 +8,16 @@ import type { Listing } from '../../types/listing'
 import type { MarkerVariant } from './labelSelection'
 
 /**
- * Dots and labels share one colour system: near-black by default, brand blue
- * when selected. Property type is not encoded here — the type filter chips
+ * Dots and labels share one colour system: near-black by default, a lighter
+ * slate once visited, brand blue when selected. Property type is not encoded here — the type filter chips
  * already carry it, and having labels show state while dots showed type meant
  * two markers for the same listing looked unrelated.
  *
  * Blue is reserved for selection rather than used as the default: at several
  * hundred markers a blue field dominates the basemap, while near-black recedes
- * and lets the one selected listing stand out.
+ * and lets the one selected listing stand out. Visited stays close to the
+ * default on purpose: it should read as "seen" on a second look, not compete
+ * with the selection.
  */
 /**
  * `fill` paints the bubble and the dot; `ink` feeds the tail, which is a mask
@@ -23,26 +25,31 @@ import type { MarkerVariant } from './labelSelection'
  * the tail cannot end up disagreeing with the bubble it hangs off.
  */
 const SELECTED = { fill: 'bg-brand', ink: 'text-brand' }
+const VISITED = { fill: 'bg-marker-visited', ink: 'text-marker-visited' }
 const DEFAULT = { fill: 'bg-surface-inverse', ink: 'text-surface-inverse' }
 
 export default function ListingMarker({
   listing,
   variant,
   selected,
+  visited,
   favorited,
   onSelect
 }: {
   listing: Listing
   variant: MarkerVariant
   selected: boolean
+  visited: boolean
   favorited: boolean
   onSelect: () => void
 }) {
   const label = `${
     listing.address ?? formatPriceShort(listing.price)
-  }, ${formatPriceShort(listing.price)}${favorited ? ', saved' : ''}`
+  }, ${formatPriceShort(listing.price)}${visited ? ', viewed' : ''}${
+    favorited ? ', saved' : ''
+  }`
 
-  const tone = selected ? SELECTED : DEFAULT
+  const tone = selected ? SELECTED : visited ? VISITED : DEFAULT
 
   if (variant === 'dot') {
     return (

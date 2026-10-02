@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react'
 
+import type { LightPreset, MapStyle } from '../lib/basemap'
 import type { Boundary } from '../lib/boundaries'
 import type { Profile } from '../lib/directions'
 import type { Bounds } from '../lib/listings-source'
@@ -49,14 +50,24 @@ export interface ListingsState {
   searchKey: number
 }
 
-/** What the viewer has chosen: the view, a listing, and their saved homes. */
+/**
+ * What the viewer has chosen: the view and basemap, a listing, the listings
+ * they have looked at, and their saved homes.
+ */
 export interface SelectionState {
   view: ViewMode
   setView: (view: ViewMode) => void
+  /** The main map's basemap; kept here so it survives a trip to List view. */
+  mapStyle: MapStyle
+  setMapStyle: (style: MapStyle) => void
+  lightPreset: LightPreset
+  setLightPreset: (preset: LightPreset) => void
   selectedId: string | null
   /** The selected listing, from the full set rather than the rendered slice. */
   selected: Listing | null
   select: (id: string) => void
+  /** Every listing selected this session, so their markers read as seen. */
+  visited: Set<string>
   /** Selects from the sidebar, which in List view opens the full listing. */
   selectFromList: (id: string) => void
   closeCard: () => void

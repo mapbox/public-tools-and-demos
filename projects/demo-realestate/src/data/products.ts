@@ -58,7 +58,8 @@ export const products: Product[] = [
     body: [
       'The basemap. Mapbox Standard is a professionally designed general-purpose style with dynamic lighting and 3D landmarks, used here as the backdrop for the listing pins and for the interactive map in the full listing.',
       'It is customised entirely through Standard’s configuration properties, with no custom style to maintain: the faded theme softens the whole map, buildings and roads take the app’s cool neutrals, schools take the brand’s light blue, and labels use Manrope. Points of interest are hidden, so the listings, the selected building and route lines carry the attention.',
-      'Selecting a listing also highlights its building in coral once you are zoomed in far enough for buildings to draw. It queries the style’s built-in buildings featureset at the listing’s coordinates and sets that building’s select feature state, with the colour set through the colorBuildingSelect configuration property.'
+      'Selecting a listing also highlights its building in coral once you are zoomed in far enough for buildings to draw. It queries the style’s built-in buildings featureset at the listing’s coordinates and sets that building’s select feature state, with the colour set through the colorBuildingSelect configuration property.',
+      'The layers button above the zoom controls switches the main map between Standard and Mapbox Standard Satellite, and between Standard’s four light presets: dawn, day, dusk and night. Changing style is a setStyle call with the new style’s configuration, and the app re-adds its own layers, such as a searched area’s outline, once the new style loads. Markers and the property card are HTML on top of the map, so they stay put. A light preset is a single configuration property on either style, changed in place with setConfigProperty and no reload. Standard Satellite has no buildings featureset, so the building highlight only appears on Standard.'
     ],
     links: [
       {
@@ -71,7 +72,7 @@ export const products: Product[] = [
     title: 'Map Markers',
     body: [
       'Each listing is a custom HTML marker, drawn as either a price label or a small dot. Which listings get a price is decided in screen space: a label is placed only where it would not collide with one already on the map, so prices stay evenly scattered at any zoom and density. Selecting or saving a listing always promotes it to a label, and saved listings carry a heart.',
-      'Markers are near-black by default and brand blue when selected. At most 500 are drawn per view, because DOM markers stay smooth when panning at that count and not at 1,000.',
+      'Markers are near-black by default, brand blue when selected, and a lighter slate once you have looked at a listing, so it is easy to see which homes you have already opened. At most 500 are drawn per view, because DOM markers stay smooth when panning at that count and not at 1,000.',
       'Each marker is also raised to roughly rooftop height with the marker altitude option, so when the map is pitched it floats above the 3D building pointing down at it instead of sinking inside it.'
     ],
     links: [

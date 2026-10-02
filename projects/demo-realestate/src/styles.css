@@ -86,6 +86,10 @@
   --color-surface: #ffffff; /* docsearch/modal-background */
   --color-surface-sunken: #f5f7fb; /* docsearch/hit-background */
   --color-surface-inverse: #1e2136; /* docsearch/footer-background */
+
+  /* A listing marker once its listing has been opened: lifted clear of the
+     near-black default, but still dark enough for white price text. */
+  --color-marker-visited: #6b7588;
 }
 
 /* Property type colours. Used by the type filter chips only — map markers
@@ -122,6 +126,18 @@
   display: none;
 }
 
+/* The layers button joins GL JS's zoom controls as one stack, as in the
+   Figma's Map Controls, though the two are separate GL controls. */
+.mapboxgl-ctrl-top-right .basemap-ctrl {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.mapboxgl-ctrl-top-right .basemap-ctrl + .mapboxgl-ctrl-group {
+  margin-top: 0;
+  border-top: 1px solid #ddd;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
 html,
 body,
 #root {

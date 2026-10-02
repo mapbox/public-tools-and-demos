@@ -9,8 +9,19 @@ import MapView from './MapView'
 export default function MainMap() {
   const { rendered, visible, flyTo, boundary, removeBoundary, onBoundsChange } =
     useListings()
-  const { selectedId, selected, select, closeCard, panelOpen, favorites } =
-    useSelection()
+  const {
+    selectedId,
+    selected,
+    select,
+    visited,
+    closeCard,
+    panelOpen,
+    favorites,
+    mapStyle,
+    setMapStyle,
+    lightPreset,
+    setLightPreset
+  } = useSelection()
 
   // The small card gives way to the full listing while that is open.
   const card = panelOpen ? null : selected
@@ -19,7 +30,12 @@ export default function MainMap() {
     <MapView
       listings={rendered}
       selectedId={selectedId}
+      visited={visited}
       favorites={favorites}
+      mapStyle={mapStyle}
+      onMapStyleChange={setMapStyle}
+      lightPreset={lightPreset}
+      onLightPresetChange={setLightPreset}
       flyTo={flyTo}
       boundary={boundary}
       onRemoveBoundary={removeBoundary}

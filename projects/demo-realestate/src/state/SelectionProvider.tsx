@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState, type ReactNode } from 'react'
 
 import { useIsMobile } from '../hooks/useIsMobile'
+import type { LightPreset, MapStyle } from '../lib/basemap'
 import type { ViewMode } from '../types/view'
 import { SelectionContext, useListings, type SelectionState } from './contexts'
 
@@ -16,7 +17,10 @@ export default function SelectionProvider({
   // kept, and Split comes back if the window widens again.
   const isMobile = useIsMobile()
   const view = isMobile && chosenView === 'split' ? 'map' : chosenView
+  const [mapStyle, setMapStyle] = useState<MapStyle>('standard')
+  const [lightPreset, setLightPreset] = useState<LightPreset>('day')
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [visited, setVisited] = useState<Set<string>>(new Set())
   const [panelOpen, setPanelOpen] = useState(false)
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
 
@@ -27,14 +31,22 @@ export default function SelectionProvider({
     [all, selectedId]
   )
 
+  // Selecting from anywhere, a marker or a sidebar card, counts as a visit.
+  const select = useCallback((id: string) => {
+    setSelectedId(id)
+    setVisited((current) =>
+      current.has(id) ? current : new Set(current).add(id)
+    )
+  }, [])
+
   // List view has no map for the small card to float over, so choosing a
   // listing there goes straight to the full listing.
   const selectFromList = useCallback(
     (id: string) => {
-      setSelectedId(id)
+      select(id)
       if (view === 'list') setPanelOpen(true)
     },
-    [view]
+    [select, view]
   )
 
   const closeCard = useCallback(() => setSelectedId(null), [])
@@ -56,9 +68,14 @@ export default function SelectionProvider({
     () => ({
       view,
       setView,
+      mapStyle,
+      setMapStyle,
+      lightPreset,
+      setLightPreset,
       selectedId,
       selected,
-      select: setSelectedId,
+      select,
+      visited,
       selectFromList,
       closeCard,
       panelOpen,
@@ -69,8 +86,12 @@ export default function SelectionProvider({
     }),
     [
       view,
+      mapStyle,
+      lightPreset,
       selectedId,
       selected,
+      select,
+      visited,
       selectFromList,
       closeCard,
       panelOpen,

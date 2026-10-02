@@ -10,7 +10,12 @@ import { createPortal } from 'react-dom'
 import mapboxgl, { type Anchor } from 'mapbox-gl'
 import accessToken from '../../lib/mapbox'
 
-import { BASEMAP_CONFIG } from '../../lib/basemap'
+import {
+  STYLE_URL,
+  basemapConfig,
+  type LightPreset,
+  type MapStyle
+} from '../../lib/basemap'
 import type { Boundary } from '../../lib/boundaries'
 import {
   BUILDING_SELECT_COLOR,
@@ -22,6 +27,7 @@ import type { Bounds } from '../../lib/listings-source'
 import type { SearchedLocation } from '../../lib/search'
 import { MAP_CENTER, MAP_ZOOM } from '../../lib/map-defaults'
 import type { Listing } from '../../types/listing'
+import BasemapControl from './BasemapControl'
 import ListingMarker from './ListingMarker'
 import { CARD_OFFSETS, chooseAnchor } from './cardPlacement'
 import { selectLabelled, type MarkerVariant } from './labelSelection'
@@ -37,6 +43,12 @@ const BOUNDARY_SOURCE = 'search-boundary'
 /** The theme's brand blue, --color-brand; paint properties need the raw hex. */
 const BOUNDARY_COLOR = '#007afc'
 
+/** The full `basemap` config for a style; only Standard has buildings to select. */
+const configFor = (style: MapStyle, lightPreset: LightPreset) => ({
+  ...basemapConfig(style, lightPreset),
+  ...(style === 'standard' && { colorBuildingSelect: BUILDING_SELECT_COLOR })
+})
+
 interface MarkerEntry {
   marker: mapboxgl.Marker
   element: HTMLDivElement
@@ -48,7 +60,12 @@ interface MarkerEntry {
 export default function MapView({
   listings,
   selectedId,
+  visited,
   favorites,
+  mapStyle,
+  onMapStyleChange,
+  lightPreset,
+  onLightPresetChange,
   flyTo,
   boundary,
   onRemoveBoundary,
@@ -61,7 +78,12 @@ export default function MapView({
 }: {
   listings: Listing[]
   selectedId: string | null
+  visited: Set<string>
   favorites: Set<string>
+  mapStyle: MapStyle
+  onMapStyleChange: (style: MapStyle) => void
+  lightPreset: LightPreset
+  onLightPresetChange: (preset: LightPreset) => void
   flyTo: SearchedLocation | null
   /** A searched area to outline and fit the map to. */
   boundary: Boundary | null
@@ -87,8 +109,23 @@ export default function MapView({
   // One host element for the card's portal, handed to each Popup in turn, so
   // re-anchoring the Popup never remounts the card inside it.
   const [popupHost] = useState(() => document.createElement('div'))
-  // Sources and layers can only be added once the style has loaded.
-  const [styleReady, setStyleReady] = useState(false)
+  // The layers button's host, handed to GL JS as a control and filled by a
+  // portal, so the button stacks with GL's own zoom controls.
+  const [basemapHost] = useState(() => {
+    const element = document.createElement('div')
+    element.className = 'mapboxgl-ctrl mapboxgl-ctrl-group basemap-ctrl'
+    return element
+  })
+  // Bumped each time a style finishes loading, the first and after every
+  // switch, since our own sources and layers have to be added again each time.
+  const [styleVersion, setStyleVersion] = useState(0)
+  // Read by the creation effect and the style handlers, which outlive renders.
+  const mapStyleRef = useRef(mapStyle)
+  mapStyleRef.current = mapStyle
+  const lightPresetRef = useRef(lightPreset)
+  lightPresetRef.current = lightPreset
+  // Config can only be set on a loaded style; cleared while a switch loads.
+  const styleLoadedRef = useRef(false)
   const popupRef = useRef<mapboxgl.Popup | null>(null)
   const mapRef = useRef<mapboxgl.Map | null>(null)
   const markersRef = useRef(new Map<string, MarkerEntry>())
@@ -106,6 +143,8 @@ export default function MapView({
     const map = mapRef.current
     const point = selectedPointRef.current
     if (!map || !point || highlightRef.current) return
+    // Standard Satellite has no buildings featureset to query.
+    if (mapStyleRef.current !== 'standard') return
     const building = buildingAt(map, point)
     if (!building) return
     setBuildingSelected(map, building, true)
@@ -118,16 +157,18 @@ export default function MapView({
 
     const map = new mapboxgl.Map({
       container,
-      style: 'mapbox://styles/mapbox/standard',
+      style: STYLE_URL[mapStyleRef.current],
       center: MAP_CENTER,
       zoom: MAP_ZOOM,
       config: {
-        basemap: {
-          ...BASEMAP_CONFIG,
-          colorBuildingSelect: BUILDING_SELECT_COLOR
-        }
+        basemap: configFor(mapStyleRef.current, lightPresetRef.current)
       }
     })
+    // Added first, so it sits at the top of the top-right stack.
+    map.addControl(
+      { onAdd: () => basemapHost, onRemove: () => basemapHost.remove() },
+      'top-right'
+    )
     map.addControl(
       new mapboxgl.NavigationControl({ showCompass: true }),
       'top-right'
@@ -159,8 +200,15 @@ export default function MapView({
 
     // The searched area's outline. The `middle` slot keeps it above roads and
     // below Standard's labels; the fill is faint enough to leave the map
-    // readable while still marking what is in and out.
-    map.once('load', () => {
+    // readable while still marking what is in and out. Switching style drops
+    // it with everything else that is not part of the style, so it is added
+    // again on every load, not just the first.
+    const onStyleLoad = () => {
+      styleLoadedRef.current = true
+      // A preset chosen while the new style was still loading.
+      map.setConfigProperty('basemap', 'lightPreset', lightPresetRef.current)
+      // The old style's building and its feature state went with it.
+      highlightRef.current = undefined
       map.addSource(BOUNDARY_SOURCE, {
         type: 'geojson',
         data: { type: 'FeatureCollection', features: [] }
@@ -180,8 +228,9 @@ export default function MapView({
         layout: { 'line-join': 'round' },
         paint: { 'line-color': BOUNDARY_COLOR, 'line-width': 2.5 }
       })
-      setStyleReady(true)
-    })
+      setStyleVersion((version) => version + 1)
+    }
+    map.on('style.load', onStyleLoad)
     // Clicking empty map dismisses the card, as on Zillow. Markers and the
     // card itself sit inside the map's container, so their clicks are ignored.
     const onClick = (event: mapboxgl.MapMouseEvent) => {
@@ -206,6 +255,7 @@ export default function MapView({
       map.off('moveend', report)
       map.off('moveend', bumpSplit)
       map.off('idle', onIdle)
+      map.off('style.load', onStyleLoad)
       map.off('click', onClick)
       popupRef.current?.remove()
       popupRef.current = null
@@ -214,7 +264,31 @@ export default function MapView({
       map.remove()
       mapRef.current = null
     }
-  }, [])
+  }, [basemapHost])
+
+  // Switching basemap replaces the style. HTML markers and the card's Popup
+  // are not part of it, so they stay where they are; the boundary layers are
+  // added back by the style.load handler above.
+  const appliedStyleRef = useRef(mapStyle)
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map || appliedStyleRef.current === mapStyle) return
+    appliedStyleRef.current = mapStyle
+    styleLoadedRef.current = false
+    // GL JS's types mark its two font options required, but passing them,
+    // even as undefined, would replace the map's own font defaults.
+    map.setStyle(STYLE_URL[mapStyle], {
+      config: { basemap: configFor(mapStyle, lightPresetRef.current) }
+    } as unknown as Parameters<mapboxgl.Map['setStyle']>[1])
+  }, [mapStyle])
+
+  // A light preset is a single config property on either style, so it changes
+  // in place without a reload. Mid-switch, style.load applies it instead.
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map || !styleLoadedRef.current) return
+    map.setConfigProperty('basemap', 'lightPreset', lightPreset)
+  }, [lightPreset])
 
   // Which listings show a price depends on where they land on screen, so it is
   // recomputed whenever the set changes or the map settles.
@@ -342,7 +416,7 @@ export default function MapView({
 
   useEffect(() => {
     const map = mapRef.current
-    if (!map || !styleReady) return
+    if (!map || !styleVersion) return
     map
       .getSource<mapboxgl.GeoJSONSource>(BOUNDARY_SOURCE)
       ?.setData(
@@ -350,7 +424,7 @@ export default function MapView({
           ? { type: 'Feature', properties: {}, geometry: boundary.geometry }
           : { type: 'FeatureCollection', features: [] }
       )
-  }, [boundary, styleReady])
+  }, [boundary, styleVersion])
 
   // Fitting to the area is what brings its listings into view; the viewport
   // filter then does the rest. Runs only when the boundary itself changes.
@@ -414,6 +488,7 @@ export default function MapView({
             listing={listing}
             variant={variantFor(listing.id)}
             selected={listing.id === selectedId}
+            visited={visited.has(listing.id)}
             favorited={favorites.has(listing.id)}
             onSelect={() => onSelect(listing.id)}
           />,
@@ -422,6 +497,13 @@ export default function MapView({
         )
       })}
       {card && createPortal(card, popupHost)}
+      <BasemapControl
+        host={basemapHost}
+        mapStyle={mapStyle}
+        onMapStyleChange={onMapStyleChange}
+        lightPreset={lightPreset}
+        onLightPresetChange={onLightPresetChange}
+      />
     </div>
   )
 }

@@ -31,3 +31,27 @@ export const BASEMAP_CONFIG = {
   // sans on Standard's list of default fonts.
   font: 'Manrope'
 }
+
+/** The two basemaps the viewer can switch between on the main map. */
+export type MapStyle = 'standard' | 'satellite'
+export type LightPreset = 'dawn' | 'day' | 'dusk' | 'night'
+
+export const STYLE_URL: Record<MapStyle, string> = {
+  standard: 'mapbox://styles/mapbox/standard',
+  satellite: 'mapbox://styles/mapbox/standard-satellite'
+}
+
+/**
+ * Standard Satellite has none of Standard's colour or theme properties (the
+ * imagery is the colour), so only the settings both styles share carry over.
+ */
+const SATELLITE_CONFIG = {
+  showPointOfInterestLabels: false,
+  font: 'Manrope'
+}
+
+/** The `basemap` import's configuration for a style and light preset. */
+export const basemapConfig = (style: MapStyle, lightPreset: LightPreset) => ({
+  ...(style === 'standard' ? BASEMAP_CONFIG : SATELLITE_CONFIG),
+  lightPreset
+})
