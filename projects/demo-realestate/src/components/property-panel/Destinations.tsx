@@ -18,6 +18,7 @@ import {
   type Profile
 } from '../../lib/directions'
 import type { SearchedLocation } from '../../lib/search'
+import { useTravel } from '../../state/contexts'
 import SuggestionList from '../search/SuggestionList'
 import { useLocationSearch } from '../search/useLocationSearch'
 import MaskIcon from '../ui/MaskIcon'
@@ -164,24 +165,21 @@ function DestinationSearch({
  * to each from this home, by the chosen profile. Destinations are found with
  * the Search Box API and routed with the Directions API.
  *
- * Destinations, and the chosen profile, belong to the viewer rather than the listing, so they are held
- * above the panel and carry over from one home to the next.
+ * Destinations, and the chosen profile, belong to the viewer rather than the
+ * listing, so they live in app state and carry over from one home to the next.
  */
 export default function Destinations({
-  destinations,
-  routes,
-  profile,
-  onProfileChange,
-  onAdd,
-  onRemove
+  routes
 }: {
-  destinations: SearchedLocation[]
   routes: Map<string, RouteState>
-  profile: Profile
-  onProfileChange: (profile: Profile) => void
-  onAdd: (destination: SearchedLocation) => void
-  onRemove: (id: string) => void
 }) {
+  const {
+    destinations,
+    profile,
+    setProfile: onProfileChange,
+    addDestination: onAdd,
+    removeDestination: onRemove
+  } = useTravel()
   const [adding, setAdding] = useState(false)
   const full = destinations.length >= MAX_DESTINATIONS
 

@@ -8,6 +8,10 @@ import type { Anchor } from 'mapbox-gl'
  * belongs underneath, as on Zillow, and only moves above or beside the marker
  * when there is not room below. Chosen once when the card opens; after that
  * the Popup simply follows its marker as the map pans.
+ *
+ * On a phone the map can be too small for the card to fit anywhere whole. It
+ * then takes whichever of below and above has more room, rather than beside
+ * the marker, where a narrow map would push most of it out of view.
  */
 
 /** The selected marker's price label, which hangs above its point. */
@@ -48,8 +52,7 @@ export const chooseAnchor = (
   const fitsBelow = point.y + GAP + card.height <= map.height - MARGIN
   const fitsAbove = point.y - LABEL_HEIGHT - GAP - card.height >= MARGIN
 
-  if (fitsBelow || fitsAbove) {
-    const vertical = fitsBelow ? 'top' : 'bottom'
+  const alongside = (vertical: 'top' | 'bottom'): Anchor => {
     const centred =
       point.x - card.width / 2 >= MARGIN &&
       point.x + card.width / 2 <= map.width - MARGIN
@@ -58,7 +61,11 @@ export const chooseAnchor = (
     return point.x < map.width / 2 ? `${vertical}-left` : `${vertical}-right`
   }
 
-  const fitsRight =
-    point.x + LABEL_HALF_WIDTH + GAP + card.width <= map.width - MARGIN
-  return fitsRight ? 'left' : 'right'
+  if (fitsBelow || fitsAbove) return alongside(fitsBelow ? 'top' : 'bottom')
+
+  const besideWidth = LABEL_HALF_WIDTH + GAP + card.width
+  if (point.x + besideWidth <= map.width - MARGIN) return 'left'
+  if (point.x - besideWidth >= MARGIN) return 'right'
+
+  return alongside(map.height - point.y >= point.y ? 'top' : 'bottom')
 }

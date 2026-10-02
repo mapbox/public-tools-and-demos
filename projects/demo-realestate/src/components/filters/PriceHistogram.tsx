@@ -1,3 +1,5 @@
+import clsx from 'clsx'
+
 import { formatPriceShort } from '../../lib/format'
 import {
   PRICE_CEILING,
@@ -27,7 +29,8 @@ export default function PriceHistogram({
   counts,
   range,
   onChange,
-  onCommit
+  onCommit,
+  className
 }: {
   counts: number[]
   range: PriceRange
@@ -35,12 +38,19 @@ export default function PriceHistogram({
   onChange: (range: PriceRange) => void
   /** Fires once the handle is released, when the filter actually applies. */
   onCommit: () => void
+  /** Sizing; the desktop popover's fixed width by default. */
+  className?: string
 }) {
   const tallest = Math.max(1, ...counts)
   const width = (PRICE_CEILING - PRICE_FLOOR) / counts.length
 
   return (
-    <div className='flex w-[300px] flex-col gap-3 rounded-xl border border-gray-200 bg-surface-sunken px-4 py-3'>
+    <div
+      className={clsx(
+        'flex flex-col gap-3 rounded-xl border border-gray-200 bg-surface-sunken px-4 py-3',
+        className ?? 'w-[300px]'
+      )}
+    >
       <div className='flex h-[60px] items-end justify-center gap-[3px]'>
         {counts.map((count, index) => {
           const from = PRICE_FLOOR + index * width

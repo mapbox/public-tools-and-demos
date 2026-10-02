@@ -34,7 +34,7 @@ export default function TypeFilter({
   onToggle: (type: PropertyType) => void
 }) {
   return (
-    <div className='flex items-center gap-1'>
+    <div className='flex flex-wrap items-center gap-1'>
       {TYPES.map((type) => {
         const isOn = selected.includes(type.value)
         return (

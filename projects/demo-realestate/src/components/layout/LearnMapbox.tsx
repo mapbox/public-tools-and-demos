@@ -10,7 +10,8 @@ import MaskIcon from '../ui/MaskIcon'
 /**
  * Keeps the "Learn Mapbox" reveal from `mapbox-demo-components`: the bar stays
  * off-screen until asked for, and each chip opens its notes on click. Only the
- * chip styling follows the new design.
+ * chip styling follows the new design. Not shown on a phone, where the map
+ * gets the whole screen.
  */
 export default function LearnMapbox() {
   const [open, setOpen] = useState(false)
@@ -18,7 +19,7 @@ export default function LearnMapbox() {
   return (
     <div
       className={clsx(
-        'absolute inset-x-0 bottom-0 z-50 transition-transform duration-200',
+        'absolute inset-x-0 bottom-0 z-50 transition-transform duration-200 max-md:hidden',
         open ? 'translate-y-0' : 'translate-y-full'
       )}
     >

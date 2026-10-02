@@ -35,6 +35,8 @@ export default function ViewSelector({
             onClick={() => onChange(option.value)}
             className={clsx(
               'flex cursor-pointer items-center justify-center gap-1.5 rounded-[999px] px-3.5 py-1.5 text-sm font-bold',
+              // No Split on a phone; it shows as Map there.
+              option.value === 'split' && 'max-md:hidden',
               selected
                 ? 'bg-surface-inverse text-white'
                 : 'text-ink-muted hover:bg-surface-sunken'

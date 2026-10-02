@@ -1,17 +1,19 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect } from 'react'
 
 import bathIcon from '../../img/icons/bath-lg.svg'
 import bedIcon from '../../img/icons/bed-lg.svg'
 import closeIcon from '../../img/icons/close-circle.svg'
 import locationIcon from '../../img/icons/location.svg'
 import rulerIcon from '../../img/icons/ruler-lg.svg'
+import { useElementSize } from '../../hooks/useElementSize'
 import { formatArea, formatPrice } from '../../lib/format'
 import { TYPE_LABEL } from '../../lib/labels'
+import { useSelection } from '../../state/contexts'
 import type { Listing } from '../../types/listing'
 import Tag from '../ui/Tag'
-import FavoriteButton from './FavoriteButton'
-import GalleryStrip from './GalleryStrip'
-import { slideLabel, slideSrc, useGallery } from './useGallery'
+import FavoriteButton from '../ui/FavoriteButton'
+import GalleryStrip from '../gallery/GalleryStrip'
+import { slideLabel, slideSrc, useGallery } from '../gallery/useGallery'
 
 /**
  * The Figma small card's specs, without icons, but all three on one row to
@@ -65,39 +67,18 @@ function RoomySpec({
  *
  * Keyed by listing id at the call site, so the gallery resets per listing.
  */
-export default function PropertyCard({
-  listing,
-  favorited,
-  onToggleFavorite,
-  onClose,
-  onViewListing
-}: {
-  listing: Listing
-  favorited: boolean
-  onToggleFavorite: () => void
-  onClose: () => void
-  onViewListing: () => void
-}) {
+export default function PropertyCard({ listing }: { listing: Listing }) {
+  const {
+    favorites,
+    toggleFavorite,
+    closeCard: onClose,
+    openPanel: onViewListing
+  } = useSelection()
+  const favorited = favorites.has(listing.id)
+  const onToggleFavorite = () => toggleFavorite(listing.id)
   const gallery = useGallery(listing)
   const { hero } = gallery
-  const heroRef = useRef<HTMLDivElement>(null)
-  const [heroSize, setHeroSize] = useState<{
-    width: number
-    height: number
-  } | null>(null)
-
-  useLayoutEffect(() => {
-    const element = heroRef.current
-    if (!element) return
-    const observer = new ResizeObserver(([entry]) => {
-      setHeroSize({
-        width: Math.round(entry.contentRect.width),
-        height: Math.round(entry.contentRect.height)
-      })
-    })
-    observer.observe(element)
-    return () => observer.disconnect()
-  }, [])
+  const [heroRef, heroSize] = useElementSize<HTMLDivElement>()
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {

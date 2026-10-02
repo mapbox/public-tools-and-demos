@@ -379,16 +379,20 @@ export default function MapView({
   return (
     // A size container named `map`: the property card picks its tier from the
     // map's dimensions (the `roomy` variant in styles.css).
-    <div className='relative size-full overflow-hidden rounded-lg [container:map/size]'>
+    <div className='relative size-full overflow-hidden rounded-lg max-md:rounded-none [container:map/size]'>
       <div ref={containerRef} className='size-full' />
 
-      {/* Top centre, clear of the listing count (left) and zoom controls. */}
+      {/* Top centre, clear of the listing count (left) and zoom controls. A
+          phone's map is too narrow for both on one line, so there it drops
+          below the count. */}
       {boundary && (
         <button
           type='button'
           onClick={onRemoveBoundary}
           aria-label={`Remove the ${boundary.name} boundary`}
-          className='absolute transition left-1/2 top-3 z-10 flex -translate-x-1/2 cursor-pointer items-center gap-1.5 rounded-full bg-white py-1.5 pl-3.5 pr-2 text-sm font-bold text-ink shadow-[0_1px_4px_rgba(0,0,0,0.18)] hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand'
+          className={`absolute transition left-1/2 top-3 z-10 flex -translate-x-1/2 max-md:left-3 max-md:translate-x-0 ${
+            totalInView > rendered.length ? 'max-md:top-13' : ''
+          } cursor-pointer items-center gap-1.5 rounded-full bg-white py-1.5 pl-3.5 pr-2 text-sm font-bold text-ink shadow-[0_1px_4px_rgba(0,0,0,0.18)] hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand`}
         >
           Remove boundary
           <MaskIcon src={closeIcon} size={18} />

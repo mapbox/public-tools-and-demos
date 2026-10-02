@@ -10,7 +10,7 @@ export default function Header({
   onViewChange: (view: ViewMode) => void
 }) {
   return (
-    <header className='flex items-center justify-between bg-surface-sunken px-6 py-4'>
+    <header className='flex items-center justify-between bg-surface-sunken px-6 py-4 max-md:p-4'>
       <Logo />
       <ViewSelector value={view} onChange={onViewChange} />
     </header>

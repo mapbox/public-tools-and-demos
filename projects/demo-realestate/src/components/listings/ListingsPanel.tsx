@@ -1,25 +1,13 @@
 import clsx from 'clsx'
 
-import type { Listing } from '../../types/listing'
+import { useListings, useSelection } from '../../state/contexts'
 import ListingCard, { type CardLayout } from './ListingCard'
 
-export default function ListingsPanel({
-  listings,
-  totalInView,
-  layout,
-  selectedId,
-  favorites,
-  onSelect,
-  onToggleFavorite
-}: {
-  listings: Listing[]
-  totalInView: number
-  layout: CardLayout
-  selectedId: string | null
-  favorites: Set<string>
-  onSelect: (id: string) => void
-  onToggleFavorite: (id: string) => void
-}) {
+export default function ListingsPanel({ layout }: { layout: CardLayout }) {
+  const { rendered: listings, visible } = useListings()
+  const { selectedId, favorites, selectFromList, toggleFavorite } =
+    useSelection()
+  const totalInView = visible.length
   const isGrid = layout === 'vertical'
 
   return (
@@ -51,8 +39,8 @@ export default function ListingsPanel({
               layout={layout}
               selected={listing.id === selectedId}
               favorited={favorites.has(listing.id)}
-              onSelect={() => onSelect(listing.id)}
-              onToggleFavorite={() => onToggleFavorite(listing.id)}
+              onSelect={() => selectFromList(listing.id)}
+              onToggleFavorite={() => toggleFavorite(listing.id)}
             />
           </div>
         ))}

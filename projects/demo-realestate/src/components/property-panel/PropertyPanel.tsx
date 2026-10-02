@@ -12,21 +12,20 @@ import homeIcon from '../../img/icons/home-lg.svg'
 import locationIcon from '../../img/icons/location-lg.svg'
 import lotIcon from '../../img/icons/lot-lg.svg'
 import rulerIcon from '../../img/icons/ruler-lg.svg'
+import { useElementSize } from '../../hooks/useElementSize'
 import { describe } from '../../lib/describe'
 import { formatArea, formatLot, formatPrice } from '../../lib/format'
 import { TYPE_LABEL, TYPE_TAG } from '../../lib/labels'
-import type { Profile } from '../../lib/directions'
-import type { SearchedLocation } from '../../lib/search'
+import { useSelection, useTravel } from '../../state/contexts'
 import type { Listing } from '../../types/listing'
 import Tag from '../ui/Tag'
 import Destinations from './Destinations'
-import GalleryStrip from './GalleryStrip'
-import PropertyMap from './PropertyMap'
+import GalleryStrip from '../gallery/GalleryStrip'
+import PropertyMap from '../map/PropertyMap'
 import { useRoutes } from './useRoutes'
-import { slideLabel, slideSrc, useGallery } from './useGallery'
+import { slideLabel, slideSrc, useGallery } from '../gallery/useGallery'
 
 const HERO_WIDTH = 1280
-const HERO_HEIGHT = 502
 
 function SpecBox({
   icon,
@@ -109,33 +108,20 @@ function Description({ paragraphs }: { paragraphs: string[] }) {
 
 /**
  * The full listing, opened from the property card's "View full listing". A
- * centred sheet over a blurred view of the search, scrolling within itself.
+ * centred sheet over a blurred view of the search, scrolling within itself;
+ * on a phone it fills the screen and its columns stack.
  * Keyed by listing id at the call site, so its state resets per listing.
  */
-export default function PropertyPanel({
-  listing,
-  favorited,
-  onToggleFavorite,
-  onClose,
-  destinations,
-  onAddDestination,
-  onRemoveDestination,
-  profile,
-  onProfileChange
-}: {
-  listing: Listing
-  favorited: boolean
-  onToggleFavorite: () => void
-  onClose: () => void
-  destinations: SearchedLocation[]
-  onAddDestination: (destination: SearchedLocation) => void
-  onRemoveDestination: (id: string) => void
-  profile: Profile
-  onProfileChange: (profile: Profile) => void
-}) {
+export default function PropertyPanel({ listing }: { listing: Listing }) {
+  const { favorites, toggleFavorite, closePanel: onClose } = useSelection()
+  const { destinations, profile } = useTravel()
+  const favorited = favorites.has(listing.id)
   const gallery = useGallery(listing)
   const routes = useRoutes(listing.coordinates, destinations, profile)
   const { hero } = gallery
+  // The hero is 1280 wide on desktop and the screen's width on a phone; the
+  // aerial is requested at whatever it measures, so it is never cropped.
+  const [heroRef, heroSize] = useElementSize<HTMLDivElement>()
   const closeRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
@@ -154,7 +140,7 @@ export default function PropertyPanel({
 
   return (
     <div
-      className='fixed inset-0 z-40 overflow-y-auto bg-black/10 backdrop-blur-[6.55px]'
+      className='fixed inset-0 z-40 overflow-y-auto bg-black/10 backdrop-blur-[6.55px] max-md:bg-white'
       onClick={(event) => {
         if (event.target === event.currentTarget) onClose()
       }}
@@ -165,23 +151,25 @@ export default function PropertyPanel({
         aria-labelledby='property-panel-title'
         // overflow-clip rather than overflow-hidden: hidden would make this a
         // scroll container and stop the favourites button sticking.
-        className='mx-auto mb-6 mt-[68px] w-[1280px] max-w-[calc(100%-48px)] overflow-clip rounded-2xl bg-white shadow-[0px_4px_5px_0px_rgba(0,0,0,0.1)]'
+        className='mx-auto mb-6 mt-[68px] w-[1280px] max-w-[calc(100%-48px)] overflow-clip rounded-2xl bg-white shadow-[0px_4px_5px_0px_rgba(0,0,0,0.1)] max-md:m-0 max-md:w-full max-md:max-w-none max-md:rounded-none max-md:shadow-none'
       >
         <div
-          className='relative w-full bg-surface-sunken'
-          style={{ height: HERO_HEIGHT }}
+          ref={heroRef}
+          className='relative h-[502px] w-full bg-surface-sunken max-md:h-64'
         >
-          <img
-            src={slideSrc(hero, listing, HERO_WIDTH, HERO_HEIGHT)}
-            srcSet={hero.kind === 'photo' ? hero.photo.srcSet : undefined}
-            sizes={`${HERO_WIDTH}px`}
-            alt={slideLabel(hero)}
-            className='pointer-events-none absolute inset-0 size-full object-cover'
-          />
+          {heroSize && (
+            <img
+              src={slideSrc(hero, listing, heroSize.width, heroSize.height)}
+              srcSet={hero.kind === 'photo' ? hero.photo.srcSet : undefined}
+              sizes={`(width < 48rem) 100vw, ${HERO_WIDTH}px`}
+              alt={slideLabel(hero)}
+              className='pointer-events-none absolute inset-0 size-full object-cover'
+            />
+          )}
           {/* Top right, not the Figma's "Back to Search" pill at top left: this
               is a dialog over the search, and the small card already closes
               from the same corner with the same control. */}
-          <div className='absolute right-0 top-0 p-6'>
+          <div className='absolute right-0 top-0 p-6 max-md:p-4'>
             <button
               ref={closeRef}
               type='button'
@@ -203,16 +191,20 @@ export default function PropertyPanel({
           </div>
         </div>
 
-        <GalleryStrip
-          listing={listing}
-          gallery={gallery}
-          heroWidth={HERO_WIDTH}
-          heroHeight={HERO_HEIGHT}
-          size='lg'
-          className='px-9 pt-[18px]'
-        />
+        {heroSize && (
+          <GalleryStrip
+            listing={listing}
+            gallery={gallery}
+            heroWidth={heroSize.width}
+            heroHeight={heroSize.height}
+            size='lg'
+            className='px-9 pt-[18px] max-md:gap-2 max-md:overflow-x-auto max-md:px-4 max-md:pb-1 max-md:pt-3'
+          />
+        )}
 
-        <div className='grid grid-cols-[minmax(0,1fr)_184px] gap-9 px-9 pb-9 pt-6'>
+        {/* On a phone it is one column in source order: title, save, specs,
+            description, location. */}
+        <div className='grid grid-cols-[minmax(0,1fr)_184px] gap-9 px-9 pb-9 pt-6 max-md:grid-cols-1 max-md:gap-6 max-md:px-4 max-md:pb-6 max-md:pt-4'>
           <div className='col-start-1 flex flex-col gap-3'>
             <div className='flex flex-col justify-center gap-2'>
               {listing.tag && (
@@ -223,7 +215,7 @@ export default function PropertyPanel({
               <div className='flex h-[26px] items-center gap-3'>
                 <h1
                   id='property-panel-title'
-                  className='truncate text-[32px] font-bold leading-[1.1] text-ink tabular-nums'
+                  className='truncate text-[32px] font-bold leading-[1.1] text-ink tabular-nums max-md:text-2xl'
                 >
                   {price}
                 </h1>
@@ -232,7 +224,7 @@ export default function PropertyPanel({
                 {listing.type && (
                   <>
                     <span className='h-[26px] w-px shrink-0 rounded-full bg-slate-200' />
-                    <p className='min-w-0 flex-1 truncate text-[32px] font-medium leading-[1.1] text-ink'>
+                    <p className='min-w-0 flex-1 truncate text-[32px] font-medium leading-[1.1] text-ink max-md:text-2xl'>
                       {TYPE_LABEL[listing.type]}
                     </p>
                   </>
@@ -248,7 +240,7 @@ export default function PropertyPanel({
                   height={24}
                   className='shrink-0 opacity-80'
                 />
-                <p className='min-w-0 flex-1 truncate text-xl font-medium text-gray-500'>
+                <p className='min-w-0 flex-1 truncate text-xl font-medium text-gray-500 max-md:text-base'>
                   {place}
                 </p>
               </div>
@@ -257,12 +249,12 @@ export default function PropertyPanel({
 
           {/* Spans the rows beside it so it stays in reach while the details
               scroll past, then gives way to the full-width location section. */}
-          <div className='col-start-2 row-span-3 row-start-1 flex flex-col items-end'>
+          <div className='col-start-2 row-span-3 row-start-1 flex flex-col items-end max-md:col-start-1 max-md:row-span-1 max-md:row-start-auto max-md:items-stretch'>
             <button
               type='button'
               aria-pressed={favorited}
-              onClick={onToggleFavorite}
-              className='sticky top-6 flex min-h-[34px] cursor-pointer items-center justify-center gap-2 rounded-lg bg-surface-inverse px-4 py-3 text-base font-bold whitespace-nowrap text-ink-inverse hover:bg-brand active:bg-[#004294] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand'
+              onClick={() => toggleFavorite(listing.id)}
+              className='sticky top-6 max-md:static flex min-h-[34px] cursor-pointer items-center justify-center gap-2 rounded-lg bg-surface-inverse px-4 py-3 text-base font-bold whitespace-nowrap text-ink-inverse hover:bg-brand active:bg-[#004294] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand'
             >
               <img
                 src={favorited ? heartActiveIcon : heartIcon}
@@ -274,7 +266,7 @@ export default function PropertyPanel({
             </button>
           </div>
 
-          <div className='col-start-1 grid grid-cols-3 gap-3'>
+          <div className='col-start-1 grid grid-cols-3 gap-3 max-md:grid-cols-2'>
             <SpecBox
               icon={bedIcon}
               label='Bedrooms'
@@ -321,9 +313,9 @@ export default function PropertyPanel({
             <Description paragraphs={describe(listing)} />
           </section>
 
-          <hr className='col-span-2 h-px rounded-full border-0 bg-gray-200' />
+          <hr className='col-span-2 h-px rounded-full border-0 bg-gray-200 max-md:col-span-1' />
 
-          <section className='col-span-2 flex flex-col gap-4'>
+          <section className='col-span-2 flex flex-col gap-4 max-md:col-span-1'>
             <div className='flex flex-col gap-2'>
               <SectionTitle>Location &amp; getting around</SectionTitle>
               <p className='text-base font-medium leading-[1.5] text-ink-muted'>
@@ -331,20 +323,13 @@ export default function PropertyPanel({
                 you travel to for routes and travel times.
               </p>
             </div>
-            <div className='grid w-full grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-3 rounded-2xl border border-gray-200 bg-surface-sunken p-2'>
+            <div className='grid w-full grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-3 rounded-2xl border border-gray-200 bg-surface-sunken p-2 max-md:grid-cols-1'>
               <PropertyMap
                 listing={listing}
                 destinations={destinations}
                 routes={routes}
               />
-              <Destinations
-                destinations={destinations}
-                routes={routes}
-                profile={profile}
-                onProfileChange={onProfileChange}
-                onAdd={onAddDestination}
-                onRemove={onRemoveDestination}
-              />
+              <Destinations routes={routes} />
             </div>
           </section>
         </div>

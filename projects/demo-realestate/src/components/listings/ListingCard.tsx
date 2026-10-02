@@ -5,7 +5,7 @@ import { photosFor, ROOM_LABEL } from '../../lib/photos'
 import type { Listing } from '../../types/listing'
 import Tag from '../ui/Tag'
 import AmenityLabel from './AmenityLabel'
-import FavoriteButton from './FavoriteButton'
+import FavoriteButton from '../ui/FavoriteButton'
 
 export type CardLayout = 'horizontal' | 'vertical'
 
@@ -19,7 +19,7 @@ interface ListingCardProps {
 }
 
 const Divider = () => (
-  <span className='w-px self-stretch rounded-full bg-gray-200' />
+  <span className='w-px self-stretch rounded-full bg-gray-200 max-md:hidden' />
 )
 
 export default function ListingCard({
@@ -81,11 +81,12 @@ export default function ListingCard({
           isVertical ? 'w-full px-6' : 'min-w-0 flex-1'
         )}
       >
-        <p className='pb-2 text-2xl font-bold leading-none text-ink'>
+        <p className='pb-2 text-2xl font-bold leading-none text-ink max-md:text-xl'>
           {formatPrice(listing.price)}
         </p>
 
-        <div className='flex items-start gap-1.5'>
+        {/* On a phone the three wrap, as the Figma's mobile card does. */}
+        <div className='flex items-start gap-1.5 max-md:flex-wrap max-md:gap-1'>
           <AmenityLabel kind='bed'>{listing.beds} bed</AmenityLabel>
           <Divider />
           <AmenityLabel kind='bath'>{listing.baths} bath</AmenityLabel>

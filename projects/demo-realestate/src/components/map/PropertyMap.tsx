@@ -8,7 +8,7 @@ import accessToken from '../../lib/mapbox'
 import type { SearchedLocation } from '../../lib/search'
 import { NEIGHBORHOOD_ZOOM, neighborhoodUrl } from '../../lib/static-image'
 import type { Listing } from '../../types/listing'
-import type { RouteState } from './useRoutes'
+import type { RouteState } from '../property-panel/useRoutes'
 
 const HEIGHT = 375
 /** Static Images caps each dimension at 1280 logical pixels. */

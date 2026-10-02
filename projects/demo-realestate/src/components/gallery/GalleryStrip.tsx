@@ -38,7 +38,7 @@ export default function GalleryStrip({
           className={clsx(
             'relative shrink-0 cursor-pointer overflow-hidden',
             size === 'lg'
-              ? 'h-20 w-[106.667px] rounded-[11.429px] border-[1.905px]'
+              ? 'h-20 w-[106.667px] rounded-[11.429px] border-[1.905px] max-md:h-14 max-md:w-[74.667px] max-md:rounded-lg max-md:border'
               : 'h-7 w-[37.333px] rounded-[4px] border roomy:h-[42px] roomy:w-14 roomy:rounded-md',
             index === active
               ? 'border-brand ring-1 ring-brand'

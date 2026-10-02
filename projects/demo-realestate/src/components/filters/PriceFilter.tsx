@@ -19,18 +19,25 @@ const describe = (range: PriceRange) => {
   return `${formatPriceShort(range.min)} – ${formatPriceShort(range.max)}`
 }
 
+/**
+ * The "Any price" pill and its histogram. On desktop the histogram drops down
+ * from the pill; `inline`, as in the phone's filters sheet, it opens in place
+ * below it and pushes the rest of the sheet down.
+ */
 export default function PriceFilter({
   range,
   counts,
   open,
   onOpenChange,
-  onChange
+  onChange,
+  inline = false
 }: {
   range: PriceRange
   counts: number[]
   open: boolean
   onOpenChange: (open: boolean) => void
   onChange: (range: PriceRange) => void
+  inline?: boolean
 }) {
   const wrapperRef = useRef<HTMLDivElement>(null)
 
@@ -42,8 +49,9 @@ export default function PriceFilter({
 
   const active = draft.min > FULL_RANGE.min || !isUncapped(draft)
 
+  // Inline, the sheet around it handles dismissal.
   useEffect(() => {
-    if (!open) return
+    if (!open || inline) return
     const onPointerDown = (event: PointerEvent) => {
       if (!wrapperRef.current?.contains(event.target as Node))
         onOpenChange(false)
@@ -57,10 +65,41 @@ export default function PriceFilter({
       document.removeEventListener('pointerdown', onPointerDown)
       document.removeEventListener('keydown', onKeyDown)
     }
-  }, [open, onOpenChange])
+  }, [open, inline, onOpenChange])
+
+  const panel = (
+    <>
+      <PriceHistogram
+        counts={counts}
+        range={draft}
+        onChange={setDraft}
+        onCommit={() => onChange(draft)}
+        className={inline ? 'w-full' : undefined}
+      />
+      <div className='mt-3 flex items-center justify-between'>
+        <button
+          type='button'
+          onClick={() => {
+            setDraft(FULL_RANGE)
+            onChange(FULL_RANGE)
+          }}
+          disabled={!active}
+          className='cursor-pointer text-sm font-medium text-ink-muted hover:text-ink disabled:cursor-default disabled:opacity-40'
+        >
+          Reset
+        </button>
+        <p className='text-xs text-ink-muted'>
+          Prices above {formatPriceShort(PRICE_CEILING)} are grouped
+        </p>
+      </div>
+    </>
+  )
 
   return (
-    <div ref={wrapperRef} className='relative'>
+    <div
+      ref={wrapperRef}
+      className={inline ? 'flex flex-col items-start gap-2' : 'relative'}
+    >
       <button
         type='button'
         aria-expanded={open}
@@ -74,39 +113,25 @@ export default function PriceFilter({
           // search bar beside it is flex-1, so any width change pulls this pill
           // sideways and the panel anchored to it stutters along. Pinning the
           // width for the duration holds everything still; closed, it stays snug.
-          open ? 'min-w-[172px]' : ''
+          open && !inline ? 'min-w-[172px]' : ''
         }`}
       >
         {describe(draft)}
-        <MaskIcon src={chevronDown} size={18} />
+        <MaskIcon
+          src={chevronDown}
+          size={18}
+          className={inline && open ? 'rotate-180' : undefined}
+        />
       </button>
 
-      {open && (
-        <div className='absolute left-0 top-full z-40 mt-2 rounded-xl border border-gray-200 bg-white p-3 shadow-[0px_3px_10px_0px_rgba(0,0,0,0.15)]'>
-          <PriceHistogram
-            counts={counts}
-            range={draft}
-            onChange={setDraft}
-            onCommit={() => onChange(draft)}
-          />
-          <div className='mt-3 flex items-center justify-between'>
-            <button
-              type='button'
-              onClick={() => {
-                setDraft(FULL_RANGE)
-                onChange(FULL_RANGE)
-              }}
-              disabled={!active}
-              className='cursor-pointer text-sm font-medium text-ink-muted hover:text-ink disabled:cursor-default disabled:opacity-40'
-            >
-              Reset
-            </button>
-            <p className='text-xs text-ink-muted'>
-              Prices above {formatPriceShort(PRICE_CEILING)} are grouped
-            </p>
+      {open &&
+        (inline ? (
+          <div className='w-full'>{panel}</div>
+        ) : (
+          <div className='absolute left-0 top-full z-40 mt-2 rounded-xl border border-gray-200 bg-white p-3 shadow-[0px_3px_10px_0px_rgba(0,0,0,0.15)]'>
+            {panel}
           </div>
-        </div>
-      )}
+        ))}
     </div>
   )
 }
