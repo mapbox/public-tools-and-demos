@@ -17,7 +17,9 @@ export const formatPriceShort = (price: number) => {
     const millions = price / 1_000_000
     return `$${millions.toFixed(millions < 10 ? 1 : 0).replace(/\.0$/, '')}M`
   }
-  return `$${Math.round(price / 1000)}K`
+  const thousands = Math.round(price / 1000)
+  // The bottom of the price scale reads "$0", as in the Figma, not "$0K".
+  return thousands === 0 ? '$0' : `$${thousands}K`
 }
 
 const ACRE = 43_560

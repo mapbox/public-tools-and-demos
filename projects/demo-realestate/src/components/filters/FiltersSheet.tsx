@@ -16,8 +16,6 @@ export default function FiltersSheet({ onClose }: { onClose: () => void }) {
     price,
     setPrice,
     priceCounts,
-    priceOpen,
-    setPriceOpen,
     beds,
     setBeds,
     types,
@@ -55,8 +53,6 @@ export default function FiltersSheet({ onClose }: { onClose: () => void }) {
           inline
           range={price}
           counts={priceCounts}
-          open={priceOpen}
-          onOpenChange={setPriceOpen}
           onChange={setPrice}
         />
         <BedsFilter value={beds} onChange={setBeds} />

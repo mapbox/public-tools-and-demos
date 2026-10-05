@@ -21,21 +21,23 @@ const describe = (range: PriceRange) => {
 
 /**
  * The "Any price" pill and its histogram. On desktop the histogram drops down
- * from the pill; `inline`, as in the phone's filters sheet, it opens in place
- * below it and pushes the rest of the sheet down.
+ * from the pill. `inline`, as in the phone's filters sheet, the histogram is
+ * always open, under a label showing the range: opening the sheet is already
+ * the click that asks for the filters, so there is no second one.
  */
 export default function PriceFilter({
   range,
   counts,
-  open,
-  onOpenChange,
+  open = false,
+  onOpenChange = () => {},
   onChange,
   inline = false
 }: {
   range: PriceRange
   counts: number[]
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  /** The desktop popover's state; unused inline, where it is always open. */
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
   onChange: (range: PriceRange) => void
   inline?: boolean
 }) {
@@ -49,7 +51,7 @@ export default function PriceFilter({
 
   const active = draft.min > FULL_RANGE.min || !isUncapped(draft)
 
-  // Inline, the sheet around it handles dismissal.
+  // Inline, there is no popover to dismiss.
   useEffect(() => {
     if (!open || inline) return
     const onPointerDown = (event: PointerEvent) => {
@@ -95,11 +97,19 @@ export default function PriceFilter({
     </>
   )
 
+  if (inline) {
+    return (
+      <div className='flex w-full flex-col gap-2'>
+        <p className='text-sm font-bold text-ink tabular-nums'>
+          {describe(draft)}
+        </p>
+        {panel}
+      </div>
+    )
+  }
+
   return (
-    <div
-      ref={wrapperRef}
-      className={inline ? 'flex flex-col items-start gap-2' : 'relative'}
-    >
+    <div ref={wrapperRef} className='relative'>
       <button
         type='button'
         aria-expanded={open}
@@ -113,25 +123,18 @@ export default function PriceFilter({
           // search bar beside it is flex-1, so any width change pulls this pill
           // sideways and the panel anchored to it stutters along. Pinning the
           // width for the duration holds everything still; closed, it stays snug.
-          open && !inline ? 'min-w-[172px]' : ''
+          open ? 'min-w-[172px]' : ''
         }`}
       >
         {describe(draft)}
-        <MaskIcon
-          src={chevronDown}
-          size={18}
-          className={inline && open ? 'rotate-180' : undefined}
-        />
+        <MaskIcon src={chevronDown} size={18} />
       </button>
 
-      {open &&
-        (inline ? (
-          <div className='w-full'>{panel}</div>
-        ) : (
-          <div className='absolute left-0 top-full z-40 mt-2 rounded-xl border border-gray-200 bg-white p-3 shadow-[0px_3px_10px_0px_rgba(0,0,0,0.15)]'>
-            {panel}
-          </div>
-        ))}
+      {open && (
+        <div className='absolute left-0 top-full z-40 mt-2 rounded-xl border border-gray-200 bg-white p-3 shadow-[0px_3px_10px_0px_rgba(0,0,0,0.15)]'>
+          {panel}
+        </div>
+      )}
     </div>
   )
 }
