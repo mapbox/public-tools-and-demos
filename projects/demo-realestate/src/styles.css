@@ -144,10 +144,27 @@
 .is-drawing .mapboxgl-marker {
   pointer-events: none;
 }
+
+/* GL JS sets the canvas's touch-action from which gestures are on. Drawing
+   turns drag-pan off, which leaves `pan-x pan-y`: the browser then takes a
+   one-finger stroke as a page scroll and drags the whole app with the finger.
+   While drawing, the canvas keeps every touch. The extra `.mapboxgl-map`
+   outranks GL's own rule whichever stylesheet loads last. */
+.is-drawing .mapboxgl-map .mapboxgl-canvas-container,
+.is-drawing .mapboxgl-map .mapboxgl-canvas-container .mapboxgl-canvas {
+  touch-action: none;
+}
 html,
 body,
 #root {
   height: 100%;
+}
+
+/* The app fills the screen and never scrolls as a page, so a swipe that
+   reaches the edge must not bounce the whole layout, as iOS does by default. */
+html,
+body {
+  overscroll-behavior: none;
 }
 
 body {
