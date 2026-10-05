@@ -62,9 +62,11 @@ export default function DrawControl({
 
       {/* Clear of the control stack on the right, and of nothing on the
           left, so it centres over the map on desktop and fills it on a
-          phone. */}
+          phone. Opaque white with the 16px corners of the card and basemap
+          menu, rather than the Figma's translucent blue, so it matches the
+          rest of what floats on the map. */}
       {drawing && (
-        <div className='absolute left-3 right-[54px] top-2.5 z-20 mx-auto flex max-w-[910px] items-center justify-between gap-4 rounded-lg bg-[rgba(230,242,255,0.64)] p-4 text-base text-ink shadow-[0_1px_4px_rgba(0,0,0,0.18)] backdrop-blur-[3.65px] max-md:p-3 max-md:text-sm'>
+        <div className='absolute left-3 right-[54px] top-2.5 z-20 mx-auto flex max-w-[910px] items-center justify-between gap-4 rounded-2xl bg-white p-4 text-base text-ink shadow-[0_1px_4px_rgba(0,0,0,0.18)] max-md:p-3 max-md:text-sm'>
           {/* The Figma's wording, shortened on a phone to fit two lines. */}
           <p className='min-w-0'>
             <span className='font-bold'>Draw a shape</span>
