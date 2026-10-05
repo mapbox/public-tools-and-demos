@@ -93,6 +93,7 @@ function Section<T extends string>({
  */
 export default function BasemapControl({
   host,
+  disabled = false,
   mapStyle,
   onMapStyleChange,
   lightPreset,
@@ -100,12 +101,18 @@ export default function BasemapControl({
 }: {
   /** The GL control's element, which the button is portalled into. */
   host: HTMLElement
+  /**
+   * While drawing: a style switch would wipe GL Draw's layers, which it adds
+   * only once, so the menu is shut and the button disabled until it is done.
+   */
+  disabled?: boolean
   mapStyle: MapStyle
   onMapStyleChange: (style: MapStyle) => void
   lightPreset: LightPreset
   onLightPresetChange: (preset: LightPreset) => void
 }) {
-  const [open, setOpen] = useState(false)
+  const [menuOpen, setOpen] = useState(false)
+  const open = menuOpen && !disabled
   const menuRef = useRef<HTMLDivElement>(null)
 
   // The button and the menu live in different parts of the DOM, so a press
@@ -136,10 +143,11 @@ export default function BasemapControl({
           aria-label='Basemap settings'
           title='Basemap settings'
           aria-expanded={open}
+          disabled={disabled}
           onClick={() => setOpen((value) => !value)}
           className={clsx(
             // GL JS styles control buttons; this only adds the icon and state.
-            'flex! items-center justify-center text-ink',
+            'flex! items-center justify-center text-ink disabled:opacity-40',
             open && 'bg-surface-sunken!'
           )}
         >

@@ -8,6 +8,7 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 import mapboxgl, { type Anchor } from 'mapbox-gl'
+import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import accessToken from '../../lib/mapbox'
 
 import {
@@ -23,11 +24,13 @@ import {
   MARKER_ALTITUDE_M,
   setBuildingSelected
 } from '../../lib/buildings'
+import { createFreehandMode } from '../../lib/freehand'
 import type { Bounds } from '../../lib/listings-source'
 import type { SearchedLocation } from '../../lib/search'
 import { MAP_CENTER, MAP_ZOOM } from '../../lib/map-defaults'
 import type { Listing } from '../../types/listing'
 import BasemapControl from './BasemapControl'
+import DrawControl from './DrawControl'
 import ListingMarker from './ListingMarker'
 import { CARD_OFFSETS, chooseAnchor } from './cardPlacement'
 import { selectLabelled, type MarkerVariant } from './labelSelection'
@@ -36,12 +39,46 @@ import closeIcon from '../../img/icons/close.svg'
 import MaskIcon from '../ui/MaskIcon'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
+// Draw's cursors while drawing.
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 
 mapboxgl.accessToken = accessToken
 
 const BOUNDARY_SOURCE = 'search-boundary'
 /** The theme's brand blue, --color-brand; paint properties need the raw hex. */
 const BOUNDARY_COLOR = '#007afc'
+
+/**
+ * The shape being drawn, before it is applied: the same blue as an applied
+ * boundary, but dashed, so it reads as not yet in effect. Draw runs every
+ * style against its own two sources, so these are all it needs.
+ */
+const DRAW_STYLES = [
+  {
+    id: 'freehand-fill',
+    type: 'fill',
+    filter: ['==', '$type', 'Polygon'],
+    paint: { 'fill-color': BOUNDARY_COLOR, 'fill-opacity': 0.08 }
+  },
+  {
+    id: 'freehand-line',
+    type: 'line',
+    filter: ['==', '$type', 'Polygon'],
+    layout: { 'line-cap': 'round', 'line-join': 'round' },
+    paint: {
+      'line-color': BOUNDARY_COLOR,
+      'line-width': 2.5,
+      'line-dasharray': [2, 1.5]
+    }
+  }
+]
+
+/** Another GL control in the top-right stack, filled by a React portal. */
+const createControlHost = () => {
+  const element = document.createElement('div')
+  element.className = 'mapboxgl-ctrl mapboxgl-ctrl-group joined-ctrl'
+  return element
+}
 
 /** The full `basemap` config for a style; only Standard has buildings to select. */
 const configFor = (style: MapStyle, lightPreset: LightPreset) => ({
@@ -74,7 +111,8 @@ export default function MapView({
   onBoundsChange,
   card,
   cardAt,
-  onBackgroundClick
+  onBackgroundClick,
+  onApplyDrawnArea
 }: {
   listings: Listing[]
   selectedId: string | null
@@ -96,6 +134,8 @@ export default function MapView({
   cardAt: [number, number] | null
   /** A click on the map itself, not on a marker or the card. */
   onBackgroundClick: () => void
+  /** A drawn shape the viewer applied, to limit the listings to. */
+  onApplyDrawnArea: (shape: GeoJSON.Polygon) => void
 }) {
   const rendered = listings
   const [labelled, setLabelled] = useState<Set<string>>(new Set())
@@ -109,13 +149,13 @@ export default function MapView({
   // One host element for the card's portal, handed to each Popup in turn, so
   // re-anchoring the Popup never remounts the card inside it.
   const [popupHost] = useState(() => document.createElement('div'))
-  // The layers button's host, handed to GL JS as a control and filled by a
-  // portal, so the button stacks with GL's own zoom controls.
-  const [basemapHost] = useState(() => {
-    const element = document.createElement('div')
-    element.className = 'mapboxgl-ctrl mapboxgl-ctrl-group basemap-ctrl'
-    return element
-  })
+  // The layers and pencil buttons' hosts, handed to GL JS as controls and
+  // filled by portals, so the buttons stack with GL's own zoom controls.
+  const [basemapHost] = useState(createControlHost)
+  const [drawHost] = useState(createControlHost)
+  // Drawing an area: GL Draw is on the map only while this is true.
+  const [drawing, setDrawing] = useState(false)
+  const [drawnShape, setDrawnShape] = useState<GeoJSON.Polygon | null>(null)
   // Bumped each time a style finishes loading, the first and after every
   // switch, since our own sources and layers have to be added again each time.
   const [styleVersion, setStyleVersion] = useState(0)
@@ -164,11 +204,13 @@ export default function MapView({
         basemap: configFor(mapStyleRef.current, lightPresetRef.current)
       }
     })
-    // Added first, so it sits at the top of the top-right stack.
-    map.addControl(
-      { onAdd: () => basemapHost, onRemove: () => basemapHost.remove() },
-      'top-right'
-    )
+    // Added first, so they sit at the top of the top-right stack.
+    for (const host of [basemapHost, drawHost]) {
+      map.addControl(
+        { onAdd: () => host, onRemove: () => host.remove() },
+        'top-right'
+      )
+    }
     map.addControl(
       new mapboxgl.NavigationControl({ showCompass: true }),
       'top-right'
@@ -264,7 +306,45 @@ export default function MapView({
       map.remove()
       mapRef.current = null
     }
-  }, [basemapHost])
+  }, [basemapHost, drawHost])
+
+  // GL Draw joins the map only while drawing, with the freehand lasso as its
+  // only mode in use and its own buttons hidden: the pencil and the banner
+  // are the interface. Removing it takes the unapplied shape with it.
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map || !drawing) return
+    const draw = new MapboxDraw({
+      displayControlsDefault: false,
+      boxSelect: false,
+      modes: {
+        ...MapboxDraw.modes,
+        freehand: createFreehandMode(setDrawnShape)
+      },
+      defaultMode: 'freehand',
+      styles: DRAW_STYLES
+    })
+    map.addControl(draw, 'top-left')
+    return () => {
+      setDrawnShape(null)
+      // Unmounting removes the whole map first; nothing is left to undo.
+      if (mapRef.current !== map) return
+      map.removeControl(draw)
+      map.dragPan.enable()
+      map.doubleClickZoom.enable()
+    }
+  }, [drawing])
+
+  // Drawing over an open card would be drawing under it, so it closes first.
+  const startDrawing = useCallback(() => {
+    onBackgroundClickRef.current()
+    setDrawing(true)
+  }, [])
+  const cancelDrawing = useCallback(() => setDrawing(false), [])
+  const applyDrawing = () => {
+    if (drawnShape) onApplyDrawnArea(drawnShape)
+    setDrawing(false)
+  }
 
   // Switching basemap replaces the style. HTML markers and the card's Popup
   // are not part of it, so they stay where they are; the boundary layers are
@@ -453,13 +533,18 @@ export default function MapView({
   return (
     // A size container named `map`: the property card picks its tier from the
     // map's dimensions (the `roomy` variant in styles.css).
-    <div className='relative size-full overflow-hidden rounded-lg max-md:rounded-none [container:map/size]'>
+    <div
+      className={`relative size-full overflow-hidden rounded-lg max-md:rounded-none [container:map/size] ${
+        drawing ? 'is-drawing' : ''
+      }`}
+    >
       <div ref={containerRef} className='size-full' />
 
       {/* Top centre, clear of the listing count (left) and zoom controls. A
           phone's map is too narrow for both on one line, so there it drops
           below the count. */}
-      {boundary && (
+      {/* The drawing banner takes the top of the map while it is up. */}
+      {boundary && !drawing && (
         <button
           type='button'
           onClick={onRemoveBoundary}
@@ -473,7 +558,7 @@ export default function MapView({
         </button>
       )}
 
-      {totalInView > rendered.length && (
+      {totalInView > rendered.length && !drawing && (
         <div className='pointer-events-none absolute left-3 top-3 z-10 rounded-full bg-white/95 px-3 py-1.5 text-sm text-ink-muted shadow-[0_1px_4px_rgba(0,0,0,0.18)]'>
           Showing {rendered.length.toLocaleString()} of{' '}
           {totalInView.toLocaleString()} listings
@@ -497,8 +582,17 @@ export default function MapView({
         )
       })}
       {card && createPortal(card, popupHost)}
+      <DrawControl
+        host={drawHost}
+        drawing={drawing}
+        hasShape={drawnShape !== null}
+        onStart={startDrawing}
+        onCancel={cancelDrawing}
+        onApply={applyDrawing}
+      />
       <BasemapControl
         host={basemapHost}
+        disabled={drawing}
         mapStyle={mapStyle}
         onMapStyleChange={onMapStyleChange}
         lightPreset={lightPreset}

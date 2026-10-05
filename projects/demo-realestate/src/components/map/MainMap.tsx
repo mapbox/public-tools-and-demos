@@ -7,8 +7,15 @@ import MapView from './MapView'
  * it knows nothing of the context or of what goes in its card.
  */
 export default function MainMap() {
-  const { rendered, visible, flyTo, boundary, removeBoundary, onBoundsChange } =
-    useListings()
+  const {
+    rendered,
+    visible,
+    flyTo,
+    boundary,
+    removeBoundary,
+    applyDrawnArea,
+    onBoundsChange
+  } = useListings()
   const {
     selectedId,
     selected,
@@ -45,6 +52,7 @@ export default function MainMap() {
       cardAt={card ? card.coordinates : null}
       card={card && <PropertyCard key={card.id} listing={card} />}
       onBackgroundClick={closeCard}
+      onApplyDrawnArea={applyDrawnArea}
     />
   )
 }

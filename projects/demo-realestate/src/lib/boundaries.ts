@@ -63,6 +63,14 @@ const bboxOf = (geometry: Area): Boundary['bbox'] => {
   return [west, south, east, north]
 }
 
+/** A shape drawn on the map, in the same form as a searched area's outline. */
+export const drawnBoundary = (geometry: GeoJSON.Polygon): Boundary => ({
+  id: 'drawn',
+  name: 'Drawn area',
+  geometry,
+  bbox: bboxOf(geometry)
+})
+
 const cache = new Map<string, Promise<Boundary | null>>()
 
 /** The area's boundary, or null when the endpoint has none for it. */

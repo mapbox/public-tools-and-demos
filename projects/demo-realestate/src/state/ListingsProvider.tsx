@@ -10,6 +10,7 @@ import {
 import { MARKER_CAP } from '../components/map/labelSelection'
 import {
   contains,
+  drawnBoundary,
   fetchBoundary,
   isArea,
   type Boundary
@@ -110,6 +111,14 @@ export default function ListingsProvider({
     setSearchKey((key) => key + 1)
   }, [clearSearch])
 
+  // A drawn area replaces any searched one, so the search field, which would
+  // otherwise still name the old area, is emptied as well.
+  const applyDrawnArea = useCallback((shape: GeoJSON.Polygon) => {
+    searchRef.current += 1
+    setBoundary(drawnBoundary(shape))
+    setSearchKey((key) => key + 1)
+  }, [])
+
   const toggleType = useCallback(
     (type: PropertyType) =>
       setTypes((current) =>
@@ -146,6 +155,7 @@ export default function ListingsProvider({
       boundary,
       selectSearch,
       clearSearch,
+      applyDrawnArea,
       removeBoundary,
       searchKey
     }),
@@ -164,6 +174,7 @@ export default function ListingsProvider({
       boundary,
       selectSearch,
       clearSearch,
+      applyDrawnArea,
       removeBoundary,
       searchKey
     ]

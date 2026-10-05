@@ -44,6 +44,8 @@ export interface ListingsState {
   boundary: Boundary | null
   selectSearch: (location: SearchedLocation) => void
   clearSearch: () => void
+  /** Limits listings to a shape drawn on the map, replacing any search area. */
+  applyDrawnArea: (shape: GeoJSON.Polygon) => void
   /** Clears the search from the map's side, emptying the search field too. */
   removeBoundary: () => void
   /** Changes when the search field must be emptied from outside it. */

@@ -126,17 +126,23 @@
   display: none;
 }
 
-/* The layers button joins GL JS's zoom controls as one stack, as in the
-   Figma's Map Controls, though the two are separate GL controls. */
-.mapboxgl-ctrl-top-right .basemap-ctrl {
+/* The layers and pencil buttons join GL JS's zoom controls as one stack, as
+   in the Figma's Map Controls, though each is a separate GL control. */
+.mapboxgl-ctrl-top-right .joined-ctrl {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
-.mapboxgl-ctrl-top-right .basemap-ctrl + .mapboxgl-ctrl-group {
+.mapboxgl-ctrl-top-right .joined-ctrl + .mapboxgl-ctrl-group {
   margin-top: 0;
   border-top: 1px solid #ddd;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+
+/* While drawing an area, a stroke can start on top of a listing marker; the
+   markers let the press through to the map rather than selecting a home. */
+.is-drawing .mapboxgl-marker {
+  pointer-events: none;
 }
 html,
 body,

@@ -69,6 +69,24 @@ export const products: Product[] = [
     ]
   },
   {
+    title: 'Mapbox GL Draw',
+    body: [
+      'The pencil below the layers button lets you draw the area you want to live in. Press, drag a loop around it and let go, then Apply: the listings are limited to what falls inside the shape, the map fits to it, and the shape replaces any searched city. Cancel, or Escape, leaves everything as it was. Drawing again replaces the shape rather than adding a second one.',
+      'GL Draw has no freehand mode of its own, so this is a custom mode written for it: a handful of event handlers that record the pointer as it drags, skipping points closer than a few pixels apart so the shape stays light. GL Draw is added to the map only while you draw, with its own toolbar hidden, so the pencil and the banner are the whole interface.',
+      'Once applied, the shape becomes the same boundary a city search produces, so the outline, the filtering and Remove boundary all work the same way for both.'
+    ],
+    links: [
+      {
+        label: 'Mapbox GL Draw on GitHub',
+        href: 'https://github.com/mapbox/mapbox-gl-draw'
+      },
+      {
+        label: 'Writing a custom Draw mode',
+        href: 'https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/MODES.md'
+      }
+    ]
+  },
+  {
     title: 'Map Markers',
     body: [
       'Each listing is a custom HTML marker, drawn as either a price label or a small dot. Which listings get a price is decided in screen space: a label is placed only where it would not collide with one already on the map, so prices stay evenly scattered at any zoom and density. Selecting or saving a listing always promotes it to a label, and saved listings carry a heart.',
