@@ -1,7 +1,14 @@
-import { useCallback, useMemo, useState, type ReactNode } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode
+} from 'react'
 
 import { useIsMobile } from '../hooks/useIsMobile'
 import type { LightPreset, MapStyle } from '../lib/basemap'
+import { nearestPhoto } from '../lib/kartaview'
 import type { ViewMode } from '../types/view'
 import { SelectionContext, useListings, type SelectionState } from './contexts'
 
@@ -30,6 +37,13 @@ export default function SelectionProvider({
     () => all.find((listing) => listing.id === selectedId) ?? null,
     [all, selectedId]
   )
+
+  // KartaView can take seconds to answer, so the street view lookup starts on
+  // selection. By the time someone opens the full listing and scrolls to its
+  // map, the answer is usually cached and the Street view button is just there.
+  useEffect(() => {
+    if (selected) nearestPhoto(selected.coordinates).catch(() => {})
+  }, [selected])
 
   // Selecting from anywhere, a marker or a sidebar card, counts as a visit.
   const select = useCallback((id: string) => {

@@ -128,6 +128,21 @@ export const products: Product[] = [
     ]
   },
   {
+    title: 'KartaView Street View',
+    body: [
+      'The Street view button on the full listing’s map opens a 360° photo of the street outside the home, from KartaView, an open street-level imagery platform licensed CC BY-SA 4.0. It is not a Mapbox product. It is here to show how open imagery pairs with a Mapbox map.',
+      'Selecting a listing starts a search for the nearest 360° photo within 50 metres, so by the time you reach the map the answer is usually in and the button simply appears. Listings with no photo nearby show no button. Coverage is good in Seattle and thin elsewhere in King County.',
+      'The panorama opens facing the house and is drawn with Photo Sphere Viewer. Arrows on the road step to the next photo along the street. The map shrinks to an inset that shows where the camera stands, which way it looks, and the streets KartaView has photographed, from its coverage tiles in a GL JS raster layer.'
+    ],
+    links: [
+      { label: 'KartaView', href: 'https://kartaview.org' },
+      {
+        label: 'Photo Sphere Viewer',
+        href: 'https://photo-sphere-viewer.js.org'
+      }
+    ]
+  },
+  {
     title: 'Source Code',
     body: ['Read the full source for this demo on GitHub.'],
     links: [{ label: 'demo-realestate on GitHub', href: REPO }]

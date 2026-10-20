@@ -14,16 +14,20 @@
   "dependencies": {
     "@mapbox/mapbox-gl-draw": "1.5.0",
     "@mapbox/search-js-core": "^1.6.0",
+    "@photo-sphere-viewer/core": "5.15.1",
+    "@photo-sphere-viewer/virtual-tour-plugin": "5.15.1",
     "clsx": "^2.1.1",
     "mapbox-gl": "^3.31.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "react-tooltip": "^5.28.0"
+    "react-tooltip": "^5.28.0",
+    "three": "^0.185.1"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "@types/three": "^0.185.0",
     "@vitejs/plugin-react": "^6.1.1",
     "tailwindcss": "^4.3.3",
     "typescript": "~5.9.3",
