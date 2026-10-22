@@ -1,40 +1,187 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
+/* Typography mirrors docs.mapbox.com: the family is registered as `Cera` (not
+   "Cera PRO") with Open Sans as its designed fallback, served from the same CDNs
+   the docs site uses. Weights 400/500/700 are the three the designs call for. */
+@font-face {
+  font-family: 'Cera';
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://assets.website-files.com/5f291534dceb6cd8f0e7a02f/5f2a9eb37e663459fc064f54_CeraPRO-Regular.ttf')
+    format('truetype');
+}
+@font-face {
+  font-family: 'Cera';
+  font-weight: 500;
+  font-display: swap;
+  src: url('https://assets.website-files.com/6050a76fa6a633d5d54ae714/6050ab4346858de0e05420ae_Cera%20Pro%20Medium.woff2')
+    format('woff2');
+}
+@font-face {
+  font-family: 'Cera';
+  font-weight: 700;
+  font-display: swap;
+  src: url('https://api.mapbox.com/mapbox-assembly/fonts/CeraPRO-Bold.v1.woff2')
+      format('woff2'),
+    url('https://api.mapbox.com/mapbox-assembly/fonts/CeraPRO-Bold.v1.woff')
+      format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://api.mapbox.com/mapbox-assembly/fonts/opensans-regular.v1.woff2')
+      format('woff2'),
+    url('https://api.mapbox.com/mapbox-assembly/fonts/opensans-regular.v1.woff')
+      format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-weight: 700;
+  font-display: swap;
+  src: url('https://api.mapbox.com/mapbox-assembly/fonts/opensans-bold.v1.woff2')
+      format('woff2'),
+    url('https://api.mapbox.com/mapbox-assembly/fonts/opensans-bold.v1.woff')
+      format('woff');
+}
+
+/* mapbox-demo-components ships Tailwind utility classes inside untyped JSX and no
+   CSS of its own. Tailwind's automatic source detection does not cross into a
+   sibling workspace package, so shared components render unstyled without this. */
+@source '../../demo-components/src';
+
+/* Design tokens mirrored from the Figma file "Mapbox Docs Real Estate Listing
+   Playground". Names are semantic; the Figma variable each one came from is noted
+   where the mapping is not obvious. */
+@theme {
+  --font-sans: 'Cera', 'Open Sans', sans-serif;
+  /* The small uppercase listing tags are the one place the designs call for
+     Open Sans directly rather than Cera. */
+  --font-label: 'Open Sans', sans-serif;
+
+  --color-ink: #23262d; /* text/primary */
+  --color-ink-muted: #566171; /* text/secondary */
+  --color-ink-inverse: #ffffff; /* text/inverse */
+
+  --color-brand: #007afc; /* mapbox/brand blue 50, docsearch/primary 50 */
+  --color-brand-dark: #006cc5; /* docsearch/primary 60 */
+  --color-brand-tint: #c7e7ff; /* docsearch/primary 10 */
+  --color-brand-wash: #e6f2ff; /* docsearch/primary 05 */
+
+  --color-accent: #fc8200; /* mapbox/orange/50 */
+  --color-accent-light: #ff9b31; /* mapbox/orange/40 */
+  --color-accent-dark: #ca6800; /* mapbox/orange/60 */
+  --color-accent-deep: #8d5b00; /* mapbox/orange/70 */
+  --color-accent-wash: #fff5ea; /* mapbox/orange/5 */
+
+  --color-success: #2fc078; /* docsearch/green/green50 */
+  --color-success-dark: #007a43; /* docsearch/green/green60 */
+  --color-success-wash: #e9faf1; /* docsearch/green/green05 */
+
+  --color-danger: #eb1414; /* red */
+  --color-violet: #7b4db1; /* docsearch/purple/70, destination C */
+
+  --color-line: #d5dae2; /* stroke/light-grey1, docsearch/nudge-background */
+  --color-line-strong: #8b96aa; /* docsearch/border */
+  --color-surface: #ffffff; /* docsearch/modal-background */
+  --color-surface-sunken: #f5f7fb; /* docsearch/hit-background */
+  --color-surface-inverse: #1e2136; /* docsearch/footer-background */
+
+  /* A listing marker once its listing has been opened: lifted clear of the
+     near-black default, but still dark enough for white price text. */
+  --color-marker-visited: #6b7588;
+}
+
+/* Property type colours. Used by the type filter chips only — map markers
+   deliberately encode selection rather than type, so the two do not disagree.
+   `static` keeps them emitted even when no utility references them, so they stay
+   available if a future marker treatment wants them back. */
+@theme static {
+  --color-house: #007afc;
+  --color-multifamily: #fc8200;
+  --color-townhouse: #2fc078;
+}
+
+/* The property card is sized by the map it sits on, not the screen: the map is
+   far narrower in Split than in Map view on the same monitor. Container
+   variants in Tailwind are width-only, and a 13" screen runs out of height
+   first, so this one tests both. */
+@custom-variant roomy {
+  @container map (min-width: 960px) and (min-height: 700px) {
+    @slot;
+  }
+}
+
+/* The property card lives in a GL JS Popup; the card draws its own chrome. */
+.listing-popup {
+  z-index: 10;
+}
+.listing-popup .mapboxgl-popup-content {
+  padding: 0;
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+.listing-popup .mapboxgl-popup-tip {
+  display: none;
+}
+
+/* The layers and pencil buttons join GL JS's zoom controls as one stack, as
+   in the Figma's Map Controls, though each is a separate GL control. */
+.mapboxgl-ctrl-top-right .joined-ctrl {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.mapboxgl-ctrl-top-right .joined-ctrl + .mapboxgl-ctrl-group {
+  margin-top: 0;
+  border-top: 1px solid #ddd;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+/* While drawing an area, a stroke can start on top of a listing marker; the
+   markers let the press through to the map rather than selecting a home. */
+.is-drawing .mapboxgl-marker {
+  pointer-events: none;
+}
+
+/* GL JS sets the canvas's touch-action from which gestures are on. Drawing
+   turns drag-pan off, which leaves `pan-x pan-y`: the browser then takes a
+   one-finger stroke as a page scroll and drags the whole app with the finger.
+   While drawing, the canvas keeps every touch. The extra `.mapboxgl-map`
+   outranks GL's own rule whichever stylesheet loads last. */
+.is-drawing .mapboxgl-map .mapboxgl-canvas-container,
+.is-drawing .mapboxgl-map .mapboxgl-canvas-container .mapboxgl-canvas {
+  touch-action: none;
+}
 html,
 body,
 #root {
   height: 100%;
 }
 
+/* The app fills the screen and never scrolls as a page, so a swipe that
+   reaches the edge must not bounce the whole layout, as iOS does by default. */
+html,
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  overscroll-behavior: none;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+body {
+  margin: 0;
+  background-color: var(--color-surface-sunken);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
-.mapboxgl-popup-content {
-  padding: 0 !important;
-  border: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
-}
-
-.mapboxgl-popup-tip {
-  display: none;
-}
-
-.react-tooltip {
-  pointer-events: auto !important;
+/* Painting an icon in `currentColor` by masking it. The mask lives here rather
+   than in an inline style because React silently drops `mask-image` when it is
+   assigned through the CSSOM; a custom property survives that path intact. */
+.mask-icon {
+  display: inline-block;
+  flex: none;
+  background-color: currentColor;
+  -webkit-mask: var(--mask-url) center / contain no-repeat;
+  mask: var(--mask-url) center / contain no-repeat;
 }
