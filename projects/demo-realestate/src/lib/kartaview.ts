@@ -196,6 +196,3 @@ export const panoramaUrl = (photo: StreetPhoto, width = 4096) => {
     width / 2
   }/${source}`
 }
-
-/** KartaView's own coverage map: transparent PNG tiles of captured streets. */
-export const COVERAGE_TILES = `${API}/sequence/tiles/{x}/{y}/{z}.png`

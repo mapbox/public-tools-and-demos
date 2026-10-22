@@ -24,8 +24,13 @@ const captureDate = (iso: string) =>
     year: 'numeric'
   })
 
+/** Photos whose panorama failed to load: never offered as a step again. */
+const unreachable = new Set<string>()
+
 const toNode = async (photo: StreetPhoto): Promise<VirtualTourNode> => {
-  const links = await neighbours(photo).catch(() => [])
+  const links = (await neighbours(photo).catch(() => [])).filter(
+    (link) => !unreachable.has(link.id)
+  )
   return {
     id: photo.id,
     panorama: panoramaUrl(photo),
@@ -77,10 +82,10 @@ export default function StreetView({
       container,
       defaultYaw: bearing(photo.coordinates, target) * toRadians,
       defaultPitch: -0.05,
-      navbar: ['zoom', 'caption', 'fullscreen'],
-      // The viewer sits in a scrolling page: a plain wheel scrolls the page,
-      // ctrl/⌘ + wheel zooms the panorama.
-      mousewheelCtrlKey: true,
+      // It already fills the screen, so no fullscreen button; the wheel
+      // zooms and the arrow keys look around.
+      navbar: ['zoom', 'caption'],
+      keyboard: 'always',
       plugins: [
         VirtualTourPlugin.withConfig({
           dataMode: 'server',
@@ -104,6 +109,25 @@ export default function StreetView({
     tour.addEventListener('node-changed', ({ node }) => {
       callbacks.current.onPhotoChange(node.data as StreetPhoto)
     })
+    // An arrow only leads to a photo KartaView listed, but its panorama can
+    // still fail to load (a CDN error, a rate limit). The plugin would then
+    // leave its "Cannot load image" overlay with no arrows and an unhandled
+    // rejection. Instead: drop that step and reload the photo we stood on,
+    // which rebuilds its arrows without it.
+    const setCurrentNode = tour.setCurrentNode.bind(tour)
+    tour.setCurrentNode = (nodeId, options, fromLink) =>
+      setCurrentNode(nodeId, options, fromLink).catch(() => {
+        const current = tour.getCurrentNode()
+        if (!current || nodeId === current.id) return false
+        unreachable.add(nodeId)
+        viewer.notification.show({
+          content: 'Street view can’t go any further this way',
+          timeout: 3000
+        })
+        return setCurrentNode(current.id, { forceUpdate: true }).catch(
+          () => false
+        )
+      })
     // Started here rather than with the plugin's startNodeId, which starts it
     // without handling failure: closing before the first photo loads would
     // otherwise surface as an uncaught error from the destroyed plugin.

@@ -40,7 +40,7 @@ export const products: Product[] = [
     body: [
       'Renders the map in the split and map views. The map instance is created once and held in a ref, then listings drive markers imperatively as filters change, so React owns the UI and GL JS owns the canvas.',
       'The property card is a GL JS Popup anchored to the selected marker. It opens below the marker, moving above or beside it only when there is not room, then follows the marker as the map pans. It comes in two sizes, picked by a container query on the map rather than the screen, since the map is much narrower in split view than in map view.',
-      'The full listing starts its map as a static image and only creates a second GL JS map when it is clicked, at the same centre and zoom, so opening a listing never costs a WebGL context nobody uses.'
+      'The full listing starts its map as a static image and only creates a second GL JS map when it is clicked, at the same centre and zoom, so opening a listing never costs a WebGL context nobody uses. The expand button opens that same map full screen, with its routes and markers intact, by moving its container rather than creating another map.'
     ],
     links: [
       {
@@ -132,7 +132,7 @@ export const products: Product[] = [
     body: [
       'The Street view button on the full listing’s map opens a 360° photo of the street outside the home, from KartaView, an open street-level imagery platform licensed CC BY-SA 4.0. It is not a Mapbox product. It is here to show how open imagery pairs with a Mapbox map.',
       'Selecting a listing starts a search for the nearest 360° photo within 50 metres, so by the time you reach the map the answer is usually in and the button simply appears. Listings with no photo nearby show no button. Coverage is good in Seattle and thin elsewhere in King County.',
-      'The panorama opens facing the house and is drawn with Photo Sphere Viewer. Arrows on the road step to the next photo along the street. The map shrinks to an inset that shows where the camera stands, which way it looks, and the streets KartaView has photographed, from its coverage tiles in a GL JS raster layer.'
+      'The panorama opens full screen, facing the house, and is drawn with Photo Sphere Viewer. Arrows on the road step to the next photo along the street. The listing’s map moves into an inset that shows where the camera stands and which way it looks.'
     ],
     links: [
       { label: 'KartaView', href: 'https://kartaview.org' },

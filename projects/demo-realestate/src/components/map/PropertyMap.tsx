@@ -10,34 +10,28 @@ import {
 import mapboxgl from 'mapbox-gl'
 import clsx from 'clsx'
 
-import closeIcon from '../../img/icons/close.svg'
+import expandIcon from '../../img/icons/expand.svg'
 import streetViewIcon from '../../img/icons/street-view.svg'
 import { useStreetPhoto } from '../../hooks/useStreetPhoto'
 import { DESTINATION_STYLES, destinationLetter } from '../../lib/destinations'
 import { BASEMAP_CONFIG } from '../../lib/basemap'
-import {
-  ATTRIBUTION,
-  COVERAGE_TILES,
-  type StreetPhoto
-} from '../../lib/kartaview'
+import type { StreetPhoto } from '../../lib/kartaview'
 import accessToken from '../../lib/mapbox'
 import type { SearchedLocation } from '../../lib/search'
 import { NEIGHBORHOOD_ZOOM, neighborhoodUrl } from '../../lib/static-image'
 import type { Listing } from '../../types/listing'
 import type { RouteState } from '../property-panel/useRoutes'
 import MaskIcon from '../ui/MaskIcon'
+import FullScreenView from './FullScreenView'
 
 const StreetView = lazy(() => import('../street-view/StreetView'))
 
 const HEIGHT = 375
-/** Taller in street view, so the panorama has room to read as a place. */
-const STREET_HEIGHT = 'min(560px, 75vh)'
 /** Close enough to see which side of the street the camera is on. */
 const STREET_ZOOM = 17
 /** Static Images caps each dimension at 1280 logical pixels. */
 const MAX_STATIC_WIDTH = 1280
 const ROUTES_SOURCE = 'routes'
-const COVERAGE_SOURCE = 'kartaview-coverage'
 
 /**
  * Where the street view camera stands and which way it looks: a dot with a
@@ -57,6 +51,12 @@ const cameraMarker = () => {
   </svg>`
   return element
 }
+
+const PILL =
+  'flex cursor-pointer items-center gap-1.5 rounded-full bg-white text-sm font-bold text-ink shadow-[0_1px_4px_rgba(0,0,0,0.18)] transition-colors hover:bg-surface-inverse hover:text-ink-inverse focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand'
+
+/** Inline in the listing, or opened full screen as a map or street view. */
+type View = 'inline' | 'map' | 'street'
 
 const destinationMarker = (index: number) => {
   const element = document.createElement('div')
@@ -90,7 +90,20 @@ export default function PropertyMap({
   routes: Map<string, RouteState>
 }) {
   const frameRef = useRef<HTMLDivElement>(null)
-  const mapContainerRef = useRef<HTMLDivElement>(null)
+  // One GL map serves every view: its container is moved between the inline
+  // frame, the full-screen map and street view's inset, so routes, markers
+  // and the camera survive the switch without a second map load.
+  const [mapElement] = useState(() => {
+    const element = document.createElement('div')
+    // size-full, not absolute inset-0: GL JS gives its container
+    // `position: relative`, which would collapse an inset-positioned one to
+    // zero height.
+    element.className = 'size-full'
+    return element
+  })
+  const inlineSlotRef = useRef<HTMLDivElement>(null)
+  const fullScreenSlotRef = useRef<HTMLDivElement>(null)
+  const [view, setView] = useState<View>('inline')
   const [width, setWidth] = useState<number | null>(null)
   const [posterFailed, setPosterFailed] = useState(false)
   const [interactive, setInteractive] = useState(false)
@@ -111,13 +124,20 @@ export default function PropertyMap({
     if (!streetPhoto) return
     setStreetStart(streetPhoto)
     setCamera(streetPhoto)
-    // The map shrinks to an inset beside the panorama, which needs it live.
+    setView('street')
+    // The map becomes an inset over the panorama, which needs it live.
     setInteractive(true)
   }
-  const closeStreetView = () => {
+  const openFullMap = () => {
+    setView('map')
+    setInteractive(true)
+  }
+  // Stable, so the full-screen view's focus and Escape handling don't reset.
+  const backToListing = useCallback(() => {
+    setView('inline')
     setStreetStart(null)
     setCamera(null)
-  }
+  }, [])
   // Every frame the panorama turns: straight to the marker, never via state.
   const onBearing = useCallback((degrees: number) => {
     cameraMarkerRef.current?.setRotation(degrees)
@@ -133,9 +153,21 @@ export default function PropertyMap({
     return () => observer.disconnect()
   }, [])
 
+  // Before the map is created below, so it is built in place. Resized at
+  // once rather than by the observer, which fires too late for the camera's
+  // easeTo in the same commit: it would centre on the old, larger frame.
+  useLayoutEffect(() => {
+    const slot =
+      view === 'inline' ? inlineSlotRef.current : fullScreenSlotRef.current
+    if (interactive && slot && mapElement.parentElement !== slot) {
+      slot.appendChild(mapElement)
+      map?.resize()
+    }
+  }, [view, interactive, mapElement, map])
+
   useEffect(() => {
-    const container = mapContainerRef.current
-    if (!interactive || !container) return
+    if (!interactive) return
+    const container = mapElement
 
     const instance = new mapboxgl.Map({
       container,
@@ -145,7 +177,8 @@ export default function PropertyMap({
       center: listing.coordinates,
       zoom: NEIGHBORHOOD_ZOOM
     })
-    instance.addControl(new mapboxgl.NavigationControl(), 'top-right')
+    // Bottom right, leaving the top right corner to the expand button.
+    instance.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
     new mapboxgl.Marker({ color: '#1e2136' })
       .setLngLat(listing.coordinates)
       .addTo(instance)
@@ -173,23 +206,6 @@ export default function PropertyMap({
         layout: { 'line-cap': 'round', 'line-join': 'round' },
         paint: { 'line-color': ['get', 'color'], 'line-width': 4.5 }
       })
-      // KartaView's coverage, shown only in street view: the streets the
-      // panorama can step along.
-      instance.addSource(COVERAGE_SOURCE, {
-        type: 'raster',
-        tiles: [COVERAGE_TILES],
-        tileSize: 256,
-        maxzoom: 18,
-        attribution: `<a href="${ATTRIBUTION.href}" target="_blank" rel="noreferrer">© KartaView</a>`
-      })
-      instance.addLayer({
-        id: 'kartaview-coverage',
-        type: 'raster',
-        source: COVERAGE_SOURCE,
-        slot: 'middle',
-        layout: { visibility: 'none' },
-        paint: { 'raster-opacity': 0.8 }
-      })
       setMap(instance)
     })
 
@@ -200,18 +216,13 @@ export default function PropertyMap({
       setMap(null)
       instance.remove()
     }
-  }, [interactive, listing.coordinates])
+  }, [interactive, listing.coordinates, mapElement])
 
-  const streetOpen = streetStart !== null
+  const streetOpen = view === 'street'
   const wasStreetOpen = useRef(false)
 
   useEffect(() => {
     if (!map) return
-    map.setLayoutProperty(
-      'kartaview-coverage',
-      'visibility',
-      streetOpen ? 'visible' : 'none'
-    )
     if (!streetOpen) {
       // Back from street view: return to the neighbourhood framing.
       if (wasStreetOpen.current) {
@@ -301,72 +312,83 @@ export default function PropertyMap({
     // routesKey stands in for routes; destinations drives the colour order.
   }, [map, routesKey, destinations, listing.coordinates])
 
+  const place = [listing.address, listing.neighborhood]
+    .filter(Boolean)
+    .join(', ')
+
+  const streetViewButton = streetPhoto && (
+    <button
+      type='button'
+      onClick={openStreetView}
+      className={clsx(PILL, 'absolute left-3 top-3 z-10 py-2 pl-3 pr-4')}
+    >
+      <MaskIcon src={streetViewIcon} size={20} />
+      Street view
+    </button>
+  )
+
   return (
     <div
       ref={frameRef}
       className='relative w-full overflow-hidden rounded-xl border border-gray-200 bg-surface-sunken'
-      style={{ height: streetOpen ? STREET_HEIGHT : HEIGHT }}
+      style={{ height: HEIGHT }}
     >
-      {streetStart && (
-        <div className='absolute inset-0 bg-surface-inverse'>
-          <Suspense
-            fallback={
-              <p className='flex size-full items-center justify-center text-sm font-medium text-ink-inverse'>
-                Loading street view…
-              </p>
-            }
-          >
-            <StreetView
-              photo={streetStart}
-              target={listing.coordinates}
-              onPhotoChange={setCamera}
-              onBearing={onBearing}
-            />
-          </Suspense>
-        </div>
-      )}
+      {interactive && <div ref={inlineSlotRef} className='size-full' />}
 
-      {/* In street view the same map shrinks to an inset over the panorama,
-          showing where the camera stands and which way it looks. Its own
-          zoom buttons are hidden there; it is too small for them. */}
-      {interactive && (
-        <div
-          className={clsx(
-            streetOpen
-              ? 'absolute left-3 top-3 z-10 h-[180px] w-[260px] overflow-hidden rounded-lg border-2 border-white shadow-[0_1px_4px_rgba(0,0,0,0.25)] max-md:h-[120px] max-md:w-[160px] [&_.mapboxgl-ctrl-top-right]:hidden'
-              : 'size-full'
+      {view !== 'inline' && (
+        <FullScreenView
+          title={place}
+          label={streetOpen ? 'Street view' : 'Map'}
+          onBack={backToListing}
+        >
+          {streetStart && streetOpen && (
+            <div className='absolute inset-0 bg-surface-inverse'>
+              <Suspense
+                fallback={
+                  <p className='flex size-full items-center justify-center text-sm font-medium text-ink-inverse'>
+                    Loading street view…
+                  </p>
+                }
+              >
+                <StreetView
+                  photo={streetStart}
+                  target={listing.coordinates}
+                  onPhotoChange={setCamera}
+                  onBearing={onBearing}
+                />
+              </Suspense>
+            </div>
           )}
-        >
-          {/* size-full, not absolute inset-0: GL JS gives its container
-              `position: relative`, which would collapse an inset-positioned
-              one to zero height. */}
-          <div ref={mapContainerRef} className='size-full' />
-        </div>
+          {/* In street view the map is an inset over the panorama, showing
+              where the camera stands and which way it looks. Its zoom
+              buttons are hidden there; it is too small for them. */}
+          <div
+            ref={fullScreenSlotRef}
+            className={clsx(
+              streetOpen
+                ? 'absolute left-4 top-4 z-10 h-[220px] w-[320px] overflow-hidden rounded-lg border-2 border-white shadow-[0_1px_4px_rgba(0,0,0,0.25)] max-md:left-3 max-md:top-3 max-md:h-[120px] max-md:w-[160px] [&_.mapboxgl-ctrl-group]:hidden'
+                : 'size-full'
+            )}
+          />
+          {view === 'map' && streetViewButton}
+        </FullScreenView>
       )}
 
-      {streetPhoto && !streetOpen && (
-        <button
-          type='button'
-          onClick={openStreetView}
-          className='absolute left-3 top-3 z-10 flex cursor-pointer items-center gap-1.5 rounded-full bg-white py-2 pl-3 pr-4 text-sm font-bold text-ink shadow-[0_1px_4px_rgba(0,0,0,0.18)] transition-colors hover:bg-surface-inverse hover:text-ink-inverse focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand'
-        >
-          <MaskIcon src={streetViewIcon} size={20} />
-          Street view
-        </button>
-      )}
+      {/* Kept while full screen, though covered, so focus can return to
+          whichever one opened it. */}
+      {streetViewButton}
 
-      {streetOpen && (
-        <button
-          type='button'
-          onClick={closeStreetView}
-          className='absolute right-3 top-3 z-10 flex cursor-pointer items-center gap-1.5 rounded-full bg-white py-2 pl-3 pr-4 text-sm font-bold text-ink shadow-[0_1px_4px_rgba(0,0,0,0.18)] transition-colors hover:bg-surface-inverse hover:text-ink-inverse focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand'
-        >
-          <MaskIcon src={closeIcon} size={16} />
-          Back to map
-        </button>
-      )}
+      <button
+        type='button'
+        onClick={openFullMap}
+        aria-label='Expand the map to full screen'
+        title='Expand map'
+        className={clsx(PILL, 'absolute right-3 top-3 z-10 p-2')}
+      >
+        <MaskIcon src={expandIcon} size={20} />
+      </button>
 
-      {!map && width && !streetOpen && (
+      {!map && width && (
         <button
           type='button'
           onClick={() => setInteractive(true)}
