@@ -88,8 +88,8 @@ export default function ListingsProvider({
   const rendered = useMemo(() => visible.slice(0, MARKER_CAP), [visible])
 
   // Searching an area (a city, a county) outlines it and limits listings to
-  // it, as on Zillow. Anything else, or an area the boundaries endpoint does
-  // not cover, just moves the map there.
+  // it. Anything else, or an area the boundaries endpoint does not cover,
+  // just moves the map there.
   const selectSearch = useCallback(async (location: SearchedLocation) => {
     const request = ++searchRef.current
     setBoundary(null)

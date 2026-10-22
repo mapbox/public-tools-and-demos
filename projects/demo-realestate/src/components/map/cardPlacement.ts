@@ -5,7 +5,7 @@ import type { Anchor } from 'mapbox-gl'
  *
  * GL JS's own `anchor: 'auto'` prefers placing a popup above its point, so it
  * would sit on top of the marker's price label and the map around it. The card
- * belongs underneath, as on Zillow, and only moves above or beside the marker
+ * belongs underneath, and only moves above or beside the marker
  * when there is not room below. Chosen once when the card opens; after that
  * the Popup simply follows its marker as the map pans.
  *

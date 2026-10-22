@@ -5,8 +5,8 @@ import backIcon from '../../img/icons/arrow-left.svg'
 import MaskIcon from '../ui/MaskIcon'
 
 /**
- * The full-screen layout the listing's map and street view open into, as on
- * Zillow: a bar with "Back to listing" over content that fills the screen.
+ * The full-screen layout the listing's map and street view open into: a bar
+ * with "Back to listing" over content that fills the screen.
  *
  * Portalled to the body, since the listing sheet's backdrop-filter would
  * otherwise become the containing block for `fixed` and scroll it away.

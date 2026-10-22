@@ -273,7 +273,7 @@ export default function MapView({
       setStyleVersion((version) => version + 1)
     }
     map.on('style.load', onStyleLoad)
-    // Clicking empty map dismisses the card, as on Zillow. Markers and the
+    // Clicking empty map dismisses the card. Markers and the
     // card itself sit inside the map's container, so their clicks are ignored.
     const onClick = (event: mapboxgl.MapMouseEvent) => {
       const target = event.originalEvent.target

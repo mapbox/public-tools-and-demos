@@ -6,7 +6,7 @@ import type {
 import type { MapMouseEvent, MapTouchEvent } from 'mapbox-gl'
 
 /**
- * A freehand lasso for Mapbox GL Draw, as on Zillow: press, drag a loop around
+ * A freehand lasso for Mapbox GL Draw: press, drag a loop around
  * the area, release. GL Draw has no freehand mode of its own, but its custom
  * mode API (handlers named after events, given a state object) is built for
  * exactly this. Only one shape exists at a time: starting a new stroke

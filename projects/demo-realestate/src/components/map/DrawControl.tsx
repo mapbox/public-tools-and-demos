@@ -11,8 +11,7 @@ import MaskIcon from '../ui/MaskIcon'
  * button, the pencil is portalled into a GL JS control in the top-right stack,
  * and the banner renders where this component does, in the map's wrapper.
  *
- * Results only change on Apply, as on Zillow; Cancel or Escape leaves the map
- * as it was.
+ * Results only change on Apply; Cancel or Escape leaves the map as it was.
  */
 export default function DrawControl({
   host,
