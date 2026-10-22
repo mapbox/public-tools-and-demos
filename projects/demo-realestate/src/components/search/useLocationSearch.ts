@@ -56,7 +56,6 @@ export function useLocationSearch(
           proximity: SEARCH_PROXIMITY,
           limit: 5
         })
-        console.log('suggestions:', response)
         setSuggestions(response.suggestions)
         setActiveIndex(-1)
         setOpen(true)

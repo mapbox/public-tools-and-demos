@@ -73,7 +73,11 @@ export const drawnBoundary = (geometry: GeoJSON.Polygon): Boundary => ({
 
 const cache = new Map<string, Promise<Boundary | null>>()
 
-/** The area's boundary, or null when the endpoint has none for it. */
+/**
+ * The area's boundary, or null when the endpoint has none for it or cannot be
+ * reached. Only answers are cached: a boundary, or a 404 for an area it does
+ * not cover. A failure is not, so the next search for that place asks again.
+ */
 export const fetchBoundary = (
   location: SearchedLocation
 ): Promise<Boundary | null> => {
@@ -84,7 +88,11 @@ export const fetchBoundary = (
     `${ENDPOINT}/${location.id}?resolution=high` +
       `&ephemeral_env=${EPHEMERAL_ENV}&access_token=${accessToken}`
   )
-    .then((response) => (response.ok ? response.json() : null))
+    .then((response) => {
+      if (response.ok) return response.json()
+      if (response.status === 404) return null
+      throw new Error(`Boundaries: ${response.status}`)
+    })
     .then((feature: GeoJSON.Feature | null) => {
       const geometry = feature?.geometry
       if (geometry?.type !== 'Polygon' && geometry?.type !== 'MultiPolygon') {
@@ -98,7 +106,10 @@ export const fetchBoundary = (
       }
     })
     // A beta endpoint can simply be down; that is the same as no boundary.
-    .catch(() => null)
+    .catch(() => {
+      cache.delete(location.id)
+      return null
+    })
 
   cache.set(location.id, request)
   return request
