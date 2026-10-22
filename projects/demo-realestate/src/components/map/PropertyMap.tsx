@@ -156,13 +156,14 @@ export default function PropertyMap({
   // Before the map is created below, so it is built in place. Resized at
   // once rather than by the observer, which fires too late for the camera's
   // easeTo in the same commit: it would centre on the old, larger frame.
+  // Resized on every view change, not just a move: the full-screen map
+  // shrinks to street view's inset in the same slot.
   useLayoutEffect(() => {
     const slot =
       view === 'inline' ? inlineSlotRef.current : fullScreenSlotRef.current
-    if (interactive && slot && mapElement.parentElement !== slot) {
-      slot.appendChild(mapElement)
-      map?.resize()
-    }
+    if (!interactive || !slot) return
+    if (mapElement.parentElement !== slot) slot.appendChild(mapElement)
+    map?.resize()
   }, [view, interactive, mapElement, map])
 
   useEffect(() => {

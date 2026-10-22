@@ -24,6 +24,16 @@ const captureDate = (iso: string) =>
     year: 'numeric'
   })
 
+/**
+ * Phones and small screens: half the panorama width and no preloading. A
+ * 4096px panorama is ~32MB decoded on the GPU, and iOS Safari reloads the tab
+ * once a few of those sit beside the map's WebGL context.
+ */
+const constrained = window.matchMedia(
+  '(max-width: 767px), (pointer: coarse)'
+).matches
+const PANORAMA_WIDTH = constrained ? 2048 : 4096
+
 /** Photos whose panorama failed to load: never offered as a step again. */
 const unreachable = new Set<string>()
 
@@ -33,7 +43,7 @@ const toNode = async (photo: StreetPhoto): Promise<VirtualTourNode> => {
   )
   return {
     id: photo.id,
-    panorama: panoramaUrl(photo),
+    panorama: panoramaUrl(photo, PANORAMA_WIDTH),
     gps: photo.coordinates,
     // The panorama's centre is the direction the car faced. Turning it by the
     // heading puts north at yaw 0, so yaw reads as a compass bearing — which
@@ -83,8 +93,10 @@ export default function StreetView({
       defaultYaw: bearing(photo.coordinates, target) * toRadians,
       defaultPitch: -0.05,
       // It already fills the screen, so no fullscreen button; the wheel
-      // zooms and the arrow keys look around.
-      navbar: ['zoom', 'caption'],
+      // zooms and the arrow keys look around. When the caption is too long
+      // for a phone's navbar the viewer hides it, and the description button
+      // is what shows it then: without it the KartaView credit is lost.
+      navbar: ['zoom', 'description', 'caption'],
       keyboard: 'always',
       plugins: [
         VirtualTourPlugin.withConfig({
@@ -97,7 +109,7 @@ export default function StreetView({
             return toNode(known)
           },
           showLinkTooltip: false,
-          preload: true
+          preload: !constrained
         })
       ]
     })

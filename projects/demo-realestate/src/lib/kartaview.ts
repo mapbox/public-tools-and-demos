@@ -158,7 +158,8 @@ const neighbourCache = new Map<string, Promise<StreetPhoto[]>>()
 /**
  * The photos either side of this one in its capture sequence. The API has no
  * "next photo" call, so it asks for index ±1, and only walks further out when a
- * sequence skips that index — usually one request each way.
+ * sequence skips that index — usually one request each way. Failures are not
+ * cached, so a rate-limited step is retried rather than a dead end for good.
  */
 export const neighbours = (photo: StreetPhoto) => {
   let pending = neighbourCache.get(photo.id)
@@ -170,14 +171,17 @@ export const neighbours = (photo: StreetPhoto) => {
         const [found] = await search({
           sequenceId: photo.sequenceId,
           sequenceIndex: index
-        }).catch(() => [])
+        })
         if (found) return remember([found])[0]
       }
       return undefined
     }
-    pending = Promise.all([walk(-1), walk(1)]).then((pair) =>
-      pair.filter((p): p is StreetPhoto => p !== undefined)
-    )
+    pending = Promise.all([walk(-1), walk(1)])
+      .then((pair) => pair.filter((p): p is StreetPhoto => p !== undefined))
+      .catch((error: unknown) => {
+        neighbourCache.delete(photo.id)
+        throw error
+      })
     neighbourCache.set(photo.id, pending)
   }
   return pending
