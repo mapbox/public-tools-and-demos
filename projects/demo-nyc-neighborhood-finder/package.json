@@ -1,0 +1,38 @@
+{
+  "name": "mapbox-demo-nyc-neighborhood-finder",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "homepage": "/demo-nyc-neighborhood-finder",
+  "scripts": {
+    "dev": "concurrently \"vite\" \"node server.js\"",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.111",
+    "@ai-sdk/react": "^3.0.260",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "@types/mapbox-gl": "^3.4.1",
+    "ai": "^6.0.257",
+    "concurrently": "^9.2.4",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mapbox-gl": "^3.28.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-markdown": "^10.1.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.4",
+    "oxlint": "^1.75.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.2.0"
+  }
+}
