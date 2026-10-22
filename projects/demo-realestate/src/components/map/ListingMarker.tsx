@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react'
 import clsx from 'clsx'
 
 import heartActive from '../../img/icons/heart-active.svg'
-import labelTail from '../../img/pins/label-tail.svg'
+import labelTail from '../../img/label-tail.svg'
 import { formatPriceShort } from '../../lib/format'
 import type { Listing } from '../../types/listing'
 import type { MarkerVariant } from './labelSelection'
