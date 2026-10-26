@@ -11,7 +11,7 @@
  * lookups start as soon as a listing is selected and are cached for the session.
  */
 
-const API = 'https://api.openstreetcam.org/2.0'
+const API = 'https://api.kartaview.org/2.0'
 
 /** Beyond ~50m the house is lost behind its neighbours. */
 const SEARCH_RADIUS_M = 50
