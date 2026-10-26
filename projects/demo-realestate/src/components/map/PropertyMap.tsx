@@ -139,7 +139,11 @@ export default function PropertyMap({
     setCamera(null)
   }, [])
   // Every frame the panorama turns: straight to the marker, never via state.
+  // Kept as well, because street view reports its opening bearing from its
+  // own effect, which runs before this component's effect creates the marker.
+  const bearingRef = useRef(0)
   const onBearing = useCallback((degrees: number) => {
+    bearingRef.current = degrees
     cameraMarkerRef.current?.setRotation(degrees)
   }, [])
 
@@ -236,7 +240,8 @@ export default function PropertyMap({
     const marker = new mapboxgl.Marker({
       element: cameraMarker(),
       rotationAlignment: 'map',
-      pitchAlignment: 'map'
+      pitchAlignment: 'map',
+      rotation: bearingRef.current
     })
       .setLngLat(listing.coordinates)
       .addTo(map)
