@@ -11,6 +11,8 @@
  * lookups start as soon as a listing is selected and are cached for the session.
  */
 
+import cameraMounts from '../data/kartaview-mounts.json'
+
 const API = 'https://api.kartaview.org/2.0'
 
 /** Beyond ~50m the house is lost behind its neighbours. */
@@ -37,8 +39,8 @@ export interface StreetPhoto {
   sequenceIndex: number
   /** [longitude, latitude] of the camera. */
   coordinates: [number, number]
-  /** Compass bearing the vehicle faced, which is the panorama's centre. */
-  heading: number
+  /** Compass bearing of the panorama's centre. */
+  centre: number
   /** Capture date, ISO yyyy-mm-dd. */
   date: string
   /** Full-size equirectangular original (~13000px, ~25MB). */
@@ -58,12 +60,23 @@ interface ApiPhoto {
   fileurlProc: string
 }
 
+/**
+ * Where the car's front sits in each capture sequence's panoramas, in degrees
+ * clockwise from the image centre, keyed by sequence id. KartaView's `heading`
+ * is the direction of travel, and the API says nothing about how the camera
+ * was mounted: most drives have the front at the centre, but some had the
+ * camera turned sideways. Measured by eye from the panoramas themselves, with
+ * the car's hood and the way parked cars face; a sequence not listed is
+ * assumed to be front-centred.
+ */
+const FRONT_OFFSETS: Record<string, number> = cameraMounts
+
 const toPhoto = (photo: ApiPhoto): StreetPhoto => ({
   id: photo.id,
   sequenceId: photo.sequenceId,
   sequenceIndex: Number(photo.sequenceIndex),
   coordinates: [Number(photo.lng), Number(photo.lat)],
-  heading: Number(photo.heading),
+  centre: Number(photo.heading) - (FRONT_OFFSETS[photo.sequenceId] ?? 0),
   date: photo.shotDate.slice(0, 10),
   url: photo.fileurlProc
 })

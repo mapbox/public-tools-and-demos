@@ -45,10 +45,10 @@ const toNode = async (photo: StreetPhoto): Promise<VirtualTourNode> => {
     id: photo.id,
     panorama: panoramaUrl(photo, PANORAMA_WIDTH),
     gps: photo.coordinates,
-    // The panorama's centre is the direction the car faced. Turning it by the
-    // heading puts north at yaw 0, so yaw reads as a compass bearing — which
-    // is what GPS-positioned links and the map's view cone both assume.
-    sphereCorrection: { pan: -photo.heading * toRadians },
+    // Turning the panorama by its centre's bearing puts north at yaw 0, so yaw
+    // reads as a compass bearing — which is what GPS-positioned links and the
+    // map's view cone both assume.
+    sphereCorrection: { pan: -photo.centre * toRadians },
     links: links.map((link) => ({ nodeId: link.id, gps: link.coordinates })),
     caption:
       `<a href="${ATTRIBUTION.href}" target="_blank" rel="noreferrer">${ATTRIBUTION.label}</a>` +
