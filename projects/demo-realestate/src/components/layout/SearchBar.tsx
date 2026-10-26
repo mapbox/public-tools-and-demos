@@ -8,12 +8,9 @@ import { useLocationSearch } from '../search/useLocationSearch'
 import MaskIcon from '../ui/MaskIcon'
 
 export default function SearchBar({
-  onSelect,
-  onClear
+  onSelect
 }: {
   onSelect: (location: SearchedLocation) => void
-  /** Clearing the field also drops any searched area's boundary. */
-  onClear: () => void
 }) {
   const {
     value,
@@ -51,10 +48,7 @@ export default function SearchBar({
         />
         <button
           type='button'
-          onClick={() => {
-            clear()
-            onClear()
-          }}
+          onClick={clear}
           aria-label='Clear search'
           className={clsx(
             'flex shrink-0 cursor-pointer items-center rounded-full bg-surface-sunken p-1 text-ink-muted transition-opacity',

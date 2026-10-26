@@ -44,7 +44,7 @@ import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 
 mapboxgl.accessToken = accessToken
 
-const BOUNDARY_SOURCE = 'search-boundary'
+const BOUNDARY_SOURCE = 'drawn-area'
 /** The theme's brand blue, --color-brand; paint properties need the raw hex. */
 const BOUNDARY_COLOR = '#007afc'
 
@@ -123,7 +123,7 @@ export default function MapView({
   lightPreset: LightPreset
   onLightPresetChange: (preset: LightPreset) => void
   flyTo: SearchedLocation | null
-  /** A searched area to outline and fit the map to. */
+  /** A drawn area to outline and fit the map to. */
   boundary: Boundary | null
   onRemoveBoundary: () => void
   totalInView: number
@@ -240,7 +240,7 @@ export default function MapView({
     const onIdle = () => refreshHighlightRef.current()
     map.on('idle', onIdle)
 
-    // The searched area's outline. The `middle` slot keeps it above roads and
+    // The drawn area's outline. The `middle` slot keeps it above roads and
     // below Standard's labels; the fill is faint enough to leave the map
     // readable while still marking what is in and out. Switching style drops
     // it with everything else that is not part of the style, so it is added
@@ -256,14 +256,14 @@ export default function MapView({
         data: { type: 'FeatureCollection', features: [] }
       })
       map.addLayer({
-        id: 'search-boundary-fill',
+        id: 'drawn-area-fill',
         type: 'fill',
         source: BOUNDARY_SOURCE,
         slot: 'middle',
         paint: { 'fill-color': BOUNDARY_COLOR, 'fill-opacity': 0.06 }
       })
       map.addLayer({
-        id: 'search-boundary-line',
+        id: 'drawn-area-line',
         type: 'line',
         source: BOUNDARY_SOURCE,
         slot: 'middle',
@@ -548,7 +548,6 @@ export default function MapView({
         <button
           type='button'
           onClick={onRemoveBoundary}
-          aria-label={`Remove the ${boundary.name} boundary`}
           className={`absolute transition left-1/2 top-3 z-10 flex -translate-x-1/2 max-md:left-3 max-md:translate-x-0 ${
             totalInView > rendered.length ? 'max-md:top-13' : ''
           } cursor-pointer items-center gap-1.5 rounded-full bg-white py-1.5 pl-3.5 pr-2 text-sm font-bold text-ink shadow-[0_1px_4px_rgba(0,0,0,0.18)] hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand`}

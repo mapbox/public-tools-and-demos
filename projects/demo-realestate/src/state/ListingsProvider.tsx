@@ -2,19 +2,12 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
   type ReactNode
 } from 'react'
 
 import { MARKER_CAP } from '../components/map/labelSelection'
-import {
-  contains,
-  drawnBoundary,
-  fetchBoundary,
-  isArea,
-  type Boundary
-} from '../lib/boundaries'
+import { contains, drawnBoundary, type Boundary } from '../lib/boundaries'
 import { loadListings, withinBounds, type Bounds } from '../lib/listings-source'
 import {
   FULL_RANGE,
@@ -38,9 +31,6 @@ export default function ListingsProvider({
   const [bounds, setBounds] = useState<Bounds | null>(null)
   const [flyTo, setFlyTo] = useState<SearchedLocation | null>(null)
   const [boundary, setBoundary] = useState<Boundary | null>(null)
-  // Only the latest search may apply its result; an earlier, slower boundary
-  // lookup arriving afterwards is ignored.
-  const searchRef = useRef(0)
   const [searchKey, setSearchKey] = useState(0)
   const [price, setPrice] = useState<PriceRange>(FULL_RANGE)
   const [priceOpen, setPriceOpen] = useState(false)
@@ -87,34 +77,18 @@ export default function ListingsProvider({
   // Only this many are ever drawn; 500 DOM markers pan at 60fps, 1000 does not.
   const rendered = useMemo(() => visible.slice(0, MARKER_CAP), [visible])
 
-  // Searching an area (a city, a county) outlines it and limits listings to
-  // it. Anything else, or an area the boundaries endpoint does not cover,
-  // just moves the map there.
-  const selectSearch = useCallback(async (location: SearchedLocation) => {
-    const request = ++searchRef.current
+  // Searching moves the map to the place, leaving any drawn area behind.
+  const selectSearch = useCallback((location: SearchedLocation) => {
     setBoundary(null)
-    const found = isArea(location) ? await fetchBoundary(location) : null
-    if (request !== searchRef.current) return
-    if (found) setBoundary(found)
-    else setFlyTo(location)
+    setFlyTo(location)
   }, [])
 
-  const clearSearch = useCallback(() => {
-    searchRef.current += 1
-    setBoundary(null)
-  }, [])
+  const removeBoundary = useCallback(() => setBoundary(null), [])
 
-  // Bumping the key remounts, and so empties, the search field, keeping it in
-  // step with the map.
-  const removeBoundary = useCallback(() => {
-    clearSearch()
-    setSearchKey((key) => key + 1)
-  }, [clearSearch])
-
-  // A drawn area replaces any searched one, so the search field, which would
-  // otherwise still name the old area, is emptied as well.
+  // The map moves to the drawn area, so the search field, which would
+  // otherwise still name the last place searched, is emptied: bumping the key
+  // remounts it.
   const applyDrawnArea = useCallback((shape: GeoJSON.Polygon) => {
-    searchRef.current += 1
     setBoundary(drawnBoundary(shape))
     setSearchKey((key) => key + 1)
   }, [])
@@ -154,7 +128,6 @@ export default function ListingsProvider({
       flyTo,
       boundary,
       selectSearch,
-      clearSearch,
       applyDrawnArea,
       removeBoundary,
       searchKey
@@ -173,7 +146,6 @@ export default function ListingsProvider({
       flyTo,
       boundary,
       selectSearch,
-      clearSearch,
       applyDrawnArea,
       removeBoundary,
       searchKey

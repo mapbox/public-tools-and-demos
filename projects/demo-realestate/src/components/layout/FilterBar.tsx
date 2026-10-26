@@ -25,7 +25,6 @@ const Divider = ({ stretch = false }: { stretch?: boolean }) => (
 export default function FilterBar() {
   const {
     selectSearch,
-    clearSearch,
     searchKey,
     price,
     setPrice,
@@ -44,9 +43,7 @@ export default function FilterBar() {
   const [sheetOpen, setSheetOpen] = useState(false)
   const closeSheet = useCallback(() => setSheetOpen(false), [])
 
-  const search = (
-    <SearchBar key={searchKey} onSelect={selectSearch} onClear={clearSearch} />
-  )
+  const search = <SearchBar key={searchKey} onSelect={selectSearch} />
 
   // A phone has room for search and two pills: the filters move into a sheet
   // (Figma `filters-mobile`), and Saved keeps its place beside them.

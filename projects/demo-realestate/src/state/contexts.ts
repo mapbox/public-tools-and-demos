@@ -38,15 +38,13 @@ export interface ListingsState {
   /** How many of price, beds and type are narrowed from their defaults. */
   activeFilters: number
 
-  /** Where the map should fly after a search that found no outline. */
+  /** Where the map should fly after a search. */
   flyTo: SearchedLocation | null
-  /** The searched area's outline; while set, listings are limited to it. */
+  /** The drawn area; while set, listings are limited to it. */
   boundary: Boundary | null
   selectSearch: (location: SearchedLocation) => void
-  clearSearch: () => void
-  /** Limits listings to a shape drawn on the map, replacing any search area. */
+  /** Limits listings to a shape drawn on the map. */
   applyDrawnArea: (shape: GeoJSON.Polygon) => void
-  /** Clears the search from the map's side, emptying the search field too. */
   removeBoundary: () => void
   /** Changes when the search field must be emptied from outside it. */
   searchKey: number

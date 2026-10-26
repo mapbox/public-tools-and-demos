@@ -84,8 +84,7 @@ export function useLocationSearch(
       center: [longitude, latitude],
       name: suggestion.name,
       id: suggestion.mapbox_id,
-      place: suggestion.place_formatted,
-      featureType: suggestion.feature_type
+      place: suggestion.place_formatted
     })
   }
 

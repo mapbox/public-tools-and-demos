@@ -20,8 +20,6 @@ Product Features Used Here:
 * Search Box sessions - `suggest` and `retrieve` from Search JS Core, sharing a session token
 * A custom GL Draw mode - freehand drawing of an area to limit listings to
 
-Searching a city or county outlines it on the map and limits listings to it. The outline comes from a beta Mapbox boundaries endpoint that may change or go away without notice; if it is unavailable, searching a place just moves the map there. It currently covers cities and counties only. Drawing an area does not depend on it.
-
 ## Data used in this demo
 
 The listings come from the public [House Sales in King County, USA](https://www.kaggle.com/datasets/harlfoxem/housesalesprediction) dataset, converted to GeoJSON and served from `public/data/listings.json`. Each listing's location and address come from [King County GIS](https://gis-kingcounty.opendata.arcgis.com/) address points, and its property type from the King County Assessor's parcel data. The dataset has no photos, so listings show CC0 stock interior photos listed in `src/data/interiors.json`.

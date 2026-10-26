@@ -21,7 +21,6 @@ export const products: Product[] = [
       'Powers the location search in the filter row, using the Search JS Core classes directly rather than the prebuilt React component.',
       'It is the two-step interactive flow: SearchBoxCore.suggest() as you type, debounced and cancellable via AbortController, then retrieve() once you pick a result, which is the call that returns coordinates. Both share a SessionToken, because the Search Box API bills a session rather than individual keystrokes, and a new session starts after each selection. Results are biased toward the listings area with the proximity option.',
       'Note this searches places, not the listings on this page — choosing a result moves the map.',
-      'Choosing an area, such as a city or county, also outlines it on the map and limits the listings to those inside it. The outline comes from a beta Mapbox endpoint that returns a place’s boundary polygon for the same mapbox_id every Search Box result carries. It currently covers cities and counties; for neighborhoods and ZIP codes the map just moves there.',
       'The full listing reuses the same flow to add travel destinations. Search Box finds businesses and landmarks as well as addresses, which is how people name the places they commute to.'
     ],
     links: [
@@ -59,7 +58,7 @@ export const products: Product[] = [
       'The basemap. Mapbox Standard is a professionally designed general-purpose style with dynamic lighting and 3D landmarks, used here as the backdrop for the listing pins and for the interactive map in the full listing.',
       'It is customised entirely through Standard’s configuration properties, with no custom style to maintain: the faded theme softens the whole map, buildings and roads take the app’s cool neutrals, schools take the brand’s light blue, and labels use Manrope. Points of interest are hidden, so the listings, the selected building and route lines carry the attention.',
       'Selecting a listing also highlights its building in coral once you are zoomed in far enough for buildings to draw. It queries the style’s built-in buildings featureset at the listing’s coordinates and sets that building’s select feature state, with the colour set through the colorBuildingSelect configuration property.',
-      'The layers button above the zoom controls switches the main map between Standard and Mapbox Standard Satellite, and between Standard’s four light presets: dawn, day, dusk and night. Changing style is a setStyle call with the new style’s configuration, and the app re-adds its own layers, such as a searched area’s outline, once the new style loads. Markers and the property card are HTML on top of the map, so they stay put. A light preset is a single configuration property on either style, changed in place with setConfigProperty and no reload. Standard Satellite has no buildings featureset, so the building highlight only appears on Standard.'
+      'The layers button above the zoom controls switches the main map between Standard and Mapbox Standard Satellite, and between Standard’s four light presets: dawn, day, dusk and night. Changing style is a setStyle call with the new style’s configuration, and the app re-adds its own layers, such as a drawn area’s outline, once the new style loads. Markers and the property card are HTML on top of the map, so they stay put. A light preset is a single configuration property on either style, changed in place with setConfigProperty and no reload. Standard Satellite has no buildings featureset, so the building highlight only appears on Standard.'
     ],
     links: [
       {
@@ -71,9 +70,9 @@ export const products: Product[] = [
   {
     title: 'Mapbox GL Draw',
     body: [
-      'The pencil below the layers button lets you draw the area you want to live in. Press, drag a loop around it and let go, then Apply: the listings are limited to what falls inside the shape, the map fits to it, and the shape replaces any searched city. Cancel, or Escape, leaves everything as it was. Drawing again replaces the shape rather than adding a second one.',
+      'The pencil below the layers button lets you draw the area you want to live in. Press, drag a loop around it and let go, then Apply: the listings are limited to what falls inside the shape, and the map fits to it. Cancel, or Escape, leaves everything as it was. Drawing again replaces the shape rather than adding a second one.',
       'GL Draw has no freehand mode of its own, so this is a custom mode written for it: a handful of event handlers that record the pointer as it drags, skipping points closer than a few pixels apart so the shape stays light. GL Draw is added to the map only while you draw, with its own toolbar hidden, so the pencil and the banner are the whole interface.',
-      'Once applied, the shape becomes the same boundary a city search produces, so the outline, the filtering and Remove boundary all work the same way for both.'
+      'Once applied, GL Draw is removed and the shape is drawn as the app’s own outline layer, with a Remove boundary button to clear it. Searching a place also clears it.'
     ],
     links: [
       {
