@@ -6,7 +6,7 @@ import {
   type ReactNode
 } from 'react'
 
-import { useIsMobile } from '../hooks/useIsMobile'
+import { useNoSplit } from '../hooks/useIsMobile'
 import type { LightPreset, MapStyle } from '../lib/basemap'
 import { nearestPhoto } from '../lib/kartaview'
 import type { ViewMode } from '../types/view'
@@ -20,10 +20,10 @@ export default function SelectionProvider({
 }) {
   const { all } = useListings()
   const [chosenView, setView] = useState<ViewMode>('split')
-  // A phone has no room for Split, so it shows the map instead. The choice is
-  // kept, and Split comes back if the window widens again.
-  const isMobile = useIsMobile()
-  const view = isMobile && chosenView === 'split' ? 'map' : chosenView
+  // A phone or portrait iPad has no room for Split, so it shows the map
+  // instead. The choice is kept, and Split comes back if the window widens.
+  const noSplit = useNoSplit()
+  const view = noSplit && chosenView === 'split' ? 'map' : chosenView
   const [mapStyle, setMapStyle] = useState<MapStyle>('standard')
   const [lightPreset, setLightPreset] = useState<LightPreset>('day')
   const [selectedId, setSelectedId] = useState<string | null>(null)

@@ -22,6 +22,12 @@ export function useMediaQuery(query: string) {
 export const useIsMobile = () => useMediaQuery(MOBILE_QUERY)
 
 /**
+ * Split's listing column is 420px, which on a portrait iPad up to the 11"
+ * (834px) leaves the map too narrow to use. Tailwind's `max-[835px]` matches.
+ */
+export const useNoSplit = () => useMediaQuery('(width < 835px)')
+
+/**
  * Search, price, beds, types and Saved need ~1340px of window in one row, and
  * Map view's result count ~100px more; narrower than that (tablets, small
  * laptops) they wrap and overflow the card, so the filters collapse behind a
