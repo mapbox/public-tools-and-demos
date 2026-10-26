@@ -8,7 +8,8 @@ import TypeFilter from './TypeFilter'
 
 /**
  * The phone's filters, in a sheet from the bottom (Figma `filters-mobile`).
- * Filters apply as they change, as on desktop, so the button only closes the
+ * Tablets use them too, where a full-width sheet would stretch the pills across
+ * the screen, so from `md` up it is a dialog in the middle instead. Filters apply as they change, as on desktop, so the button only closes the
  * sheet; its count says what closing it will show.
  */
 export default function FiltersSheet({ onClose }: { onClose: () => void }) {
@@ -37,7 +38,7 @@ export default function FiltersSheet({ onClose }: { onClose: () => void }) {
 
   // Portalled to the body, so it sits above the Learn Mapbox bar.
   return createPortal(
-    <div className='fixed inset-0 z-[60] flex flex-col justify-end'>
+    <div className='fixed inset-0 z-[60] flex flex-col justify-end md:items-center md:justify-center'>
       <div
         aria-hidden='true'
         onClick={onClose}
@@ -47,7 +48,7 @@ export default function FiltersSheet({ onClose }: { onClose: () => void }) {
         role='dialog'
         aria-modal='true'
         aria-label='Filters'
-        className='relative flex max-h-[85%] flex-col gap-4 overflow-y-auto rounded-t-3xl bg-white px-4 pb-6 pt-4 shadow-[0px_-2px_3px_0px_rgba(0,0,0,0.06)]'
+        className='relative flex max-h-[85%] flex-col gap-4 overflow-y-auto rounded-t-3xl bg-white px-4 pb-6 pt-4 shadow-[0px_-2px_3px_0px_rgba(0,0,0,0.06)] md:w-[440px] md:rounded-3xl md:p-6 md:shadow-[0px_3px_10px_0px_rgba(0,0,0,0.15)]'
       >
         <PriceFilter
           inline

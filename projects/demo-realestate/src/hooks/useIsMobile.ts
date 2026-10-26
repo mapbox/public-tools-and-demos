@@ -20,3 +20,12 @@ export function useMediaQuery(query: string) {
  * the filters moving into a sheet. Styling alone uses `max-md:` classes.
  */
 export const useIsMobile = () => useMediaQuery(MOBILE_QUERY)
+
+/**
+ * Search, price, beds, types and Saved need ~1340px of window in one row, and
+ * Map view's result count ~100px more; narrower than that (tablets, small
+ * laptops) they wrap and overflow the card, so the filters collapse behind a
+ * button as on a phone.
+ */
+export const useCompactFilters = (withCount: boolean) =>
+  useMediaQuery(withCount ? '(width < 91rem)' : '(width < 84rem)')
