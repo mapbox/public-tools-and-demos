@@ -13,7 +13,10 @@
     "ignorePatterns": [
         "dist",
         ".eslintrc.cjs",
-         "**/*.html"
+        "**/*.html",
+        "projects/demo-feature-tour/",
+        "projects/standard-style-theme-editor/",
+        "projects/demo-nyc-neighborhood-finder/"
     ],
     "parserOptions": {
         "ecmaVersion": "latest",
